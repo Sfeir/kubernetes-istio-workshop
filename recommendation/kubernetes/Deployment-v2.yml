@@ -21,13 +21,13 @@ spec:
       - env:
         - name: JAVA_OPTIONS
           value: -Xmx256m
-        image: example/recommendation:v2
+        image: abdennebi/recommendation:v2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
             command:
             - curl
-            - localhost:8080/health
+            - recommendation:8080/health
           initialDelaySeconds: 20
           periodSeconds: 5
           timeoutSeconds: 10
@@ -46,7 +46,7 @@ spec:
           exec:
             command:
             - curl
-            - localhost:8080/health
+            - recommendation:8080/health
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 10
