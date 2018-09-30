@@ -4,7 +4,7 @@ include::_attributes.adoc[]
 [IMPORTANT]
 .Before Start
 ====
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule` 
+You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule`
 if so run:
 
 [source, bash]
@@ -67,7 +67,7 @@ minishift openshift service customer --url
 http://customer-tutorial.192.168.99.102.nip.io
 ----
 
-You can also attempt to use the curl -A command to test with different user-agent strings. 
+You can also attempt to use the curl -A command to test with different user-agent strings.
 
 [source,bash]
 ----
@@ -119,8 +119,6 @@ or you can run:
 
 [source,bash]
 ----
-oc get pods -l app=recommendation -n tutorial
-or 
 kubectl get pods -l app=recommendation -n tutorial
 ----
 
@@ -132,7 +130,7 @@ istioctl get virtualservice -n tutorial
 istioctl get destinationrule
 ----
 
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule` 
+You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule`
 if so run:
 
 [source, bash]
@@ -254,7 +252,7 @@ Add a 3rd v2 pod to the mix
 $ oc scale deployment recommendation-v2 --replicas=3 -n tutorial
 $ oc get pods -n tutorial
 
-or 
+or
 
 $ kubectl scale deployment recommendation-v2 --replicas=3 -n tutorial
 $ kubectl get pods -n tutorial

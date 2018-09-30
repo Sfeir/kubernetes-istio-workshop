@@ -8,16 +8,16 @@ spec:
   hosts:
   - recommendation
   http:
-  - match:
-    - headers:
-        baggage-user-agent:
-          regex: .*Firefox.*
-    route:
-    - destination:
-        host: recommendation
-        subset: version-v2
   - route:
     - destination:
         host: recommendation
         subset: version-v1
+  - route:
+    - destination:
+        host: recommendation
+        subset: version-v2
+    match:
+    - headers:
+        baggage-user-agent:
+          regex: .*Mobile.*
 ---

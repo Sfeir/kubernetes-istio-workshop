@@ -56,14 +56,14 @@ and test the customer endpoint
 
 [source,bash]
 ----
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 ----
 
 you likely see "customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 3", where '99634814-d2z2t' is the pod running v1 and the 3 is basically the number of times you hit the endpoint.
 
 [source]
 ----
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 ----
 
 you likely see "customer =&gt; preference =&gt; recommendation v2 from '2819441432-5v22s': 1" as by default you get round-robin load-balancing when there is more than one Pod behind a Service
@@ -98,25 +98,34 @@ Scale back to a single replica of the recommendation-v2 Deployment
 kubectl scale --replicas=2 deployment/recommendation-v2
 ----
 
-and back to the main directory
-
-[source,bash]
-----
-cd ../../..
-----
-
 [#istiorouting]
 == Changing Istio Routings
 
-[#alltorecommendationv2]
-=== All users to recommendation:v2
+First, we will create a https://istio.io/docs/reference/config/istio.networking.v1alpha3/#DestinationRule[DestinationRule] to specify a policy that defines subsets to be used by a https://istio.io/docs/reference/config/istio.networking.v1alpha3/#VirtualService[VirtualService] to override the settings specified at the service level.
 
 From the main istio-tutorial directory,
 
 [source,bash]
 ----
-istioctl create -f manifests/istio/simple-routing/recommendation-destination-rule-v1-v2.yml -n tutorial
-istioctl create -f manifests/istio/simple-routing/recommendation-virtual-service-v2.yml -n tutorial
+kubectl apply -f manifests/istio/simple-routing/recommendation-destination-rule-v1-v2.yml -n tutorial
+----
+
+Verify,
+
+[source,bash]
+----
+istioctl get destinationrules recommendation
+
+DESTINATION-RULE NAME   HOST             SUBSETS                 NAMESPACE   AGE
+recommendation          recommendation   version-v1,version-v2   tutorial    50s
+----
+
+[#alltorecommendationv2]
+=== All users to recommendation:v2
+
+[source,bash]
+----
+kubectl apply -f manifests/istio/simple-routing/recommendation-virtual-service-v2.yml -n tutorial
 
 curl customer-tutorial.$(minishift ip).nip.io
 ----
@@ -140,18 +149,18 @@ istioctl get virtualservice -o yaml -n tutorial
 [#alltorecommendationv1v2]
 === All users to recommendation v1 and v2
 
-By simply removing the rule
+By simply removing the virtual service
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/virtual-service-recommendation-v1.yml -n tutorial
+kubectl delete -f manifests/istio/recommendation-virtual-service-v1.yml -n tutorial
 ----
 
 and you should see the default behavior of load-balancing between v1 and v2
 
 [source,bash]
 ----
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 ----
 
 [#canarydeploymentrecommendation]
@@ -161,9 +170,7 @@ Canary Deployment scenario: push v2 into the cluster but slowly send end-user tr
 
 [source,bash]
 ----
-$ oc get pods -l app=recommendation -n tutorial
-or
-$ kubectl get pods -l app=recommendation -n tutorial
+kubectl get pods -l app=recommendation -n tutorial
 
 NAME                                  READY     STATUS    RESTARTS   AGE
 recommendation-v1-3719512284-7mlzw   2/2       Running   6          2h
@@ -174,7 +181,7 @@ Create the `virtualservice` that will send 90% of requests to v1 and 10% to v2
 
 [source,bash]
 ----
-istioctl create -f istiofiles/virtual-service-recommendation-v1_and_v2.yml -n tutorial
+kubectl apply -f manifests/istio/simple-routing/recommendation-virtual-service-v1_and_v2.yml
 ----
 
 and send in several requests:
@@ -188,7 +195,7 @@ In another terminal, change the mixture to be 75/25
 
 [source,bash]
 ----
-istioctl replace -f istiofiles/virtual-service-recommendation-v1_and_v2_75_25.yml -n tutorial
+kubectl apply -f manifests/istio/simple-routing/recommendation-virtual-service-v1_and_v2_75_25.yml
 ----
 
 Clean up

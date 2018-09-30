@@ -1,13 +1,19 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: customer-virtual-service-gateway
+  name: customer
+  namespace: tutorial
 spec:
   hosts:
   - "*"
   gateways:
   - customer-gateway
   http:
-  - route:
+  - match:
+    - uri:
+        exact: /
+    route:
     - destination:
         host: customer
+        port:
+          number: 8080

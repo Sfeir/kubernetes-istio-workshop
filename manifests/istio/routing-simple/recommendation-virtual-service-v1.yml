@@ -1,4 +1,4 @@
-# All users to recommendation:v2
+# All users to recommendation:v1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -11,6 +11,5 @@ spec:
   - route:
     - destination:
         host: recommendation
-        subset: version-v2
+        subset: version-v1
       weight: 100
----
