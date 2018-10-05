@@ -4,7 +4,7 @@ include::_attributes.adoc[]
 [IMPORTANT]
 .Before Start
 ====
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule` 
+You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule`
 if so run:
 
 [source, bash]
@@ -45,7 +45,7 @@ Let's perform a load test in our system with `siege`. We'll have 20 clients send
 
 [source,bash]
 ----
-siege -r 2 -c 20 -v customer-tutorial.$(minishift ip).nip.io
+siege -r 2 -c 20 -v __CUSTOMER__
 ----
 
 You should see an output similar to this:
@@ -73,7 +73,7 @@ Now let's see what is the behavior of the system running `siege` again:
 
 [source,bash]
 ----
-siege -r 2 -c 20 -v customer-tutorial.$(minishift ip).nip.io
+siege -r 2 -c 20 -v __CUSTOMER__
 ----
 
 image:siege_cb_503.png[siege output with some 503 requests due to open circuit breaker]

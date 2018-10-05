@@ -1,41 +1,13 @@
 = Simple Route Rules
 include::_attributes.adoc[]
 
-For this use case, we need to create a modified version of Recommendations
+This section demonstrates how to use various traffic management capabilities of Istio.
 
-[#deployrecommendationv2]
-== Create recommendation:v2
-
-We can experiment with Istio controlling traffic by making a change to `RecommendationVerticle.java` like the following and creating a "v2" docker image.
-
-[source,java]
-----
-private static final String RESPONSE_STRING_FORMAT = "recommendation v2 from '%s': %d\n";
-----
-
-The "v2" tag during the Docker build is significant.
-
-There is also a second `deployment.yml` file to label things correctly
-
-=== Docker build (if you have access to Docker daemon)
+We will show you how to route requests dynamically to multiple versions of a microservice.
 
 [source,bash]
 ----
-cd recommendation/java/vertx
-mvn clean package
-
-docker build -t example/recommendation:v2 .
-
-docker images | grep recommendation
-example/recommendation                  v2                  c31e399a9628        5 seconds ago       438MB
-example/recommendation                  v1                  f072978d9cf6        8 minutes ago      438MB
-----
-
-IMPORTANT: We have a 2nd Deployment to manage the v2 version of recommendation.
-
-[source,bash]
-----
-kubectl apply -f manifests/kubernetes/Deployment-v2.yml -n tutorial
+kubectl apply -f manifests/kubernetes/recommendation-deployment-v2 -n tutorial
 kubectl get pods -w
 ----
 
@@ -49,24 +21,25 @@ NAME                                 READY     STATUS    RESTARTS   AGE
 customer-3600192384-fpljb            2/2       Running   0          17m
 preference-243057078-8c5hz           2/2       Running   0          15m
 recommendation-v1-60483540-9snd9     2/2       Running   0          12m
-recommendation-v2-2815683430-vpx4p   2/2       Running   0         15s
+recommendation-v2-2815683430-vpx4p   2/2       Running   0          15s
 ----
 
-and test the customer endpoint
+and test the customer endpoint:
 
 [source,bash]
 ----
 curl __CUSTOMER__
 ----
 
-you likely see "customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 3", where '99634814-d2z2t' is the pod running v1 and the 3 is basically the number of times you hit the endpoint.
+you likely see ``"customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 3"``, where '99634814-d2z2t' is the pod running ``v1`` and the ``3`` is basically the number of times you hit the endpoint.
 
+Run again the command:
 [source]
 ----
 curl __CUSTOMER__
 ----
 
-you likely see "customer =&gt; preference =&gt; recommendation v2 from '2819441432-5v22s': 1" as by default you get round-robin load-balancing when there is more than one Pod behind a Service
+you likely see ``"customer =&gt; preference =&gt; recommendation v2 from '2819441432-5v22s': 1"`` as by default you get round-robin load-balancing when there is more than one Pod behind a Service
 
 Send several requests to see their responses:
 
@@ -95,7 +68,7 @@ Scale back to a single replica of the recommendation-v2 Deployment
 
 [source,bash]
 ----
-kubectl scale --replicas=2 deployment/recommendation-v2
+kubectl scale --replicas=1 deployment/recommendation-v2
 ----
 
 [#istiorouting]
@@ -109,6 +82,8 @@ From the main istio-tutorial directory,
 ----
 kubectl apply -f manifests/istio/simple-routing/recommendation-destination-rule-v1-v2.yml -n tutorial
 ----
+
+IMPORTANT:  TODO PUT A PREVIEW OF THE FILE HERE
 
 Verify,
 
@@ -127,7 +102,7 @@ recommendation          recommendation   version-v1,version-v2   tutorial    50s
 ----
 kubectl apply -f manifests/istio/simple-routing/recommendation-virtual-service-v2.yml -n tutorial
 
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 ----
 
 you should only see v2 being returned

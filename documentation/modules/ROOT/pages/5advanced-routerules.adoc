@@ -71,8 +71,8 @@ You can also attempt to use the curl -A command to test with different user-agen
 
 [source,bash]
 ----
-curl -A Safari customer-tutorial.$(minishift ip).nip.io
-curl -A Firefox customer-tutorial.$(minishift ip).nip.io
+curl -A Safari __CUSTOMER__
+curl -A Firefox __CUSTOMER__
 ----
 
 You can describe the virtualservice to see its configuration
@@ -96,7 +96,7 @@ istioctl delete -f istiofiles/virtual-service-safari-recommendation-v2.yml -n tu
 ----
 istioctl create -f istiofiles/virtual-service-mobile-recommendation-v2.yml -n tutorial
 
-curl -A "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4(KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5" customer-tutorial.$(minishift ip).nip.io
+curl -A "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4(KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5" __CUSTOMER__
 ----
 
 ==== Clean up
@@ -145,7 +145,7 @@ Make sure you are in the main directory of "istio-tutorial"
 istioctl create -f istiofiles/destination-rule-recommendation-v1-v2.yml -n tutorial
 istioctl create -f istiofiles/virtual-service-recommendation-v1-mirror-v2.yml -n tutorial
 
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 ----
 
 Check the logs of recommendation-v2
@@ -189,7 +189,7 @@ istioctl create -f istiofiles/acl-whitelist.yml -n tutorial
 
 [source,bash]
 ----
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 customer => 404 NOT_FOUND:preferencewhitelist.listchecker.tutorial:customer is not whitelisted
 ----
 
@@ -212,7 +212,7 @@ istioctl create -f istiofiles/acl-blacklist.yml -n tutorial
 
 [source,bash]
 ----
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 customer => 403 PERMISSION_DENIED:denycustomerhandler.denier.tutorial:Not allowed
 ----
 
@@ -242,7 +242,7 @@ and curl the customer endpoint many times
 
 [source,bash]
 ----
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 ----
 
 Add a 3rd v2 pod to the mix

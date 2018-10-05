@@ -8,7 +8,7 @@ In this case, we are going to configure Istio to access http://now.httpbin.org f
 [IMPORTANT]
 .Before Start
 ====
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule` 
+You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule`
 if so run:
 
 [source, bash]
@@ -66,7 +66,7 @@ example/recommendation                  v2                  c31e399a9628        
 example/recommendation                  v1                  f072978d9cf6        8 minutes ago       438MB
 ----
 
-_Important:_ We have a 3rd Deployment to manage the v3 version of recommendation. 
+_Important:_ We have a 3rd Deployment to manage the v3 version of recommendation.
 
 [source,bash]
 ----
@@ -131,7 +131,7 @@ IMPORTANT: Since no Egress service entry has been registered to access an extern
 .
 [source, bash]
 ----
-$ curl -m 5 customer-tutorial.$(minishift ip).nip.io
+$ curl -m 5 __CUSTOMER__
 curl: (28) Operation timed out after 5000 milliseconds with 0 bytes received
 ----
 
@@ -143,7 +143,7 @@ istioctl create -f istiofiles/service-entry-egress-httpbin.yml -n tutorial
 
 istioctl get serviceentry
 
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 customer => preference => Mon, 16 Jul 2018 12:03:38 GMT recommendation v3 from '7b445dd469-j6rkg': 1
 ----
 

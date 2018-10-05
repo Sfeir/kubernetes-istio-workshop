@@ -1,6 +1,6 @@
 #!/bin/bash
 
-URL="customer-tutorial.$(minishift ip).nip.io"
+URL="__CUSTOMER__"
 
 while true
 do curl $URL

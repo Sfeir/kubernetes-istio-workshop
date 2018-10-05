@@ -6,7 +6,7 @@ Apply some chaos engineering by throwing in some HTTP errors or network delays. 
 [IMPORTANT]
 .Before Start
 ====
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule` 
+You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule`
 if so run:
 
 [source, bash]
@@ -38,11 +38,11 @@ You can inject 503's, for approximately 50% of the requests
 istioctl create -f istiofiles/destination-rule-recommendation.yml -n tutorial
 istioctl create -f istiofiles/virtual-service-recommendation-503.yml -n tutorial
 
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 customer => preference => recommendation v1 from '99634814-sf4cl': 88
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 customer => 503 preference => 503 fault filter abort
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 customer => preference => recommendation v2 from '2819441432-qsp25': 51
 ----
 
@@ -280,11 +280,11 @@ You will see it return v1 OR "upstream request timeout" after waiting about 1 se
 ./scripts/run.sh
 
 customer => 503 preference => 504 upstream request timeout
-curl customer-tutorial.$(minishift ip).nip.io  0.01s user 0.00s system 0% cpu 1.035 total
+curl __CUSTOMER__  0.01s user 0.00s system 0% cpu 1.035 total
 customer => preference => recommendation v1 from '2039379827-h58vw': 210
-curl customer-tutorial.$(minishift ip).nip.io  0.01s user 0.00s system 36% cpu 0.025 total
+curl __CUSTOMER__  0.01s user 0.00s system 36% cpu 0.025 total
 customer => 503 preference => 504 upstream request timeout
-curl customer-tutorial.$(minishift ip).nip.io  0.01s user 0.00s system 0% cpu 1.034 total
+curl __CUSTOMER__  0.01s user 0.00s system 0% cpu 1.034 total
 ----
 
 Clean up, delete the timeout rule

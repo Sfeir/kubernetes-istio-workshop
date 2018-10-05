@@ -128,7 +128,7 @@ To generate data for it, we can `curl` it with this command:
 
 [source, bash]
 ----
-curl customer-tutorial.$(minishift ip).nip.io
+curl __CUSTOMER__
 ----
 
 [#servicegraph]
@@ -170,7 +170,7 @@ image:kiali-application-metrics.png[Application Metrics]
 == Workloads
 
 Click the `Workloads` link in the left navigation. On this page you can view
-a listing of all the workloads are present on your applications. 
+a listing of all the workloads are present on your applications.
 
 image:kiali-workload-list.png[Workload Listing]
 

@@ -1,4 +1,4 @@
-= Istio on Google Kubernetes Engine
+= Istio Workshop
 This content is brought to you by http://developers.redhat.com - Register today!
 :toc: macro
 :toc-title: Table of Contents
