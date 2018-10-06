@@ -9,7 +9,7 @@ We will show you how to route requests dynamically to multiple versions of a mic
 
 [source,bash]
 ----
-kubectl apply -f manifests/kubernetes/recommendation-deployment-v2 -n tutorial
+kubectl apply -f manifests/kubernetes/recommendation-deployment-v2.yml
 kubectl get pods -w
 ----
 
@@ -74,33 +74,71 @@ kubectl scale --replicas=1 deployment/recommendation-v2
 [#istiorouting]
 == Changing Istio Routings
 
-First, we will create a https://istio.io/docs/reference/config/istio.networking.v1alpha3/#DestinationRule[DestinationRule] to specify a policy that defines subsets to be used by a https://istio.io/docs/reference/config/istio.networking.v1alpha3/#VirtualService[VirtualService] to override the settings specified at the service level.
+Before you can use Istio to control version routing, you need to define the available versions, called _subsets_, in https://istio.io/docs/reference/config/istio.networking.v1alpha3/#DestinationRule[DestinationRule].
 
-From the main istio-tutorial directory,
+[source,yaml]
+----
+kind: DestinationRule
+metadata:
+  name: recommendation
+spec:
+  host: recommendation
+  subsets:
+  - name: version-v1
+    labels:
+      version: v1
+  - name: version-v2
+    labels:
+      version: v2
+----
+
+Run the following command to create default destination rules to send traffic to versions ``v1`` and ``v2`` of recommandation service.
 
 [source,bash]
 ----
-kubectl apply -f manifests/istio/simple-routing/recommendation-destination-rule-v1-v2.yml -n tutorial
+kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
 ----
 
-IMPORTANT:  TODO PUT A PREVIEW OF THE FILE HERE
+Wait a few seconds for the destination rules to propagate.
 
-Verify,
+You can display the created destination rule with the following command:
 
 [source,bash]
 ----
-istioctl get destinationrules recommendation
+kubectl get destinationrules recommendation -o yaml
+----
 
-DESTINATION-RULE NAME   HOST             SUBSETS                 NAMESPACE   AGE
-recommendation          recommendation   version-v1,version-v2   tutorial    50s
+To display all destination rules :
+
+[source,bash]
+----
+kubectl get destinationrules -o yaml
 ----
 
 [#alltorecommendationv2]
-=== All users to recommendation:v2
+=== Route all the traffic to recommendation:v2
+
+To route to one version only, you apply virtual services that set the default version for the microservices. In this case, the virtual services will route all traffic to v2 of recommendation microservice.
+
+[source,yaml]
+----
+kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - route:
+    - destination:
+        host: recommendation
+        subset: version-v2
+      weight: 100
+----
 
 [source,bash]
 ----
-kubectl apply -f manifests/istio/simple-routing/recommendation-virtual-service-v2.yml -n tutorial
+kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v2.yml
 
 curl __CUSTOMER__
 ----
@@ -108,17 +146,13 @@ curl __CUSTOMER__
 you should only see v2 being returned
 
 [#alltorecommendationv1]
-=== All users to recommendation:v1
-
-Note: "replace" instead of "create" since we are overlaying the previous rule
+=== Route all the traffic to recommendation:v1
 
 [source,bash]
 ----
-istioctl replace -f istiofiles/virtual-service-recommendation-v1.yml -n tutorial
+kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml
 
-istioctl get virtualservice
-
-istioctl get virtualservice -o yaml -n tutorial
+curl __CUSTOMER__
 ----
 
 [#alltorecommendationv1v2]
@@ -128,7 +162,7 @@ By simply removing the virtual service
 
 [source,bash]
 ----
-kubectl delete -f manifests/istio/recommendation-virtual-service-v1.yml -n tutorial
+kubectl delete virtualservice recommendation
 ----
 
 and you should see the default behavior of load-balancing between v1 and v2
@@ -145,7 +179,7 @@ Canary Deployment scenario: push v2 into the cluster but slowly send end-user tr
 
 [source,bash]
 ----
-kubectl get pods -l app=recommendation -n tutorial
+kubectl get pods -l app=recommendation
 
 NAME                                  READY     STATUS    RESTARTS   AGE
 recommendation-v1-3719512284-7mlzw   2/2       Running   6          2h
@@ -156,14 +190,14 @@ Create the `virtualservice` that will send 90% of requests to v1 and 10% to v2
 
 [source,bash]
 ----
-kubectl apply -f manifests/istio/simple-routing/recommendation-virtual-service-v1_and_v2.yml
+kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1_and_v2.yml
 ----
 
 and send in several requests:
 
 [source, bash]
 ----
-./scripts/run.sh
+while true; do curl __CUSTOMER__; sleep .5; done
 ----
 
 In another terminal, change the mixture to be 75/25
@@ -177,13 +211,7 @@ Clean up
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/virtual-service-recommendation-v1_and_v2_75_25.yml -n tutorial
-istioctl delete -f istiofiles/destination-rule-recommendation-v1-v2.yml -n tutorial
-----
+kubectl delete virtualservice recommendation
 
-or you can run:
-
-[source, bash]
-----
-./scripts/clean.sh
+kubectl delete destinationrule recommendation
 ----
