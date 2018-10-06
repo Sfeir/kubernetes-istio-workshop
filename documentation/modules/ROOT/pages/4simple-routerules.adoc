@@ -5,13 +5,13 @@ This section demonstrates how to use various traffic management capabilities of 
 
 We will show you how to route requests dynamically to multiple versions of a microservice.
 
+== Deploy recommendation:v2
+
 [source,bash]
 ----
 kubectl apply -f manifests/kubernetes/recommendation-deployment-v2 -n tutorial
 kubectl get pods -w
 ----
-
-=== Wait for v2 to be deployed
 
 Wait for those pods to show "2/2", the istio-proxy/envoy sidecar is part of that pod
 
