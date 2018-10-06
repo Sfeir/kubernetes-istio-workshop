@@ -131,7 +131,7 @@ IMPORTANT: Since no Egress service entry has been registered to access an extern
 .
 [source, bash]
 ----
-$ curl -m 5 __CUSTOMER__
+$ curl -m 5 $CUTOMER_URL
 curl: (28) Operation timed out after 5000 milliseconds with 0 bytes received
 ----
 
@@ -143,7 +143,7 @@ istioctl create -f istiofiles/service-entry-egress-httpbin.yml -n tutorial
 
 istioctl get serviceentry
 
-curl __CUSTOMER__
+curl $CUTOMER_URL
 customer => preference => Mon, 16 Jul 2018 12:03:38 GMT recommendation v3 from '7b445dd469-j6rkg': 1
 ----
 

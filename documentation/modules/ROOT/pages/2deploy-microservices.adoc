@@ -55,7 +55,7 @@ Then test the customer endpoint
 
 [source,bash]
 ----
-curl __CUSTOMER__
+curl $CUTOMER_URL
 ----
 
 You should see the following error because the services `preference` and `recommendation` are not yet deployed.
@@ -100,7 +100,7 @@ Wait until the status is `Running` and there are `2/2` pods in the `Ready` colum
 
 [source,bash]
 ----
-curl __CUSTOMER__
+curl $CUTOMER_URL
 ----
 
 It will respond with an error since the service `recommendation` is not yet deployed.
@@ -144,7 +144,7 @@ Wait until the status is `Running` and there are `2/2` pods in the `Ready` colum
 
 [source,bash]
 ----
-curl __CUSTOMER__
+curl $CUTOMER_URL
 ----
 
 it should now return

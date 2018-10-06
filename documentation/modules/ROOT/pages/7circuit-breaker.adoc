@@ -45,7 +45,7 @@ Let's perform a load test in our system with `siege`. We'll have 20 clients send
 
 [source,bash]
 ----
-siege -r 2 -c 20 -v __CUSTOMER__
+siege -r 2 -c 20 -v $CUTOMER_URL
 ----
 
 You should see an output similar to this:
@@ -73,7 +73,7 @@ Now let's see what is the behavior of the system running `siege` again:
 
 [source,bash]
 ----
-siege -r 2 -c 20 -v __CUSTOMER__
+siege -r 2 -c 20 -v $CUTOMER_URL
 ----
 
 image:siege_cb_503.png[siege output with some 503 requests due to open circuit breaker]

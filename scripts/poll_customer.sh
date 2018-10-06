@@ -1,6 +1,6 @@
 #!/bin/bash
 
-URL="__CUSTOMER__"
+URL="$CUTOMER_URL"
 
 while true
 do curl $URL

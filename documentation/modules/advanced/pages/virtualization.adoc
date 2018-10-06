@@ -91,7 +91,7 @@ and test the customer endpoint
 
 [source, bash]
 ----
-curl __CUSTOMER__
+curl $CUTOMER_URL
 ----
 
 you likely see "customer => preference => recommendation v2 from '2819441432-5v22s': 1" as by default you get round-robin load-balancing when there is more than one Pod behind a Service
