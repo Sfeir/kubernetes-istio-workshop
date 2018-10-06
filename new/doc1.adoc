@@ -21,7 +21,7 @@ Execute the following command to make sure that the External-IP of the gateway i
 
 Set the ingress IP and ports:
 
-[source,bash]``
+[source,bash]
 ----
 export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')

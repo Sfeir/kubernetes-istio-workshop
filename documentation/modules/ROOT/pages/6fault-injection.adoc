@@ -35,14 +35,14 @@ You can inject 503's, for approximately 50% of the requests
 
 [source,bash]
 ----
-istioctl create -f istiofiles/destination-rule-recommendation.yml -n tutorial
-istioctl create -f istiofiles/virtual-service-recommendation-503.yml -n tutorial
+istioctl apply -f manifests/istio/destination-rule-recommendation.yml -n tutorial
+istioctl apply -f manifests/istio/virtual-service-recommendation-503.yml -n tutorial
 
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 customer => preference => recommendation v1 from '99634814-sf4cl': 88
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 customer => 503 preference => 503 fault filter abort
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 customer => preference => recommendation v2 from '2819441432-qsp25': 51
 ----
 
@@ -50,7 +50,7 @@ Clean up
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/virtual-service-recommendation-503.yml -n tutorial
+istioctl delete -f manifests/istio/virtual-service-recommendation-503.yml -n tutorial
 ----
 
 [#delay]
@@ -60,14 +60,14 @@ The most insidious of possible distributed computing faults is not a "down" serv
 
 [source,bash]
 ----
-istioctl create -f istiofiles/virtual-service-recommendation-delay.yml -n tutorial
+istioctl apply -f manifests/istio/virtual-service-recommendation-delay.yml -n tutorial
 ----
 
 And hit the customer endpoint
 
 [source,bash]
 ----
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 ----
 
 You will notice many requests to the customer endpoint now have a delay.
@@ -87,8 +87,8 @@ Clean up
 
 [source]
 ----
-istioctl delete -f istiofiles/destination-rule-recommendation.yml -n tutorial
-istioctl delete -f istiofiles/virtual-service-recommendation-delay.yml -n tutorial
+istioctl delete -f manifests/istio/destination-rule-recommendation.yml -n tutorial
+istioctl delete -f manifests/istio/virtual-service-recommendation-delay.yml -n tutorial
 ----
 
 [#retry]
@@ -119,7 +119,7 @@ Now, if you hit the customer endpoint several times, you should see some 503's
 
 [source,bash]
 ----
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 
 customer => preference => recommendation v1 from 'b87789c58-h9r4s': 864
 customer => 503 preference => 503 recommendation misbehavior from '6f64f9c5b-ltrhl'
@@ -139,14 +139,14 @@ Now add the retry rule
 
 [source,bash]
 ----
-istioctl create -f istiofiles/virtual-service-recommendation-v2_retry.yml -n tutorial
+istioctl apply -f manifests/istio/virtual-service-recommendation-v2_retry.yml -n tutorial
 ----
 
 You will see it work every time because Istio will retry the recommendation service and it will land on v1 only.
 
 [source,bash]
 ----
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 
 customer => preference => recommendation v1 from '2036617847-m9glz': 196
 customer => preference => recommendation v1 from '2036617847-m9glz': 197
@@ -166,7 +166,7 @@ Now, delete the retry rule and see the old behavior, where v2 throws 503s
 ----
 istioctl delete virtualservice recommendation -n tutorial
 
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 
 customer => preference => recommendation v1 from 'b87789c58-h9r4s': 1118
 customer => preference => recommendation v1 from 'b87789c58-h9r4s': 1119
@@ -207,7 +207,7 @@ The application is back to random load-balancing between v1 and v2
 
 [source,bash]
 ----
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 
 customer => preference => recommendation v1 from '2039379827-h58vw': 129
 customer => preference => recommendation v2 from '2036617847-m9glz': 207
@@ -263,35 +263,35 @@ Hit the customer endpoint a few times, to see the load-balancing between v1 and 
 
 [source,bash]
 ----
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 ----
 
 Then add the timeout rule
 
 [source,bash]
 ----
-istioctl create -f istiofiles/virtual-service-recommendation-timeout.yml -n tutorial
+istioctl apply -f manifests/istio/virtual-service-recommendation-timeout.yml -n tutorial
 ----
 
 You will see it return v1 OR "upstream request timeout" after waiting about 1 second
 
 [source,bash]
 ----
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 
 customer => 503 preference => 504 upstream request timeout
-curl $CUTOMER_URL  0.01s user 0.00s system 0% cpu 1.035 total
+curl $CUSTOMER_URL  0.01s user 0.00s system 0% cpu 1.035 total
 customer => preference => recommendation v1 from '2039379827-h58vw': 210
-curl $CUTOMER_URL  0.01s user 0.00s system 36% cpu 0.025 total
+curl $CUSTOMER_URL  0.01s user 0.00s system 36% cpu 0.025 total
 customer => 503 preference => 504 upstream request timeout
-curl $CUTOMER_URL  0.01s user 0.00s system 0% cpu 1.034 total
+curl $CUSTOMER_URL  0.01s user 0.00s system 0% cpu 1.034 total
 ----
 
 Clean up, delete the timeout rule
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/virtual-service-recommendation-timeout.yml -n tutorial
+istioctl delete -f manifests/istio/virtual-service-recommendation-timeout.yml -n tutorial
 ----
 
 or you can run:

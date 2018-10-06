@@ -35,8 +35,7 @@ Now let's deploy the customer pod with its sidecar
 
 [source,bash]
 ----
-kubectl apply -f manifests/kubernetes/customer-deployment.yml
-kubectl apply -f manifests/kubernetes/customer-service.yml
+kubectl apply -f manifests/kubernetes/customer.yml
 ----
 
 === Expose customer
@@ -55,7 +54,7 @@ Then test the customer endpoint
 
 [source,bash]
 ----
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 ----
 
 You should see the following error because the services `preference` and `recommendation` are not yet deployed.
@@ -85,8 +84,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on GET request
 
 [source,bash]
 ----
-kubectl apply -f manifests/kubernetes/preference-deployment-v1.yml
-kubectl apply -f manifests/kubernetes/preference-service.yml
+kubectl apply -f manifests/kubernetes/preference-v1.yml
 ----
 
 === Wait preference to be deployed
@@ -100,7 +98,7 @@ Wait until the status is `Running` and there are `2/2` pods in the `Ready` colum
 
 [source,bash]
 ----
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 ----
 
 It will respond with an error since the service `recommendation` is not yet deployed.
@@ -134,8 +132,7 @@ IMPORTANT: The tag `v1` at the end of the image name matters. We will be creatin
 
 [source,bash]
 ----
-kubectl apply -f manifests/kubernetes/recommendation-deployment-v1.yml
-kubectl apply -f manifests/kubernetes/recommendation-service.yml
+kubectl apply -f manifests/kubernetes/recommendation-v1.yml
 ----
 
 === Wait recommendation to be deployed
@@ -144,7 +141,7 @@ Wait until the status is `Running` and there are `2/2` pods in the `Ready` colum
 
 [source,bash]
 ----
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 ----
 
 it should now return

@@ -32,7 +32,7 @@ For this reason, let's create a `Gateway` and `VirtualService` that allows local
 
 [source, bash]
 ----
-istioctl create -f istiofiles/gateway-customer.yml
+istioctl apply -f manifests/istio/gateway-customer.yml
 ----
 
 Then configure some environment variables that will help you on testing:
@@ -67,8 +67,8 @@ Now that Istio gateway is in place, you can enable _mTLS_ by applying next Istio
 
 [source, bash]
 ----
-istioctl create -f istiofiles/authentication-enable-tls.yml # <1>
-istioctl create -f istiofiles/destination-rule-tls.yml # <2>
+istioctl apply -f manifests/istio/authentication-enable-tls.yml # <1>
+istioctl apply -f manifests/istio/destination-rule-tls.yml # <2>
 ----
 <1> Enables mTLS into `tutorial` namespace
 <2> Makes that services withn `tutorial` namespace communicates with _mTLS_
@@ -110,7 +110,7 @@ oc exec -it $CUSTOMER_POD -c istio-proxy /bin/bash # <2>
 
 or in Kubernetes:
 
-kubectl exec -it $CUSTOMER_POD -c istio-proxy /bin/bash 
+kubectl exec -it $CUSTOMER_POD -c istio-proxy /bin/bash
 
 # Inside pod shell
 
@@ -155,8 +155,8 @@ Now, let's disable _TLS_:
 
 [source, bash]
 ----
-istioctl delete -f istiofiles/authentication-enable-tls.yml
-istioctl delete -f istiofiles/destination-rule-tls.yml
+istioctl delete -f manifests/istio/authentication-enable-tls.yml
+istioctl delete -f manifests/istio/destination-rule-tls.yml
 ----
 
 And execute again:
@@ -191,7 +191,7 @@ Now, you can see that since there is no _TLS_ enabled, the information is not sh
 
 source,bash]
 ----
-istioctl delete -f istiofiles/gateway-customer.yml
+istioctl delete -f manifests/istio/gateway-customer.yml
 ----
 
 or you can run:

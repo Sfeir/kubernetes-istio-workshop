@@ -190,8 +190,8 @@ Now add a new `destinationrule` and `virtualservice`.
 
 [source,bash]
 ----
-istioctl create -f istiofiles/destination-rule-recommendation-v1-v2.yml
-istioctl create -f istiofiles/virtual-service-recommendation-v2.yml
+istioctl apply -f manifests/istio/destination-rule-recommendation-v1-v2.yml
+istioctl apply -f manifests/istio/virtual-service-recommendation-v2.yml
 ----
 
 The review the routes again

@@ -1,27 +1,40 @@
-apiVersion: extensions/v1beta1
+apiVersion: v1
+kind: Service
+metadata:
+  name: preference
+  labels:
+    app: preference
+spec:
+  ports:
+  - name: http
+    port: 8080
+  selector:
+    app: preference
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: preference
-    version: v1
-  name: preference-v1
+    version: v2
+  name: preference-v2
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: preference
-      version: v1
+      version: v2
   template:
     metadata:
       labels:
         app: preference
-        version: v1
+        version: v2
     spec:
       containers:
       - env:
         - name: JAVA_OPTIONS
           value: -Xms128m -Xmx256m -Djava.net.preferIPv4Stack=true -Djava.security.egd=file:///dev/./urandom
-        image: abdennebi/preference:v1
+        image: abdennebi/preference:v2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:

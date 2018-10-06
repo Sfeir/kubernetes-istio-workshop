@@ -91,7 +91,7 @@ and test the customer endpoint
 
 [source, bash]
 ----
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 ----
 
 you likely see "customer => preference => recommendation v2 from '2819441432-5v22s': 1" as by default you get round-robin load-balancing when there is more than one Pod behind a Service
@@ -100,7 +100,7 @@ Send several requests to see their responses
 
 [source, bash]
 ----
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 ----
 
 The default Kubernetes/OpenShift behavior is to round-robin load-balance across all available pods behind a single Service.
@@ -148,7 +148,7 @@ Send several requests to see their responses
 
 [source, bash]
 ----
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 ----
 
 The default Kubernetes/OpenShift behavior is to round-robin load-balance across all available pods behind a single Service.
@@ -171,8 +171,8 @@ Let's avoid this by just sending traffic that comes from preference v2 service t
 
 [source, bash]
 ----
-istioctl create -f istiofiles/destination-rule-recommendation-v1.yml -n tutorial
-istioctl create -f istiofiles/virtual-service-recommendation-virtualized.yml -n tutorial
+istioctl apply -f manifests/istio/destination-rule-recommendation-v1.yml -n tutorial
+istioctl apply -f manifests/istio/virtual-service-recommendation-virtualized.yml -n tutorial
 ----
 
 Then do again some requests and you'll get something like:
@@ -193,8 +193,8 @@ In this way when you deploy a new service, you can mirror the traffic without wo
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/destination-rule-recommendation-v1.yml -n tutorial
-istioctl delete -f istiofiles/virtual-service-recommendation-virtualized.yml -n tutorial
+istioctl delete -f manifests/istio/destination-rule-recommendation-v1.yml -n tutorial
+istioctl delete -f manifests/istio/virtual-service-recommendation-virtualized.yml -n tutorial
 oc delete all  -l app=preference,version=v2
 oc delete all  -l app=recommendation,version=virtualized
 ----

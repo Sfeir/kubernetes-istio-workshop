@@ -10,5 +10,3 @@ spec:
     - destination:
         host: recommendation
         subset: version-v2
-      weight: 100
----

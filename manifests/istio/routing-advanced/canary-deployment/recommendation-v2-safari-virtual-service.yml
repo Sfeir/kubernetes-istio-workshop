@@ -1,9 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-
   name: recommendation
-
 spec:
   hosts:
   - recommendation
@@ -12,7 +10,6 @@ spec:
     - destination:
         host: recommendation
         subset: version-v1
-
   - route:
     - destination:
         host: recommendation
@@ -20,5 +17,5 @@ spec:
     match:
     - headers:
         baggage-user-agent:
-          regex: .*Firefox.*
+          regex: .*Safari.*
 ---

@@ -128,7 +128,7 @@ To generate data for it, we can `curl` it with this command:
 
 [source, bash]
 ----
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 ----
 
 [#servicegraph]

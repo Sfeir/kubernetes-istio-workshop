@@ -9,7 +9,7 @@ We will show you how to route requests dynamically to multiple versions of a mic
 
 [source,bash]
 ----
-kubectl apply -f manifests/kubernetes/recommendation-deployment-v2.yml
+kubectl apply -f manifests/kubernetes/recommendation-v2.yml
 kubectl get pods -w
 ----
 
@@ -28,7 +28,7 @@ and test the customer endpoint:
 
 [source,bash]
 ----
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 ----
 
 you likely see ``"customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 3"``, where '99634814-d2z2t' is the pod running ``v1`` and the ``3`` is basically the number of times you hit the endpoint.
@@ -36,7 +36,7 @@ you likely see ``"customer =&gt; preference =&gt; recommendation v1 from '996348
 Run again the command:
 [source]
 ----
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 ----
 
 you likely see ``"customer =&gt; preference =&gt; recommendation v2 from '2819441432-5v22s': 1"`` as by default you get round-robin load-balancing when there is more than one Pod behind a Service
@@ -45,7 +45,7 @@ Send several requests to see their responses:
 
 [source, bash]
 ----
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 ----
 
 The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service. Add another replica of recommendation-v2 Deployment.
@@ -140,7 +140,7 @@ spec:
 ----
 kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v2.yml
 
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 ----
 
 you should only see v2 being returned
@@ -152,11 +152,11 @@ you should only see v2 being returned
 ----
 kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml
 
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 ----
 
 [#alltorecommendationv1v2]
-=== All users to recommendation v1 and v2
+=== Route the traffic to both versions of recommendation: v1 and v2
 
 By simply removing the virtual service
 
@@ -169,7 +169,7 @@ and you should see the default behavior of load-balancing between v1 and v2
 
 [source,bash]
 ----
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 ----
 
 [#canarydeploymentrecommendation]
@@ -197,14 +197,14 @@ and send in several requests:
 
 [source, bash]
 ----
-while true; do curl $CUTOMER_URL; sleep .5; done
+while true; do curl $CUSTOMER_URL; sleep .5; done
 ----
 
 In another terminal, change the mixture to be 75/25
 
 [source,bash]
 ----
-kubectl apply -f manifests/istio/simple-routing/recommendation-virtual-service-v1_and_v2_75_25.yml
+kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1_and_v2_75_25.yml
 ----
 
 Clean up

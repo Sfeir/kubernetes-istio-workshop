@@ -4,21 +4,17 @@ include::_attributes.adoc[]
 [IMPORTANT]
 .Before Start
 ====
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule`
-if so run:
+You should have NO virtualservice nor destinationrule (in `tutorial` namespace) if so run:
 
 [source, bash]
 ----
-./scripts/clean.sh
+kubectl delete virtualservices --all
+kubectl delete destinationrules --all
 ----
 ====
 
 [#canarydeploymentuseragent]
 == Smart routing based on user-agent header (Canary Deployment)
-
-What is your user-agent?
-
-https://www.whoishostingthis.com/tools/user-agent/[https://www.whoishostingthis.com/tools/user-agent/]
 
 Note: the "user-agent" header is added to OpenTracing baggage in the Customer service. From
 there it is automatically propagated to all downstream services. To enable automatic
@@ -30,8 +26,8 @@ The baggage header for user agent has following form `baggage-user-agent: <value
 
 [source,bash]
 ----
-istioctl create -f istiofiles/destination-rule-recommendation-v1-v2.yml -n tutorial
-istioctl create -f istiofiles/virtual-service-recommendation-v1.yml -n tutorial
+kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
+kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml
 ----
 
 [#safaritov2]
@@ -39,54 +35,33 @@ istioctl create -f istiofiles/virtual-service-recommendation-v1.yml -n tutorial
 
 [source,bash]
 ----
-istioctl replace -f istiofiles/virtual-service-safari-recommendation-v2.yml -n tutorial
-
-istioctl get virtualservice -n tutorial
+kubectl apply -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-safari-virtual-service.yml
 ----
 
 and test with a Safari (or even Chrome on Mac since it includes Safari in the string). Safari only sees v2 responses from recommendation
 
 and test with a Firefox browser, it should only see v1 responses from recommendation.
 
-There are two ways to get the URL for your browser:
+Alternatively, you can also attempt to use the curl -A command to test with different user-agent strings.
 
 [source,bash]
 ----
-minishift openshift service customer --in-browser
-----
-
-That will open the openshift service `customer` in browser
-
-Or
-
-if you need just the url alone:
-
-[source,bash]
-----
-minishift openshift service customer --url
-http://customer-tutorial.192.168.99.102.nip.io
-----
-
-You can also attempt to use the curl -A command to test with different user-agent strings.
-
-[source,bash]
-----
-curl -A Safari $CUTOMER_URL
-curl -A Firefox $CUTOMER_URL
+curl -A Safari $CUSTOMER_URL
+curl -A Firefox $CUSTOMER_URL
 ----
 
 You can describe the virtualservice to see its configuration
 
 [source,bash]
 ----
-istioctl get virtualservice -o yaml -n tutorial
+kubectl get virtualservice -o yaml -n tutorial
 ----
 
 ==== Remove the Safari rule
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/virtual-service-safari-recommendation-v2.yml -n tutorial
+kubectl delete -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-safari-virtual-service.yml
 ----
 
 [#mobiletov2]
@@ -94,24 +69,17 @@ istioctl delete -f istiofiles/virtual-service-safari-recommendation-v2.yml -n tu
 
 [source,bash]
 ----
-istioctl create -f istiofiles/virtual-service-mobile-recommendation-v2.yml -n tutorial
+kubectl apply -f -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-mobile-virtual-service.yml
 
-curl -A "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4(KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5" $CUTOMER_URL
+curl -A "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4(KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5" $CUSTOMER_URL
 ----
 
 ==== Clean up
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/destination-rule-recommendation-v1-v2.yml -n tutorial
-istioctl delete -f istiofiles/virtual-service-mobile-recommendation-v2.yml -n tutorial
-----
-
-or you can run:
-
-[source, bash]
-----
-./scripts/clean.sh
+kubectl delete -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
+kubectl delete -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml
 ----
 
 [#mirroringtraffic]
@@ -119,57 +87,41 @@ or you can run:
 
 [source,bash]
 ----
-kubectl get pods -l app=recommendation -n tutorial
+kubectl get pods -l app=recommendation
 ----
 
 You should have 2 pods for recommendation based on the steps above
 
-[source,bash]
-----
-istioctl get virtualservice -n tutorial
-istioctl get destinationrule
-----
-
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule`
-if so run:
+You should have NO virtualservice nor destinationrule (in `tutorial` namespace) if so run:
 
 [source, bash]
 ----
-./scripts/clean.sh
+kubectl get virtualservice recommendation
+kubectl get destinationrule recommendation
 ----
 
-Make sure you are in the main directory of "istio-tutorial"
+In a new terminal, check the logs of recommendation-v2
 
 [source,bash]
 ----
-istioctl create -f istiofiles/destination-rule-recommendation-v1-v2.yml -n tutorial
-istioctl create -f istiofiles/virtual-service-recommendation-v1-mirror-v2.yml -n tutorial
-
-curl $CUTOMER_URL
+kubectl logs -f `kubectl get pods|grep recommendation-v2|awk '{ print $1 }'` -c recommendation
 ----
 
-Check the logs of recommendation-v2
+and see what happens when you run
 
 [source,bash]
 ----
-oc logs -f `oc get pods|grep recommendation-v2|awk '{ print $1 }'` -c recommendation
-or
-kubectl logs -f `oc get pods|grep recommendation-v2|awk '{ print $1 }'` -c recommendation
+kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
+kubectl apply -f manifests/istio/routing-advanced/dark-launch/recommendation-v1-mirror-v2-virtual-service.yml
+curl $CUSTOMER_URL
 ----
 
 Clean up
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/destination-rule-recommendation-v1-v2.yml -n tutorial
-istioctl delete -f istiofiles/virtual-service-recommendation-v1-mirror-v2.yml -n tutorial
-----
-
-or you can run:
-
-[source, bash]
-----
-./scripts/clean.sh
+kubectl delete -f -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
+kubectl delete -f manifests/istio/routing-advanced/dark-launch/recommendation-v1-mirror-v2-virtual-service.yml
 ----
 
 [#accesscontrol]
@@ -184,12 +136,12 @@ We'll create a whitelist on the preference service to only allow requests from t
 
 [source,bash]
 ----
-istioctl create -f istiofiles/acl-whitelist.yml -n tutorial
+kubectl apply -f manifests/istio/routing-advanced/access-control/acl-whitelist.yml
 ----
 
 [source,bash]
 ----
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 customer => 404 NOT_FOUND:preferencewhitelist.listchecker.tutorial:customer is not whitelisted
 ----
 
@@ -197,7 +149,7 @@ customer => 404 NOT_FOUND:preferencewhitelist.listchecker.tutorial:customer is n
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/acl-whitelist.yml -n tutorial
+kubectl delete -f manifests/istio/routing-advanced/access-control/acl-whitelist.yml
 ----
 
 [#blacklist]
@@ -207,12 +159,12 @@ We'll create a blacklist making the customer service blacklist to the preference
 
 [source,bash]
 ----
-istioctl create -f istiofiles/acl-blacklist.yml -n tutorial
+kubectl apply -f manifests/istio/routing-advanced/access-control/acl-blacklist.yml
 ----
 
 [source,bash]
 ----
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 customer => 403 PERMISSION_DENIED:denycustomerhandler.denier.tutorial:Not allowed
 ----
 
@@ -220,7 +172,7 @@ customer => 403 PERMISSION_DENIED:denycustomerhandler.denier.tutorial:Not allowe
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/acl-blacklist.yml -n tutorial
+kubectl delete -f manifests/istio/routing-advanced/access-control/acl-blacklist.yml
 ----
 
 [#loadbalancer]
@@ -232,46 +184,36 @@ Add another v2 pod to the mix
 
 [source,bash]
 ----
-oc scale deployment recommendation-v2 --replicas=2 -n tutorial
-or
-kubectl scale deployment recommendation-v2 --replicas=2 -n tutorial
+kubectl scale deployment recommendation-v2 --replicas=2
 ----
 
-Wait a bit (oc get pods -w to watch)
-and curl the customer endpoint many times
+Wait a bit and curl the customer endpoint many times
 
 [source,bash]
 ----
-curl $CUTOMER_URL
+curl $CUSTOMER_URL
 ----
 
 Add a 3rd v2 pod to the mix
 
 [source,bash]
 ----
-$ oc scale deployment recommendation-v2 --replicas=3 -n tutorial
-$ oc get pods -n tutorial
-
-or
-
-$ kubectl scale deployment recommendation-v2 --replicas=3 -n tutorial
-$ kubectl get pods -n tutorial
-
+kubectl scale deployment recommendation-v2 --replicas=3
 
 NAME                                  READY     STATUS    RESTARTS   AGE
 customer-1755156816-cjd2z             2/2       Running   0          1h
-preference-3336288630-2cc6f          2/2       Running   0          1h
-recommendation-v1-3719512284-bn42p   2/2       Running   0          59m
-recommendation-v2-2815683430-97nnf   2/2       Running   0          43m
-recommendation-v2-2815683430-d49n6   2/2       Running   0          51m
-recommendation-v2-2815683430-tptf2   2/2       Running   0          33m
+preference-3336288630-2cc6f           2/2       Running   0          1h
+recommendation-v1-3719512284-bn42p    2/2       Running   0          59m
+recommendation-v2-2815683430-97nnf    2/2       Running   0          43m
+recommendation-v2-2815683430-d49n6    2/2       Running   0          51m
+recommendation-v2-2815683430-tptf2    2/2       Running   0          33m
 ----
 
 Wait for those 2/2 (two containers in each pod) and then poll the customer endpoint:
 
 [source, bash]
 ----
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 ----
 
 The results should follow a fairly normal round-robin distribution pattern
@@ -292,7 +234,7 @@ Now, add the Random LB DestinationPolicy
 
 [source,bash]
 ----
-istioctl create -f istiofiles/destination-rule-recommendation_lb_policy_app.yml -n tutorial
+kubectl apply -f manifests/istio/routing-advanced/load-balancer/recommendation-destination-rule-lb_policy_random.yml
 ----
 
 And you should see a different pattern of which pod is being selected
@@ -316,11 +258,9 @@ Clean up
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/destination-rule-recommendation_lb_policy_app.yml -n tutorial
+kubectl delete -f manifests/istio/routing-advanced/load-balancer/recommendation-destination-rule-lb_policy_random.yml
 
-oc scale deployment recommendation-v2 --replicas=1 -n tutorial
-or
-kubectl scale deployment recommendation-v2 --replicas=1 -n tutorial
+kubectl scale deployment recommendation-v2 --replicas=1
 ----
 
 [#ratelimiting]
@@ -334,21 +274,21 @@ Now apply the rate limit handler
 
 [source,bash]
 ----
-istioctl create -f istiofiles/recommendation_rate_limit_handler.yml
+kubectl apply -f manifests/istio/routing-advanced/rate-limiting/recommendation_rate_limit_handler.yml
 ----
 
 Now setup the requestcount quota
 
 [source,bash]
 ----
-istioctl create -f istiofiles/rate_limit_rule.yml
+kubectl apply -f manifests/istio/routing-advanced/rate-limiting/rate_limit_rule.yml
 ----
 
 Throw some requests at customer:
 
 [source, bash]
 ----
-./scripts/run.sh
+while true; do curl $CUSTOMER_URL; sleep .5; done
 ----
 
 You should see some 429 errors:
@@ -376,14 +316,7 @@ Clean up
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/rate_limit_rule.yml
+kubectl delete -f manifests/istio/routing-advanced/rate-limiting/rate_limit_rule.yml
 
-istioctl delete -f istiofiles/recommendation_rate_limit_handler.yml
-----
-
-or you can run:
-
-[source, bash]
-----
-./scripts/clean.sh
+kubectl delete -f manifests/istio/routing-advanced/rate-limiting/recommendation_rate_limit_handler.yml
 ----

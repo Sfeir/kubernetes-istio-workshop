@@ -36,7 +36,7 @@ Add the custom metric and rule. First make sure you are in the "istio-tutorial" 
 
 [source,bash]
 ----
-istioctl create -f istiofiles/recommendation_requestcount.yml -n istio-system
+istioctl apply -f manifests/istio/recommendation_requestcount.yml -n istio-system
 ----
 
 In the Prometheus dashboard, add the following
@@ -54,7 +54,7 @@ Then run several requests through the system
 
 [source,bash]
 ----
-while true; do curl $CUTOMER_URL; sleep .5;  done
+while true; do curl $CUSTOMER_URL; sleep .5;  done
 ----
 
 NOTE: You may have to refresh the browser for the Prometheus graph to update. And you may wish to make the interval 5m (5 minutes) as seen in the screenshot above.

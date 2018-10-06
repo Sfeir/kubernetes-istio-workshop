@@ -26,7 +26,7 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /
+        prefix: /customer
     route:
     - destination:
         host: customer

@@ -1,36 +1,46 @@
-apiVersion: extensions/v1beta1
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer
+  labels:
+    app: customer
+spec:
+  ports:
+  - name: http
+    port: 8080
+  selector:
+    app: customer
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: preference
-    version: v2
-  name: preference-v2
+    app: customer
+    version: v1
+  name: customer
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: preference
-      version: v2
+      app: customer
+      version: v1
   template:
     metadata:
       labels:
-        app: preference
-        version: v2
+        app: customer
+        version: v1
     spec:
       containers:
       - env:
         - name: JAVA_OPTIONS
           value: -Xms128m -Xmx256m -Djava.net.preferIPv4Stack=true -Djava.security.egd=file:///dev/./urandom
-        image: abdennebi/preference:v2
+        image: abdennebi/customer:latest
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
-                path: /health
-                port: 8080
+            path: /health
+            port: 8080
           initialDelaySeconds: 20
-          periodSeconds: 5
-          timeoutSeconds: 1
-        name: preference
+        name: customer
         ports:
         - containerPort: 8080
           name: http
@@ -41,13 +51,3 @@ spec:
         - containerPort: 9779
           name: prometheus
           protocol: TCP
-        readinessProbe:
-          httpGet:
-                path: /health
-                port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 5
-          timeoutSeconds: 1
-          failureThreshold: 5
-        securityContext:
-          privileged: false
