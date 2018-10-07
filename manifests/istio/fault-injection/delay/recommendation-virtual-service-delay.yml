@@ -2,15 +2,15 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: recommendation
-
 spec:
   hosts:
   - recommendation
   http:
-  - route:
+  - fault:
+      delay:
+        fixedDelay: 7.000s
+        percent: 50
+    route:
     - destination:
         host: recommendation
-    retries:
-      attempts: 3
-      perTryTimeout: 2s
----
+        subset: app-recommendation

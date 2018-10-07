@@ -1,42 +1,28 @@
 = Fault Injection
 include::_attributes.adoc[]
 
-Apply some chaos engineering by throwing in some HTTP errors or network delays. Understanding failure scenarios is a critical aspect of microservices architecture (aka distributed computing)
-
-[IMPORTANT]
-.Before Start
-====
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule`
-if so run:
-
-[source, bash]
-----
-./scripts/clean.sh
-----
-====
+Apply some chaos engineering by throwing in some HTTP errors or network delays. Understanding failure scenarios is a critical aspect of microservices architecture.
 
 [#503error]
 == HTTP Error 503
 
-By default, recommendation v1 and v2 are being randomly load-balanced as that is the default behavior in Kubernetes/OpenShift
+By default, recommendation v1 and v2 are being randomly load-balanced as that is the default behavior in Kubernetes.
 
 [source,bash]
 ----
-$ oc get pods -l app=recommendation -n tutorial
-or
-$ kubectl get pods -l app=recommendation -n tutorial
+kubectl get pods -l app=recommendation
 
 NAME                                  READY     STATUS    RESTARTS   AGE
-recommendation-v1-3719512284-7mlzw   2/2       Running   6          18h
-recommendation-v2-2815683430-vn77w   2/2       Running   0          3h
+recommendation-v1-798bf87d96-d9d95   2/2       Running   4          11h
+recommendation-v2-7bc4f7f696-d9j2m   2/2       Running   1          10h
 ----
 
 You can inject 503's, for approximately 50% of the requests
 
 [source,bash]
 ----
-istioctl apply -f manifests/istio/destination-rule-recommendation.yml -n tutorial
-istioctl apply -f manifests/istio/virtual-service-recommendation-503.yml -n tutorial
+kubectl apply -f manifests/istio/fault-injection/recommendation-destination-rule.yml
+kubectl apply -f manifests/istio/fault-injection/inject-error/recommendation-virtual-service-503.yml
 
 curl $CUSTOMER_URL
 customer => preference => recommendation v1 from '99634814-sf4cl': 88
@@ -50,7 +36,7 @@ Clean up
 
 [source,bash]
 ----
-istioctl delete -f manifests/istio/virtual-service-recommendation-503.yml -n tutorial
+kubectl apply -f manifests/istio/fault-injection/inject-error/recommendation-virtual-service-503.yml
 ----
 
 [#delay]
@@ -60,7 +46,7 @@ The most insidious of possible distributed computing faults is not a "down" serv
 
 [source,bash]
 ----
-istioctl apply -f manifests/istio/virtual-service-recommendation-delay.yml -n tutorial
+kubectl apply -f manifests/istio/fault-injection/delay/recommendation-virtual-service-delay.yml
 ----
 
 And hit the customer endpoint
@@ -75,20 +61,15 @@ If you are monitoring the logs for recommendation v1 and v2, you will also see t
 
 [source,bash]
 ----
-stern recommendation -n tutorial
+stern recommendation -c recommendation
 ----
-
-or
-`bash
-./kubetail.sh recommendation -n tutorial
-`
 
 Clean up
 
 [source]
 ----
-istioctl delete -f manifests/istio/destination-rule-recommendation.yml -n tutorial
-istioctl delete -f manifests/istio/virtual-service-recommendation-delay.yml -n tutorial
+kubectl delete -f manifests/istio/fault-injection/recommendation-destination-rule.yml
+kubectl delete -f manifests/istio/fault-injection/delay/recommendation-virtual-service-delay.yml
 ----
 
 [#retry]
@@ -100,22 +81,20 @@ We will make pod recommendation-v2 fail 100% of the time. Get one of the pod nam
 
 [source,bash]
 ----
-oc exec -it $(oc get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation /bin/bash
-or
-kubectl exec -it $(oc get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation /bin/bash
+kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation /bin/bash
 ----
 
 You will be inside the application container of your pod `recommendation-v2-2036617847-spdrb`. Now execute:
 
 [source,bash]
 ----
-curl localhost:8080/misbehave
+curl 127.0.0.1:8080/misbehave
 exit
 ----
 
-This is a special endpoint that will make our application return only `503`s.
+This is a special endpoint that will make our application return only ``503``s.
 
-Now, if you hit the customer endpoint several times, you should see some 503's
+Now, if you hit the customer endpoint several times, you should see some ``503``'s
 
 [source,bash]
 ----
@@ -139,7 +118,7 @@ Now add the retry rule
 
 [source,bash]
 ----
-istioctl apply -f manifests/istio/virtual-service-recommendation-v2_retry.yml -n tutorial
+kubectl apply -f manifests/istio/fault-injection/retry/recommendation-virtual-service-v2_retry.yml
 ----
 
 You will see it work every time because Istio will retry the recommendation service and it will land on v1 only.
@@ -157,14 +136,14 @@ You can see the active Virtual Services via
 
 [source,bash]
 ----
-istioctl get virtualservices -n tutorial
+kubectl  get virtualservices -o yaml
 ----
 
 Now, delete the retry rule and see the old behavior, where v2 throws 503s
 
 [source,bash]
 ----
-istioctl delete virtualservice recommendation -n tutorial
+kubectl delete virtualservice recommendation
 
 while true; do curl $CUSTOMER_URL; sleep .5; done
 
@@ -190,8 +169,6 @@ Now, make the pod v2 behave well again
 
 [source,bash]
 ----
-oc exec -it $(oc get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation /bin/bash
-or
 kubectl exec -it $(oc get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation /bin/bash
 ----
 
@@ -199,7 +176,7 @@ You will be inside the application container of your pod `recommendation-v2-2036
 
 [source,bash]
 ----
-curl localhost:8080/behave
+curl 127.0.0.1:8080/behave
 exit
 ----
 
@@ -217,48 +194,15 @@ customer => preference => recommendation v1 from '2039379827-h58vw': 130
 [#timeout]
 == Timeout
 
-Wait only N seconds before giving up and failing. At this point, no other virtual service nor destination rule (in `tutorial` namespace) should be in effect. To check it run `istioctl get virtualservice` `istioctl get destinationrule` and if so `istioctl delete virtualservice virtualservicename -n tutorial` and `istioctl delete destinationrule destinationrulename -n tutorial`
+Wait only N seconds before giving up and failing. At this point, no other virtual service nor destination rule should be in effect.
 
-First, introduce some wait time in `recommendation v2` by uncommenting the line that calls the `timeout()` method. Update `RecommendationVerticle.java` making it a slow performer with a 3 second delay.
+First, introduce some wait time in `recommendation v2` by deploying a slow version making it a slow performer with a 3 second delay.
 
 [source,java]
 ----
-    @Override
-    public void start() throws Exception {
-        Router router = Router.router(vertx);
-        router.get("/").handler(this::logging);
-        router.get("/").handler(this::timeout);
-        router.get("/").handler(this::getRecommendations);
-        router.get("/misbehave").handler(this::misbehave);
-        router.get("/behave").handler(this::behave);
-
-        HealthCheckHandler hc = HealthCheckHandler.create(vertx);
-        hc.register("dummy-health-check", future -> future.complete(Status.OK()));
-        router.get("/health").handler(hc);
-
-        vertx.createHttpServer().requestHandler(router::accept).listen(8080);
-    }
+kubectl apply -f manifests/kubernetes/recommendation-v2_slow.yml
 ----
-
-Rebuild and redeploy
-
-[source,bash]
-----
-cd recommendation/java/vertx
-
-mvn clean package
-
-docker build -t example/recommendation:v2 .
-
-docker images | grep recommendation
-
-oc delete pod -l app=recommendation,version=v2 -n tutorial
-or
-kubectl delete pod -l app=recommendation,version=v2 -n tutorial
-
-cd ../../..
-----
-
+    
 Hit the customer endpoint a few times, to see the load-balancing between v1 and v2 but with v2 taking a bit of time to respond
 
 [source,bash]
@@ -270,7 +214,7 @@ Then add the timeout rule
 
 [source,bash]
 ----
-istioctl apply -f manifests/istio/virtual-service-recommendation-timeout.yml -n tutorial
+kubectl apply -f manifests/istio/fault-injection/timeout/recommendation-irtual-service-timeout.yml
 ----
 
 You will see it return v1 OR "upstream request timeout" after waiting about 1 second
@@ -291,12 +235,5 @@ Clean up, delete the timeout rule
 
 [source,bash]
 ----
-istioctl delete -f manifests/istio/virtual-service-recommendation-timeout.yml -n tutorial
-----
-
-or you can run:
-
-[source, bash]
-----
-./scripts/clean.sh
+kubectl delete -f manifests/istio/fault-injection/timeout/recommendation-irtual-service-timeout.yml
 ----
