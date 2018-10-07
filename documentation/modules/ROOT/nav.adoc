@@ -56,5 +56,3 @@
 * xref:8egress.adoc[8. Egress]
 ** xref:8egress.adoc#createrecommendationv3[Create Recommendation V3]
 ** xref:8egress.adoc#istioegress[Istio-ize Egress]
-
-* xref:9tips.adoc[9. Tips And Tricks]
