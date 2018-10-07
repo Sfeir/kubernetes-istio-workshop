@@ -1,9 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-
   name: recommendation
-
 spec:
   host: recommendation
   subsets:
@@ -16,4 +14,3 @@ spec:
   - labels:
       version: v3
     name: version-v3
----

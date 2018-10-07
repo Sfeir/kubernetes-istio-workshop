@@ -32,7 +32,7 @@ spec:
       - env:
         - name: JAVA_OPTIONS
           value: -Xmx256m
-        image: example/recommendation:v3
+        image: abdennebi/recommendation:v3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
