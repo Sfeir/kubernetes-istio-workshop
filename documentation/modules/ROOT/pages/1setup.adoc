@@ -6,7 +6,7 @@ include::_attributes.adoc[]
 
 You will need in this tutorial:
 
-* `minishift` 
+* `minishift`
 ** https://github.com/minishift/minishift/releases[Mac OS and Fedora]
 * docker
 ** https://www.docker.com/docker-mac[Mac OS]
@@ -22,7 +22,7 @@ You will need in this tutorial:
 ** Mac OS: `brew install stern`
 ** Fedora: `sudo curl --output /usr/local/bin/stern -L https://github.com/wercker/stern/releases/download/1.6.0/stern_linux_amd64 && sudo chmod +x /usr/local/bin/stern`
 * istioctl (will be installed via the steps below)
-* `curl`, `gunzip`, `tar` 
+* `curl`, `gunzip`, `tar`
 ** Mac OS: built-in or part of your bash shell
 ** Fedora: should also be installed already, but just in case... `dnf install curl gzip tar`
 * git
@@ -93,7 +93,7 @@ kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
 
 
 oc apply -f install/kubernetes/istio-demo.yaml
-or 
+or
 kubectl apply -f install/kubernetes/istio-demo.yaml
 
 oc project istio-system
@@ -111,7 +111,7 @@ Wait for Istio's components to be ready
 
 [source,bash]
 ----
-$ oc get pods -w
+$ kubectl get pods -w
 or
 $ kubectl get pods -w
 

@@ -7,7 +7,7 @@ You have two containers in a pod
 
 [source,bash]
 ----
-oc get pods -o jsonpath="{.items[*].spec.containers[*].name}" -l app=customer -n tutorial
+kubectl get pods -o jsonpath="{.items[*].spec.containers[*].name}" -l app=customer -n tutorial
 or
 kubectl get pods -o jsonpath="{.items[*].spec.containers[*].name}" -l app=customer -n tutorial
 ----
@@ -16,7 +16,7 @@ From these images
 
 [source,bash]
 ----
-oc get pods -o jsonpath="{.items[*].spec.containers[*].image}" -l app=customer -n tutorial
+kubectl get pods -o jsonpath="{.items[*].spec.containers[*].image}" -l app=customer -n tutorial
 or
 kubectl get pods -o jsonpath="{.items[*].spec.containers[*].image}" -l app=customer -n tutorial
 ----
@@ -25,10 +25,10 @@ Get the pod ids
 
 [source,bash]
 ----
-CPOD=$(oc get pods -o jsonpath='{.items[*].metadata.name}' -l app=customer -n tutorial)
-PPOD=$(oc get pods -o jsonpath='{.items[*].metadata.name}' -l app=preference -n tutorial)
-RPOD1=$(oc get pods -o jsonpath='{.items[*].metadata.name}' -l app=recommendation,version=v1 -n tutorial)
-RPOD2=$(oc get pods -o jsonpath='{.items[*].metadata.name}' -l app=recommendation,version=v2 -n tutorial)
+CPOD=$(kubectl get pods -o jsonpath='{.items[*].metadata.name}' -l app=customer -n tutorial)
+PPOD=$(kubectl get pods -o jsonpath='{.items[*].metadata.name}' -l app=preference -n tutorial)
+RPOD1=$(kubectl get pods -o jsonpath='{.items[*].metadata.name}' -l app=recommendation,version=v1 -n tutorial)
+RPOD2=$(kubectl get pods -o jsonpath='{.items[*].metadata.name}' -l app=recommendation,version=v2 -n tutorial)
 
 or
 
@@ -244,7 +244,7 @@ If you need the Pod IP
 
 [source,bash]
 ----
-oc get pods -o jsonpath='{.items[*].status.podIP}' -l app=customer -n tutorial
+kubectl get pods -o jsonpath='{.items[*].status.podIP}' -l app=customer -n tutorial
 or
 kubectl get pods -o jsonpath='{.items[*].status.podIP}' -l app=customer -n tutorial
 ----

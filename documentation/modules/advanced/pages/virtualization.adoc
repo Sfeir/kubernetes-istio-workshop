@@ -56,7 +56,7 @@ IMPORTANT: We have a 2nd Deployment to manage the v2 version of preference.
 ----
 oc apply -f <(istioctl kube-inject -f ../../kubernetes/Deployment-v2.yml) -n tutorial
 
-oc get pods -w
+kubectl get pods -w
 
 cd ../../..
 ----
@@ -127,7 +127,7 @@ docker build -t example/recommendation:virtualized .
 docker images | grep recommendation
 
 oc apply -f <(istioctl kube-inject -f ../kubernetes/Deployment-virtualized.yml) -n tutorial
-oc get pods -w
+kubectl get pods -w
 
 cd ../..
 ----

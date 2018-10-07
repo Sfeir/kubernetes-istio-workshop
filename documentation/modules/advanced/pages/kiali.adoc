@@ -73,7 +73,7 @@ to see if the service is running:
 [source, bash]
 ----
 oc project istio-system
-oc get pods -w
+kubectl get pods -w
 ----
 
 Wait until the status for Kiali is `Running` and there are `1/1` pods in the

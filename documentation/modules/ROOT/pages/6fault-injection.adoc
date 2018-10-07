@@ -17,7 +17,26 @@ recommendation-v1-798bf87d96-d9d95   2/2       Running   4          11h
 recommendation-v2-7bc4f7f696-d9j2m   2/2       Running   1          10h
 ----
 
-You can inject 503's, for approximately 50% of the requests
+You can inject 503's, for approximately 50% of the requests.
+
+[source,yaml]
+----
+kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - route:
+    - destination:
+        host: recommendation
+        subset: app-recommendation
+    fault:
+      abort:
+        httpStatus: 503
+        percent: 50
+----
 
 [source,bash]
 ----
@@ -43,6 +62,25 @@ kubectl apply -f manifests/istio/fault-injection/inject-error/recommendation-vir
 == Delay
 
 The most insidious of possible distributed computing faults is not a "down" service but a service that is responding slowly, potentially causing a cascading failure in your network of services.
+
+[source,yaml]
+----
+kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - fault:
+      delay:
+        fixedDelay: 7.000s
+        percent: 50
+    route:
+    - destination:
+        host: recommendation
+        subset: app-recommendation
+----
 
 [source,bash]
 ----
@@ -116,6 +154,24 @@ customer => 503 preference => 503 recommendation misbehavior from '6f64f9c5b-ltr
 
 Now add the retry rule
 
+[source,yaml]
+----
+kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - route:
+    - destination:
+        host: recommendation
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+
+----
+
 [source,bash]
 ----
 kubectl apply -f manifests/istio/fault-injection/retry/recommendation-virtual-service-v2_retry.yml
@@ -169,7 +225,7 @@ Now, make the pod v2 behave well again
 
 [source,bash]
 ----
-kubectl exec -it $(oc get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation /bin/bash
+kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation /bin/bash
 ----
 
 You will be inside the application container of your pod `recommendation-v2-2036617847-spdrb`. Now execute:
@@ -202,7 +258,7 @@ First, introduce some wait time in `recommendation v2` by deploying a slow versi
 ----
 kubectl apply -f manifests/kubernetes/recommendation-v2_slow.yml
 ----
-    
+
 Hit the customer endpoint a few times, to see the load-balancing between v1 and v2 but with v2 taking a bit of time to respond
 
 [source,bash]
@@ -210,7 +266,22 @@ Hit the customer endpoint a few times, to see the load-balancing between v1 and 
 while true; do curl $CUSTOMER_URL; sleep .5; done
 ----
 
-Then add the timeout rule
+Then add the timeout rule:
+
+[source,yaml]
+----
+kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - route:
+    - destination:
+        host: recommendation
+    timeout: 1.000s
+----
 
 [source,bash]
 ----
