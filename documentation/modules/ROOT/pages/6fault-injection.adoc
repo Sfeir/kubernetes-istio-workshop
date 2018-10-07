@@ -306,5 +306,7 @@ Clean up, delete the timeout rule
 
 [source,bash]
 ----
+kubectl apply -f manifests/kubernetes/recommendation-v2.yml
+
 kubectl delete -f manifests/istio/fault-injection/timeout/recommendation-irtual-service-timeout.yml
 ----
