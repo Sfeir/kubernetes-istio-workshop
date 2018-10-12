@@ -82,48 +82,6 @@ kubectl delete -f manifests/istio/routing-simple/recommendation-destination-rule
 kubectl delete -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml
 ----
 
-[#mirroringtraffic]
-== Mirroring Traffic (Dark Launch)
-
-[source,bash]
-----
-kubectl get pods -l app=recommendation
-----
-
-You should have 2 pods for recommendation based on the steps above
-
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) if so run:
-
-[source, bash]
-----
-kubectl get virtualservice recommendation
-kubectl get destinationrule recommendation
-----
-
-In a new terminal, check the logs of recommendation-v2
-
-[source,bash]
-----
-kubectl logs -f `kubectl get pods|grep recommendation-v2|awk '{ print $1 }'` -c recommendation
-----
-
-and see what happens when you run
-
-[source,bash]
-----
-kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
-kubectl apply -f manifests/istio/routing-advanced/dark-launch/recommendation-v1-mirror-v2-virtual-service.yml
-curl $CUSTOMER_URL
-----
-
-Clean up
-
-[source,bash]
-----
-kubectl delete -f -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
-kubectl delete -f manifests/istio/routing-advanced/dark-launch/recommendation-v1-mirror-v2-virtual-service.yml
-----
-
 [#accesscontrol]
 == Access Control
 

@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - env:
-        image: abdennebi/recommendation:virtualized
+        image: abdennebi/recommendation:virtual
         args: ["-import=/go/bin/simulation.json"]
         imagePullPolicy: IfNotPresent
         name: recommendation

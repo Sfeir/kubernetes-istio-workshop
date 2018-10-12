@@ -1,0 +1,8 @@
+== Adding Service Virtualization
+
+We'll create a Docker image with Hoverfly (Service Virtualization tool) with some canned requests/answers for recommendation service.
+
+[source, bash]
+----
+docker build -t abdennebi/recommendation:virtualized .
+----
