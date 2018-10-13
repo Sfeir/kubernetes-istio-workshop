@@ -36,7 +36,7 @@ Add the custom metric and rule. First make sure you are in the "istio-tutorial" 
 
 [source,bash]
 ----
-istioctl apply -f manifests/istio/recommendation_requestcount.yml -n istio-system
+kubectl apply -f manifests/istio/recommendation_requestcount.yml -n istio-system
 ----
 
 In the Prometheus dashboard, add the following

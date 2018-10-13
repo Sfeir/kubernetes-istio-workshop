@@ -318,8 +318,8 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">istioctl apply -f manifests/istio/authentication-enable-tls.yml <i class="conum" data-value="1"></i><b>(1)</b>
-istioctl apply -f manifests/istio/destination-rule-tls.yml <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/mutual-tls/authentication-enable-tls.yml <i class="conum" data-value="1"></i><b>(1)</b>
+kubectl apply -f manifests/istio/mutual-tls/destination-rule-tls.yml <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -352,7 +352,7 @@ How can you check that?</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">istioctl authn tls-check | grep tutorial
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl authn tls-check | grep tutorial
 
 customer.tutorial.svc.cluster.local:8080                         OK         mTLS       mTLS       default/tutorial                             default/tutorial
 preference.tutorial.svc.cluster.local:8080                       OK         mTLS       mTLS       default/tutorial                             default/tutorial
@@ -435,8 +435,8 @@ E....B@.@._........
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">istioctl delete -f manifests/istio/authentication-enable-tls.yml <i class="conum" data-value="1"></i><b>(1)</b>
-istioctl delete -f manifests/istio/destination-rule-tls.yml <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/mutual-tls/authentication-enable-tls.yml
+kubectl delete -f manifests/istio/mutual-tls/destination-rule-tls.yml</code></pre>
 </div>
 </div>
 <div class="paragraph">
