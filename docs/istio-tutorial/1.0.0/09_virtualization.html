@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Mirroring and Service Virtualization :: Istio Tutorial Docs</title>
+    <link rel="canonical" href="https://redhat-developer-demos.github.io/istio-tutorial/istio-tutorial/1.0.0/09_virtualization.html">
+    <meta name="generator" content="Antora 1.1.1">
+    <link rel="stylesheet" href="../../_/css/site.css">
+<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">  </head>
+  <body class="article">
+<header class="header" role="banner">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <a href="#">Istio Tutorial</a>
+        <span class="separator">//</span>
+        <a href="https://redhat-developer-demos.github.io/istio-tutorial">Docs</a>
+      </div>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-link">Project</div>
+          <div class="navbar-dropdown">
+            <div class="navbar-item"><strong>GitHub</strong></div>
+            <a class="navbar-item" href="https://github.com/redhat-developer-demos/istio-tutorial">Istio Tutorial Repository</a>
+            <a class="navbar-item" href="https://github.com/redhat-developer-demos/istio-tutorial/issues">Istio Tutorial Issue Tracker</a>
+          </div>
+        </div>
+        <a class="navbar-item" href="https://twitter.com/rhdevelopers">
+          <span class="icon">
+            <svg aria-hidden="true" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path fill="#57aaee" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</header><div class="main-wrapper">
+<div class="navigation-container" data-component="istio-tutorial" data-version="1.0.0">
+  <aside class="navigation">
+    <div class="panels">
+<div class="navigation-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html">Istio Tutorial</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Introduction to Istio Tutorial</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="01_setup.html">1. Setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01_setup.html#prerequisite">Prerequisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01_setup.html#minishift">Setup MiniShift</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01_setup.html#environment">Setup Environment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="01_setup.html#istioinstallation">Install Istio</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="02_deploy-microservices.html">2. Deploy Microservices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02_deploy-microservices.html#deploycustomer">Deploy Customer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02_deploy-microservices.html#deploypreference">Deploy Preference</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02_deploy-microservices.html#deployrecommendation">Deploy Recommendation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="02_deploy-microservices.html#redeployingcode">Updating Redeploying Code</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="03_monitoring-tracing.html">3. Monitoring and Tracing</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03_monitoring-tracing.html#monitoring">Monitoring</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03_monitoring-tracing.html#custommetrics">Custom Metrics</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03_monitoring-tracing.html#tracing">Tracing</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="04_simple-routerules.html">4. Simple Routing</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="04_simple-routerules.html#deployrecommendationv2">Create Recommendation V2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="04_simple-routerules.html#istiorouting">Changing Istio Routings</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="04_simple-routerules.html#routeallthetraffictorecommendationv2">Route all the traffic to recommendation:v2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="04_simple-routerules.html#routeallthetraffictorecommendationv1">Route all the traffic to recommendation:v1</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="04_simple-routerules.html#alltorecommendationv1v2">All Users To Recommendation V1 and V2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="04_simple-routerules.html#canarydeploymentrecommendation">Canary Deployment Between v1 And v2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="05_advanced-routerules.html">5. Advanced Routing</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="05_advanced-routerules.html#canarydeploymentuseragent">Canary Deployment based on user-agent</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="05_advanced-routerules.html#alltorecommendationv1">All Users To Recommendation V1</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="05_advanced-routerules.html#safaritov2">All Safari Users To Recommendation V2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="05_advanced-routerules.html#mobiletov2">All Mobile Users To Recommendation V2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05_advanced-routerules.html#mirroringtraffic">Mirroring Traffic</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="05_advanced-routerules.html#accesscontrol">Access Control</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="05_advanced-routerules.html#whitelist">White List</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="05_advanced-routerules.html#blacklist">Black List</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05_advanced-routerules.html#loadbalancer">Load Balancer</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05_advanced-routerules.html#ratelimiting">Rate Limiting</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="06_fault-injection.html">6. Fault Injection</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06_fault-injection.html#503error">HTTP 503 Error</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06_fault-injection.html#delay">Delay</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06_fault-injection.html#retry">Retry</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06_fault-injection.html#timeout">Timeout</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="07_circuit-breaker.html">7. Circuit Breaker</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="07_circuit-breaker.html#failfast">Fail Fast</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="07_circuit-breaker.html#nocircuitbreaker">No Circuit Breaker</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="07_circuit-breaker.html#circuitbreaker">Circuit Breaker</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="07_circuit-breaker.html#poolejection">Pool Ejection</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="07_circuit-breaker.html#nofailinginstances">No Failing Instance</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="07_circuit-breaker.html#failinginstancesnopoolejection">Failing Instance No Pool Ejection</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="07_circuit-breaker.html#failinginstancespoolejection">Failing Instance Pool Ejection</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="07_circuit-breaker.html#circuitbreakerandpoolejection">Circuit Breaker + Pool Ejection</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="08_egress.html">8. Egress</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="08_egress.html#createrecommendationv3">Create Recommendation V3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="08_egress.html#istioegress">Istio-ize Egress</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="09_virtualization.html">9. Service Virtualization and Istio</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#deploypreferencev2">Deploy Preference V2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#servicevirtualization">Adding Service Virtualization</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#cleanup">Clean Up</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="10_mTLS.html">10. Mutual TLS and Istio</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="10_mTLS.html#preparation">Preparation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="10_mTLS.html#enablingtls">Enabling TLS</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="10_mTLS.html#restore">Restore Environment</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="navigation-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Istio Tutorial</span>
+    <span class="version">1.0.0</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Istio Tutorial</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">1.0.0</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+  <main class="main">
+<div class="toolbar" role="navigation">
+  <button class="navigation-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="crumbs" aria-label="breadcrumbs">
+  <ul>
+    <li class="crumb"><a href="index.html">Istio Tutorial</a></li>
+    <li class="crumb"><a href="09_virtualization.html">9. Service Virtualization and Istio</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/ROOT/pages/09_virtualization.adoc">Edit this Page</a></div>
+</div>
+<article class="doc">
+<h1>Traffic Mirroring and Service Virtualization</h1>
+<div class="sect1">
+<h2 id="mirroringtraffic"><a class="anchor" href="#mirroringtraffic"></a>Mirroring Traffic</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We&#8217;ll use version 2 of preferences service. The only difference between v1 and V2 is that v2 prints its name in capital letters (PREFERENCE).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/preference-v2.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should have 2 pods for preference based on the steps above</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods
+
+NAME                                          READY     STATUS    RESTARTS   AGE
+customer-755bbbdd44-t2vjq                     2/2       Running   1          6d
+preference-v1-7c8b57fc49-kcsvc                2/2       Running   0          6d
+preference-v2-f74bcc999-lwlbf                 2/2       Running   0          36s
+recommendation-v1-798bf87d96-stzqt            2/2       Running   7          6d</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Send several requests to the customer endpoint</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In a new terminal, check the logs of recommendation-v2</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs -f `kubectl get pods|grep preference-v2|awk '{ print $1 }'` -c preference</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service.</p>
+</div>
+<div class="paragraph">
+<p>So after running several times you&#8217;ll get some combinations of:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 176
+customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 177
+customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 178
+customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 179</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and see what happens when you run</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/traffic-mirroring/preference-destination-rule-v1-v2.yml
+kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml
+curl $CUSTOMER_URL</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The customer has stopped calling preference:v2</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 196
+customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 198
+customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 200
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>But preference:v2 still receiving requests:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">preference v2 request from pod: f74bcc999-lwlbf
+preference v2 request from pod: f74bcc999-lwlbf
+preference v2 request from pod: f74bcc999-lwlbf</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Clean up</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/traffic-mirroring/preference-destination-rule-v1-v2.yml
+kubectl delete -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_virtualizing_mirrored_service_dependencies"><a class="anchor" href="#_virtualizing_mirrored_service_dependencies"></a>Virtualizing Mirrored Service Dependencies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To avoid side-effects from the version 2 of preferences service, instead of communicating with recommendation service, we are going to make the preference:v2 communicate with a virtualized recommendation service.</p>
+</div>
+<div class="paragraph">
+<p>Service virtualization can be understood as something similar as mocking where instead of mocking components (classes), you are mocking remote services.</p>
+</div>
+<div class="paragraph">
+<p>For this concrete case, virtualized recommendation service will return <code>recommendation v2 from 'virtualized': 2</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/recommendation-virtualized.yml</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="servicevirtualization"><a class="anchor" href="#servicevirtualization"></a>Adding Service Virtualization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After this step, you should have three versions of recommendation service (v1, v2 and virtualized).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>NAME                                          READY     STATUS    RESTARTS   AGE
+customer-755bbbdd44-t2vjq                     2/2       Running   1          6d
+preference-v1-7c8b57fc49-kcsvc                2/2       Running   0          3h
+preference-v2-f74bcc999-lwlbf                 2/2       Running   4          35m
+recommendation-v1-798bf87d96-stzqt            2/2       Running   7          3h
+recommendation-virtualized-5f9678d7d8-6lhx4   2/2       Running   0          30s</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Send several requests to see their responses</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service.</p>
+</div>
+<div class="paragraph">
+<p>So after running several times you&#8217;ll get some combinations of:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 233
+customer =&gt; preference =&gt; recommendation v2 from 'virtualized': 2
+customer =&gt; PREFERENCE =&gt; recommendation v2 from 'virtualized': 2
+customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 234
+customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 235
+customer =&gt; preference =&gt; recommendation v2 from 'virtualized': 2
+customer =&gt; PREFERENCE =&gt; recommendation v2 from 'virtualized': 2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that now the <code>v2</code> reaches all recommendation services.
+Let&#8217;s avoid this by just sending traffic that comes from preference v2 service to the virtualized recommendation service.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1.yml
+kubectl apply -f manifests/istio/service-virtualization/recommendation-virtualized-virtual-service.yml
+ ----
+
+Then do again some requests and you'll get something like:</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>customer &#8658; preference &#8658; recommendation v1 from '2409176097-kcjsr': 5
+customer &#8658; PREFERENCE &#8658; recommendation v1 from 'virtualized': 2
+customer &#8658; preference &#8658; recommendation v2 from '1275713543-2bs5k': 6
+customer &#8658; PREFERENCE &#8658; recommendation v2 from 'virtualized': 2</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>We're almost done. We will again make preference:v2 a mirror for v1.
+
+[source,bash]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Read the output of the curl command and the log of preference:v2, what do you observe ?
+
+Now all requests that are from preference v2 are redirected to virtualized recommendation service.
+In this way when you deploy a new service, you can mirror the traffic without worrying about side-effects on other services, since the requests are redirected to a virtualized instance instead of a production one.</pre>
+</div>
+</div>
+</div>
+</div>
+</article>
+  </main>
+</div>
+<footer class="footer">
+  <p>This content is brought to you by <a href="http://developers.redhat.com">Red Hat Developer</a> - Register today!.</p>
+</footer>
+<script src="../../_/js/site.js"></script>
+<script src="../../_/js/vendor/highlight.js"></script>
+<script>hljs.initHighlighting()</script>
+  </body>
+</html>

@@ -1,64 +1,6 @@
 = Mutual TLS and Istio
 include::_attributes.adoc[]
 
-[IMPORTANT]
-.Before Start
-====
-You should have NO virtualservice, destinationrule, gateway or policy (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule` `istioctl get gateway` `istioctl get policy`
-if so run:
-
-[source, bash]
-----
-./scripts/clean.sh
-----
-====
-
-In this chapter, we are going to see how to secure the communication between all services by enabling mutual _TLS_ in Istio.
-
-[#preparation]
-== Before Start
-
-If you are running this tutorial in OpenShift (Minishift) you need to remove the *customer* `route` you created at the beginning of the tutorial.
-
-To do it just run:
-
-[source, bash]
-----
-oc delete route customer
-----
-
-Then, you need to enable Istio Ingress to receive all traffic and redirect it to customer service.
-For this reason, let's create a `Gateway` and `VirtualService` that allows local calls reach the clustered service inside the mesh.
-
-[source, bash]
-----
-istioctl apply -f manifests/istio/gateway-customer.yml
-----
-
-Then configure some environment variables that will help you on testing:
-
-[source, bash]
-----
-export INGRESS_PORT=$(oc -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
-
-or in Kubernetes:
-
-export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
-----
-
-[source, bash]
-----
-export INGRESS_HOST=$(minishift ip)
-export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
-----
-
-Now you can run `curl` but against `GATEWAY_URL` and you'll see the same messages as before:
-
-[source, bash]
-----
-curl http://${GATEWAY_URL}/
-customer => preference => recommendation v1 from 'b87789c58-mfrhr': 2
-----
 
 [#enablingtls]
 == Enabling mTLS
@@ -67,8 +9,8 @@ Now that Istio gateway is in place, you can enable _mTLS_ by applying next Istio
 
 [source, bash]
 ----
-istioctl apply -f manifests/istio/authentication-enable-tls.yml # <1>
-istioctl apply -f manifests/istio/destination-rule-tls.yml # <2>
+kubectl apply -f manifests/istio/mutual-tls/authentication-enable-tls.yml # <1>
+kubectl apply -f manifests/istio/mutual-tls/destination-rule-tls.yml # <2>
 ----
 <1> Enables mTLS into `tutorial` namespace
 <2> Makes that services withn `tutorial` namespace communicates with _mTLS_
@@ -88,7 +30,7 @@ How can you check that?
 
 [source, bash]
 ----
-istioctl authn tls-check | grep tutorial
+kubectl authn tls-check | grep tutorial
 
 customer.tutorial.svc.cluster.local:8080                         OK         mTLS       mTLS       default/tutorial                             default/tutorial
 preference.tutorial.svc.cluster.local:8080                       OK         mTLS       mTLS       default/tutorial                             default/tutorial
@@ -99,28 +41,22 @@ recommendation.tutorial.svc.cluster.local:8080                   OK         mTLS
 
 [source, bash]
 ----
-CUSTOMER_POD=$(oc get pod | grep cust | awk '{ print $1}' ) # <1>
+CUSTOMER_POD=$(kubectl get pod | grep customer | awk '{ print $1}'| head -1 ) # <1>
+PREFERENCE_POD=$(kubectl get pod | grep preference | awk '{ print $1}' | head -1) # <1>
 
-or in Kuberentes:
-
-CUSTOMER_POD=$(kubectl get pod | grep cust | awk '{ print $1}' )
-
-
-oc exec -it $CUSTOMER_POD -c istio-proxy /bin/bash # <2>
-
-or in Kubernetes:
-
-kubectl exec -it $CUSTOMER_POD -c istio-proxy /bin/bash
+kubectl exec -it $CUSTOMER_POD -c istio-proxy /bin/bash # <2>
+kubectl exec -it $PREFERENCE_POD -c istio-proxy /bin/bash
 
 # Inside pod shell
 
 ifconfig # <3>
-sudo tcpdump -vvvv -A -i eth0 '((dst port 8080) and (net 172.17.0.10))' # <4>
+
+sudo tcpdump -vvvv -A -i eth0 '((dst port 8080) and (net 10.0.3.3))' # <4>
 ----
 <1> Get customer pod name
 <2> Open a shell inside pod
 <3> Get IP of current pod (probably the IP represented at `eth0` interface)
-<4> Capture traffic from `eth0` (or your interface) of port `8080` and network `172.17.0.10` (your IP from `ifconfig`)
+<4> Capture traffic from `eth0` (or your interface) of port `8080` and network `10.0.3.3` (your IP from `ifconfig`)
 
 Now all communication that happens between `customer` service and `preference` service is dumped in the console.
 
@@ -155,8 +91,8 @@ Now, let's disable _TLS_:
 
 [source, bash]
 ----
-istioctl delete -f manifests/istio/authentication-enable-tls.yml
-istioctl delete -f manifests/istio/destination-rule-tls.yml
+kubectl delete -f manifests/istio/mutual-tls/authentication-enable-tls.yml
+kubectl delete -f manifests/istio/mutual-tls/destination-rule-tls.yml
 ----
 
 And execute again:
@@ -185,25 +121,3 @@ x-b3-sampled: 1
 ----
 
 Now, you can see that since there is no _TLS_ enabled, the information is not shadowed but in clear.
-
-[#restore]
-== Clean Up
-
-source,bash]
-----
-istioctl delete -f manifests/istio/gateway-customer.yml
-----
-
-or you can run:
-
-[source, bash]
-----
-./scripts/clean.sh
-----
-
-And finally in case of running in OpenShift (Minishift) you can restore the route:
-
-[source, bash]
-----
-oc expose service customer
-----
