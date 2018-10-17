@@ -23,7 +23,7 @@ Then clone the git repository
 
 [source,bash]
 ----
-git clone https://github.com/abdennebi/istio-tutorial
+git clone https://github.com/sfeir/kubernetes-istio-workshop
 cd istio-tutorial
 ----
 

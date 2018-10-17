@@ -3,19 +3,19 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traffic Mirroring and Service Virtualization :: Istio Tutorial Docs</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/istio-tutorial/istio-tutorial/1.0.0/09_virtualization.html">
+    <title>Setup :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/01_setup.html">
     <meta name="generator" content="Antora 1.1.1">
-    <link rel="stylesheet" href="../../_/css/site.css">
-<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">  </head>
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
   <body class="article">
 <header class="header" role="banner">
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <a href="#">Istio Tutorial</a>
+        <a href="#">Kubernetes and Istio Workshop</a>
         <span class="separator">//</span>
-        <a href="https://redhat-developer-demos.github.io/istio-tutorial">Docs</a>
+        <a href="https://github.com/Sfeir/kubernetes-istio-workshop">Docs</a>
       </div>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
@@ -29,11 +29,11 @@
           <div class="navbar-link">Project</div>
           <div class="navbar-dropdown">
             <div class="navbar-item"><strong>GitHub</strong></div>
-            <a class="navbar-item" href="https://github.com/redhat-developer-demos/istio-tutorial">Istio Tutorial Repository</a>
-            <a class="navbar-item" href="https://github.com/redhat-developer-demos/istio-tutorial/issues">Istio Tutorial Issue Tracker</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop/">Istio Tutorial Repository</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop//issues">Istio Tutorial Issue Tracker</a>
           </div>
         </div>
-        <a class="navbar-item" href="https://twitter.com/rhdevelopers">
+        <a class="navbar-item" href="https://twitter.com/sfeir">
           <span class="icon">
             <svg aria-hidden="true" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
               <path fill="#57aaee" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
@@ -43,34 +43,42 @@
       </div>
     </div>
   </nav>
-</header><div class="main-wrapper">
-<div class="navigation-container" data-component="istio-tutorial" data-version="1.0.0">
+</header>
+<div class="main-wrapper">
+<div class="navigation-container" data-component="kubernetes-istio-workshop" data-version="1.0.0">
   <aside class="navigation">
     <div class="panels">
 <div class="navigation-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html">Istio Tutorial</a></h3>
+    <h3 class="title"><a href="../index.html">Kubernetes and Istio Workshop</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="index.html">Introduction to Istio Tutorial</a>
+    <span class="nav-text">Part 1 : kubernetes</span>
   </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
   <li class="nav-item" data-depth="1">
+    <span class="nav-text">Part 2 : Istio</span>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-toggle"></button>
     <a class="nav-link" href="01_setup.html">1. Setup</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="01_setup.html#prerequisite">Prerequisites</a>
+    <a class="nav-link" href="#prerequisite">Prerequisites</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="01_setup.html#minishift">Setup MiniShift</a>
+    <a class="nav-link" href="#minishift">Setup MiniShift</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="01_setup.html#environment">Setup Environment</a>
+    <a class="nav-link" href="#environment">Setup Environment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="01_setup.html#istioinstallation">Install Istio</a>
+    <a class="nav-link" href="#istioinstallation">Install Istio</a>
   </li>
 </ul>
   </li>
@@ -242,18 +250,18 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
     <a class="nav-link" href="09_virtualization.html">9. Service Virtualization and Istio</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#deploypreferencev2">Deploy Preference V2</a>
+    <a class="nav-link" href="09_virtualization.html#deploypreferencev2">Deploy Preference V2</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#servicevirtualization">Adding Service Virtualization</a>
+    <a class="nav-link" href="09_virtualization.html#servicevirtualization">Adding Service Virtualization</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#cleanup">Clean Up</a>
+    <a class="nav-link" href="09_virtualization.html#cleanup">Clean Up</a>
   </li>
 </ul>
   </li>
@@ -279,15 +287,15 @@
 </div>
 <div class="navigation-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Istio Tutorial</span>
+    <span class="title">Kubernetes and Istio Workshop</span>
     <span class="version">1.0.0</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <span class="title">Istio Tutorial</span>
+      <span class="title">Kubernetes and Istio Workshop</span>
       <ul class="versions">
         <li class="version is-current is-latest">
-          <a href="index.html">1.0.0</a>
+          <a href="../index.html">1.0.0</a>
         </li>
       </ul>
     </li>
@@ -299,210 +307,258 @@
   <main class="main">
 <div class="toolbar" role="navigation">
   <button class="navigation-toggle"></button>
-  <a href="index.html" class="home-link"></a>
+  <a href="../index.html" class="home-link"></a>
 <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
-    <li class="crumb"><a href="index.html">Istio Tutorial</a></li>
-    <li class="crumb"><a href="09_virtualization.html">9. Service Virtualization and Istio</a></li>
+    <li class="crumb"><a href="../index.html">Kubernetes and Istio Workshop</a></li>
+    <li class="crumb"><a href="01_setup.html">1. Setup</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/ROOT/pages/09_virtualization.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/01_setup.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1>Traffic Mirroring and Service Virtualization</h1>
+<h1>Setup</h1>
 <div class="sect1">
-<h2 id="mirroringtraffic"><a class="anchor" href="#mirroringtraffic"></a>Mirroring Traffic</h2>
+<h2 id="prerequisite"><a class="anchor" href="#prerequisite"></a>Prerequisite CLI tools</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>We&#8217;ll use version 2 of preferences service. The only difference between v1 and V2 is that v2 prints its name in capital letters (PREFERENCE).</p>
+<p>You will need in this tutorial:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/preference-v2.yml</code></pre>
+<div class="ulist">
+<ul>
+<li>
+<p><code>minishift</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/minishift/minishift/releases">Mac OS and Fedora</a></p>
+</li>
+</ul>
 </div>
+</li>
+<li>
+<p>docker</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.docker.com/docker-mac">Mac OS</a></p>
+</li>
+<li>
+<p>Fedora: <code>dnf install docker</code></p>
+</li>
+</ul>
 </div>
-<div class="paragraph">
-<p>You should have 2 pods for preference based on the steps above</p>
+</li>
+<li>
+<p>kubectl</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-binary-via-curl">Mac OS</a></p>
+</li>
+<li>
+<p>Fedora: <code>dnf install kubernetes-client</code></p>
+</li>
+</ul>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods
-
-NAME                                          READY     STATUS    RESTARTS   AGE
-customer-755bbbdd44-t2vjq                     2/2       Running   1          6d
-preference-v1-7c8b57fc49-kcsvc                2/2       Running   0          6d
-preference-v2-f74bcc999-lwlbf                 2/2       Running   0          36s
-recommendation-v1-798bf87d96-stzqt            2/2       Running   7          6d</code></pre>
+</li>
+<li>
+<p><code>oc (eval $(minishift oc-env))</code></p>
+</li>
+<li>
+<p>Apache Maven</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://archive.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz">Mac OS</a></p>
+</li>
+<li>
+<p>Fedora: <code>dnf install maven</code></p>
+</li>
+</ul>
 </div>
+</li>
+<li>
+<p><a href="https://github.com/wercker/stern">stern</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Mac OS: <code>brew install stern</code></p>
+</li>
+<li>
+<p>Fedora: <code>sudo curl --output /usr/local/bin/stern -L <a href="https://github.com/wercker/stern/releases/download/1.6.0/stern_linux_amd64" class="bare">https://github.com/wercker/stern/releases/download/1.6.0/stern_linux_amd64</a> &amp;&amp; sudo chmod +x /usr/local/bin/stern</code></p>
+</li>
+</ul>
 </div>
-<div class="paragraph">
-<p>Send several requests to the customer endpoint</p>
+</li>
+<li>
+<p>istioctl (will be installed via the steps below)</p>
+</li>
+<li>
+<p><code>curl</code>, <code>gunzip</code>, <code>tar</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Mac OS: built-in or part of your bash shell</p>
+</li>
+<li>
+<p>Fedora: should also be installed already, but just in case&#8230;&#8203; <code>dnf install curl gzip tar</code></p>
+</li>
+</ul>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+</li>
+<li>
+<p>git</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>dnf install git</code></p>
+</li>
+</ul>
 </div>
-</div>
-<div class="paragraph">
-<p>In a new terminal, check the logs of recommendation-v2</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs -f `kubectl get pods|grep preference-v2|awk '{ print $1 }'` -c preference</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service.</p>
-</div>
-<div class="paragraph">
-<p>So after running several times you&#8217;ll get some combinations of:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 176
-customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 177
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 178
-customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 179</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and see what happens when you run</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/traffic-mirroring/preference-destination-rule-v1-v2.yml
-kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml
-curl $CUSTOMER_URL</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The customer has stopped calling preference:v2</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 196
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 198
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 200
-...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>But preference:v2 still receiving requests:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">preference v2 request from pod: f74bcc999-lwlbf
-preference v2 request from pod: f74bcc999-lwlbf
-preference v2 request from pod: f74bcc999-lwlbf</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Clean up</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/traffic-mirroring/preference-destination-rule-v1-v2.yml
-kubectl delete -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_virtualizing_mirrored_service_dependencies"><a class="anchor" href="#_virtualizing_mirrored_service_dependencies"></a>Virtualizing Mirrored Service Dependencies</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>To avoid side-effects from the version 2 of preferences service, instead of communicating with recommendation service, we are going to make the preference:v2 communicate with a virtualized recommendation service.</p>
-</div>
-<div class="paragraph">
-<p>Service virtualization can be understood as something similar as mocking where instead of mocking components (classes), you are mocking remote services.</p>
-</div>
-<div class="paragraph">
-<p>For this concrete case, virtualized recommendation service will return <code>recommendation v2 from 'virtualized': 2</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/recommendation-virtualized.yml</code></pre>
-</div>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="servicevirtualization"><a class="anchor" href="#servicevirtualization"></a>Adding Service Virtualization</h2>
+<h2 id="minishift"><a class="anchor" href="#minishift"></a>Setup minishift</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>After this step, you should have three versions of recommendation service (v1, v2 and virtualized).</p>
+<p>Assumes <code>minishift</code>, tested with minishift v1.22.0+7163416</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>NAME                                          READY     STATUS    RESTARTS   AGE
-customer-755bbbdd44-t2vjq                     2/2       Running   1          6d
-preference-v1-7c8b57fc49-kcsvc                2/2       Running   0          3h
-preference-v2-f74bcc999-lwlbf                 2/2       Running   4          35m
-recommendation-v1-798bf87d96-stzqt            2/2       Running   7          3h
-recommendation-virtualized-5f9678d7d8-6lhx4   2/2       Running   0          30s</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Send several requests to see their responses</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service.</p>
-</div>
-<div class="paragraph">
-<p>So after running several times you&#8217;ll get some combinations of:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 233
-customer =&gt; preference =&gt; recommendation v2 from 'virtualized': 2
-customer =&gt; PREFERENCE =&gt; recommendation v2 from 'virtualized': 2
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 234
-customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 235
-customer =&gt; preference =&gt; recommendation v2 from 'virtualized': 2
-customer =&gt; PREFERENCE =&gt; recommendation v2 from 'virtualized': 2</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Notice that now the <code>v2</code> reaches all recommendation services.
-Let&#8217;s avoid this by just sending traffic that comes from preference v2 service to the virtualized recommendation service.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1.yml
-kubectl apply -f manifests/istio/service-virtualization/recommendation-virtualized-virtual-service.yml
- ----
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">#!/bin/bash
 
-Then do again some requests and you'll get something like:</code></pre>
+# add the location of minishift executable to PATH
+# I also keep other handy tools like kubectl and kubetail.sh
+# in that directory
+
+minishift profile set istio-tutorial
+minishift config set memory 8GB
+minishift config set cpus 3
+minishift config set vm-driver virtualbox ## or kvm, for Fedora
+minishift config set image-caching true
+minishift addon enable admin-user
+minishift addon enable anyuid
+
+minishift start</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>customer &#8658; preference &#8658; recommendation v1 from '2409176097-kcjsr': 5
-customer &#8658; PREFERENCE &#8658; recommendation v1 from 'virtualized': 2
-customer &#8658; preference &#8658; recommendation v2 from '1275713543-2bs5k': 6
-customer &#8658; PREFERENCE &#8658; recommendation v2 from 'virtualized': 2</p>
+</div>
+</div>
+<div class="sect1">
+<h2 id="environment"><a class="anchor" href="#environment"></a>Setup environment</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">eval $(minishift oc-env)
+eval $(minishift docker-env)
+oc login $(minishift ip):8443 -u admin -p admin</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In this tutorial, you will often be polling the customer endpoint with <code>curl</code>, while simultaneously viewing logs via <code>stern</code> or <code>kubetail.sh</code> and issuing commands via <code>oc</code> and <code>istioctl</code>. Consider using three terminal windows.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="istioinstallation"><a class="anchor" href="#istioinstallation"></a>Istio installation script</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">#!/bin/bash
+
+# Mac OS:
+curl -L https://github.com/istio/istio/releases/download/1.0.0/istio-1.0.0-osx.tar.gz | tar xz
+
+# Fedora:
+curl -L https://github.com/istio/istio/releases/download/1.0.0/istio-1.0.0-linux.tar.gz | tar xz
+
+# Both:
+cd istio-1.0.0
+export ISTIO_HOME=`pwd`
+export PATH=$ISTIO_HOME/bin:$PATH</code></pre>
+</div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>We're almost done. We will again make preference:v2 a mirror for v1.
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f install/kubernetes/helm/istio/templates/crds.yaml
+or
+kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
 
-[source,bash]</pre>
+
+oc apply -f install/kubernetes/istio-demo.yaml
+or
+kubectl apply -f install/kubernetes/istio-demo.yaml
+
+oc project istio-system
+or
+kubectl config set-context $(kubectl config current-context) --namespace=istio-system
+
+oc expose svc istio-ingressgateway
+oc expose svc servicegraph
+oc expose svc grafana
+oc expose svc prometheus
+oc expose svc tracing</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml</p>
+<p>Wait for Istio&#8217;s components to be ready</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Read the output of the curl command and the log of preference:v2, what do you observe ?
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ kubectl get pods -w
+or
+$ kubectl get pods -w
 
-Now all requests that are from preference v2 are redirected to virtualized recommendation service.
-In this way when you deploy a new service, you can mirror the traffic without worrying about side-effects on other services, since the requests are redirected to a virtualized instance instead of a production one.</pre>
+NAME                                        READY     STATUS      RESTARTS   AGE
+grafana-6995b4fbd7-ntp4f                    1/1       Running     0          57m
+istio-citadel-54f4678f86-jnv5s              1/1       Running     0          57m
+istio-cleanup-secrets-nch4k                 0/1       Completed   0          57m
+istio-egressgateway-5d7f8fcc7b-r76gg        1/1       Running     0          57m
+istio-galley-7bd8b5f88f-nlczb               1/1       Running     0          57m
+istio-grafana-post-install-lffq2            0/1       Completed   0          57m
+istio-ingressgateway-6f58fdc8d7-gbzzq       1/1       Running     0          57m
+istio-pilot-d99689994-zh66q                 2/2       Running     0          57m
+istio-policy-766bf4bd6d-skwkp               2/2       Running     0          57m
+istio-sidecar-injector-85ccf84984-crmhv     1/1       Running     0          57m
+istio-statsd-prom-bridge-55965ff9c8-76nx4   1/1       Running     0          57m
+istio-telemetry-55b6b5bbc7-qmf2l            2/2       Running     0          57m
+istio-tracing-77f9f94b98-kknh7              1/1       Running     0          57m
+prometheus-7456f56c96-nxdvv                 1/1       Running     0          57m
+servicegraph-684c85ffb9-f7tjp               1/1       Running     2          57m</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>And if you need quick access to the OpenShift console</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minishift console</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+On your first launch of the OpenShift console via <code>minishift</code>, you will receive a warning like "Your connection is not private". For our demo, simply select "Proceed to 192.168.xx.xx (unsafe)" to bypass the warning. Both the username and the password are set to <code>admin</code>, thanks to the <code>admin-user</code> add-on.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -512,8 +568,8 @@ In this way when you deploy a new service, you can mirror the traffic without wo
 <footer class="footer">
   <p>This content is brought to you by <a href="http://developers.redhat.com">Red Hat Developer</a> - Register today!.</p>
 </footer>
-<script src="../../_/js/site.js"></script>
-<script src="../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/site.js"></script>
+<script src="../../../_/js/vendor/highlight.js"></script>
 <script>hljs.initHighlighting()</script>
   </body>
 </html>

@@ -1,8 +1,8 @@
-= Istio on Google Kubernetes Engine
+= kubernetes and Istio Workshop
 
-- A HTML version of this file is published at https://abdennebi.github.io/istio-tutorial/
+- A HTML version of this file is published at https://sfeir.github.io/kubernetes-istio-workshop/
 
-- The source code is available at https://github.com/abdennebi/istio-tutorial
+- The source code is available at https://github.com/sfeir/kubernetes-istio-workshop
 
 There are three different and super simple microservices in this system and they are chained together in the following sequence:
 

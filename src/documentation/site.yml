@@ -1,9 +1,9 @@
 runtime:
   cache_dir: ./.cache/antora
 site:
-  title: Istio Tutorial Docs
-  url: https://redhat-developer-demos.github.io/istio-tutorial/
-  start_page: istio-tutorial::index.adoc
+  title: Kubernetes & Istio Workshop
+  url: https://github.com/Sfeir/kubernetes-istio-workshop/
+  start_page: kubernetes-istio-workshop::index.adoc
 
 content:
   sources:

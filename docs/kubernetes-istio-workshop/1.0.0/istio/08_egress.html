@@ -3,19 +3,19 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Route Rules :: Istio Tutorial Docs</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/istio-tutorial/istio-tutorial/1.0.0/04_simple-routerules.html">
+    <title>Egress :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/08_egress.html">
     <meta name="generator" content="Antora 1.1.1">
-    <link rel="stylesheet" href="../../_/css/site.css">
-<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">  </head>
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
   <body class="article">
 <header class="header" role="banner">
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <a href="#">Istio Tutorial</a>
+        <a href="#">Kubernetes and Istio Workshop</a>
         <span class="separator">//</span>
-        <a href="https://redhat-developer-demos.github.io/istio-tutorial">Docs</a>
+        <a href="https://github.com/Sfeir/kubernetes-istio-workshop">Docs</a>
       </div>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
@@ -29,11 +29,11 @@
           <div class="navbar-link">Project</div>
           <div class="navbar-dropdown">
             <div class="navbar-item"><strong>GitHub</strong></div>
-            <a class="navbar-item" href="https://github.com/redhat-developer-demos/istio-tutorial">Istio Tutorial Repository</a>
-            <a class="navbar-item" href="https://github.com/redhat-developer-demos/istio-tutorial/issues">Istio Tutorial Issue Tracker</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop/">Istio Tutorial Repository</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop//issues">Istio Tutorial Issue Tracker</a>
           </div>
         </div>
-        <a class="navbar-item" href="https://twitter.com/rhdevelopers">
+        <a class="navbar-item" href="https://twitter.com/sfeir">
           <span class="icon">
             <svg aria-hidden="true" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
               <path fill="#57aaee" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
@@ -43,18 +43,26 @@
       </div>
     </div>
   </nav>
-</header><div class="main-wrapper">
-<div class="navigation-container" data-component="istio-tutorial" data-version="1.0.0">
+</header>
+<div class="main-wrapper">
+<div class="navigation-container" data-component="kubernetes-istio-workshop" data-version="1.0.0">
   <aside class="navigation">
     <div class="panels">
 <div class="navigation-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html">Istio Tutorial</a></h3>
+    <h3 class="title"><a href="../index.html">Kubernetes and Istio Workshop</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="index.html">Introduction to Istio Tutorial</a>
+    <span class="nav-text">Part 1 : kubernetes</span>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <span class="nav-text">Part 2 : Istio</span>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
@@ -107,28 +115,28 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
     <a class="nav-link" href="04_simple-routerules.html">4. Simple Routing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#deployrecommendationv2">Create Recommendation V2</a>
+    <a class="nav-link" href="04_simple-routerules.html#deployrecommendationv2">Create Recommendation V2</a>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="#istiorouting">Changing Istio Routings</a>
+    <a class="nav-link" href="04_simple-routerules.html#istiorouting">Changing Istio Routings</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#routeallthetraffictorecommendationv2">Route all the traffic to recommendation:v2</a>
+    <a class="nav-link" href="04_simple-routerules.html#routeallthetraffictorecommendationv2">Route all the traffic to recommendation:v2</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#routeallthetraffictorecommendationv1">Route all the traffic to recommendation:v1</a>
+    <a class="nav-link" href="04_simple-routerules.html#routeallthetraffictorecommendationv1">Route all the traffic to recommendation:v1</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#alltorecommendationv1v2">All Users To Recommendation V1 and V2</a>
+    <a class="nav-link" href="04_simple-routerules.html#alltorecommendationv1v2">All Users To Recommendation V1 and V2</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#canarydeploymentrecommendation">Canary Deployment Between v1 And v2</a>
+    <a class="nav-link" href="04_simple-routerules.html#canarydeploymentrecommendation">Canary Deployment Between v1 And v2</a>
   </li>
 </ul>
   </li>
@@ -230,15 +238,15 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-toggle"></button>
     <a class="nav-link" href="08_egress.html">8. Egress</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="08_egress.html#createrecommendationv3">Create Recommendation V3</a>
+    <a class="nav-link" href="#createrecommendationv3">Create Recommendation V3</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="08_egress.html#istioegress">Istio-ize Egress</a>
+    <a class="nav-link" href="#istioegress">Istio-ize Egress</a>
   </li>
 </ul>
   </li>
@@ -279,15 +287,15 @@
 </div>
 <div class="navigation-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Istio Tutorial</span>
+    <span class="title">Kubernetes and Istio Workshop</span>
     <span class="version">1.0.0</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <span class="title">Istio Tutorial</span>
+      <span class="title">Kubernetes and Istio Workshop</span>
       <ul class="versions">
         <li class="version is-current is-latest">
-          <a href="index.html">1.0.0</a>
+          <a href="../index.html">1.0.0</a>
         </li>
       </ul>
     </li>
@@ -299,262 +307,151 @@
   <main class="main">
 <div class="toolbar" role="navigation">
   <button class="navigation-toggle"></button>
-  <a href="index.html" class="home-link"></a>
+  <a href="../index.html" class="home-link"></a>
 <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
-    <li class="crumb"><a href="index.html">Istio Tutorial</a></li>
-    <li class="crumb"><a href="04_simple-routerules.html">4. Simple Routing</a></li>
+    <li class="crumb"><a href="../index.html">Kubernetes and Istio Workshop</a></li>
+    <li class="crumb"><a href="08_egress.html">8. Egress</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/ROOT/pages/04_simple-routerules.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/08_egress.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1>Simple Route Rules</h1>
+<h1>Egress</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section demonstrates how to use various traffic management capabilities of Istio.</p>
+<p>Let&#8217;s see an example of using egress route by deploying a recommendation:v3 version. Egress service entry allow you to apply rules to how internal services interact with external services.</p>
 </div>
 <div class="paragraph">
-<p>We will show you how to route requests dynamically to multiple versions of a microservice.</p>
+<p>In this case, we are going to configure Istio to access <a href="http://now.httpbin.org" class="bare">http://now.httpbin.org</a> from internal service (recommendation:v3).</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_deploy_recommendation_v2"><a class="anchor" href="#_deploy_recommendation_v2"></a>Deploy recommendation:v2</h2>
+<h2 id="createrecommendationv3"><a class="anchor" href="#createrecommendationv3"></a>Create recommendation:v3</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>We can experiment with Egress service entry by making two changes to <code>RecommendationVerticle.java</code> like the following and creating a "v3" docker image.</p>
+</div>
+<div class="paragraph">
+<p>First change is updating the response string to:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/recommendation-v2.yml
-kubectl get pods -w</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private static final String RESPONSE_STRING_FORMAT = "recommendation v3 from '%s': %d\n";</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>The second change is to change the default output to make a call to <a href="http://now.httpbin.org" class="bare">http://now.httpbin.org</a>.</p>
+</div>
+<div class="paragraph">
+<p>From:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        router.get("/").handler(this::getRecommendations);
+//        router.get("/").handler(this::getNow);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">//        router.get("/").handler(this::getRecommendations);
+        router.get("/").handler(this::getNow);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Important:</em> We have a 3rd Deployment to manage the v3 version of recommendation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/recommendation-v3.yml</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_wait_for_v3_to_be_deployed"><a class="anchor" href="#_wait_for_v3_to_be_deployed"></a>Wait for v3 to be deployed</h3>
 <div class="paragraph">
 <p>Wait for those pods to show "2/2", the istio-proxy/envoy sidecar is part of that pod</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                 READY     STATUS    RESTARTS   AGE
-customer-3600192384-fpljb            2/2       Running   0          17m
-preference-243057078-8c5hz           2/2       Running   0          15m
-recommendation-v1-60483540-9snd9     2/2       Running   0          12m
-recommendation-v2-2815683430-vpx4p   2/2       Running   0          15s</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                  READY     STATUS    RESTARTS   AGE
+customer-3600192384-fpljb             2/2       Running   0          17m
+preference-243057078-8c5hz            2/2       Running   0          15m
+recommendation-v1-60483540-9snd9      2/2       Running   0          12m
+recommendation-v2-2815683430-vpx4p    2/2       Running   0          15s
+recommendation-v3-7b445dd469-j6rkg    2/2       Running   0          2m</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>and test the customer endpoint:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>you likely see <code>"customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 3"</code>, where '99634814-d2z2t' is the pod running <code>v1</code> and the <code>3</code> is basically the number of times you hit the endpoint.</p>
-</div>
-<div class="paragraph">
-<p>Run again the command:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>curl $CUSTOMER_URL</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>you likely see <code>"customer =&gt; preference =&gt; recommendation v2 from '2819441432-5v22s': 1"</code> as by default you get round-robin load-balancing when there is more than one Pod behind a Service</p>
-</div>
-<div class="paragraph">
-<p>Send several requests to see their responses:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service. Add another replica of recommendation-v2 Deployment.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale --replicas=2 deployment/recommendation-v2</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Now, you will see two requests into the v2 and one for v1.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v1 from '2819441432-qsp25': 29
-customer =&gt; preference =&gt; recommendation v2 from '99634814-sf4cl': 37
-customer =&gt; preference =&gt; recommendation v2 from '99634814-sf4cl': 38</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Scale back to a single replica of the recommendation-v2 Deployment</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale --replicas=1 deployment/recommendation-v2</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="istiorouting"><a class="anchor" href="#istiorouting"></a>Changing Istio Routings</h2>
+<h2 id="istioegress"><a class="anchor" href="#istioegress"></a>Istio-ize Egress</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before you can use Istio to control version routing, you need to define the available versions, called <em>subsets</em>, in <a href="https://istio.io/docs/reference/config/istio.networking.v1alpha3/#DestinationRule">DestinationRule</a>.</p>
+<p>Be sure you do not have any previous destination rule nor virtual service installed.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s redirect all traffic to reccomendation:v3.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: DestinationRule
-metadata:
-  name: recommendation
-spec:
-  host: recommendation
-  subsets:
-  - name: version-v1
-    labels:
-      version: v1
-  - name: version-v2
-    labels:
-      version: v2</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/egress/recommendation-destination-rule--v1-v2-v3.yml
+kubectl apply -f manifests/istio/egress/recommendation-v3-virtual-service.yml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Run the following command to create default destination rules to send traffic to versions <code>v1</code> and <code>v2</code> of recommandation service.</p>
+<p>Then access to the service:</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Since no Egress service entry has been registered to access an external site, the timeout error is thrown after 5 seconds of trying to access to the site.
+.
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl -m 5 $CUSTOMER_URL
+curl: (28) Operation timed out after 5000 milliseconds with 0 bytes received</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Wait a few seconds for the destination rules to propagate.</p>
-</div>
-<div class="paragraph">
-<p>You can display the created destination rule with the following command:</p>
+<p>Let&#8217;s fix it by registering a service entry to allow access to <code>httpbin</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get destinationrules recommendation -o yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/egress/httpbin-service-entry-egress.yml
+kubectl get serviceentry
+curl $CUSTOMER_URL
+customer =&gt; preference =&gt; Mon, 16 Jul 2018 12:03:38 GMT recommendation v3 from '7b445dd469-j6rkg': 1</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To display all destination rules :</p>
+<p>or shell into the pod by getting its name and then using that name with oc exec</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get destinationrules -o yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it $(kubectl get pods -o jsonpath="{.items[*].metadata.name}" -l app=recommendation,version=v3) -c recommendation -- curl http://now.httpbin.org</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="alltorecommendationv2"><a class="anchor" href="#alltorecommendationv2"></a>Route all the traffic to recommendation:v2</h3>
-<div class="paragraph">
-<p>To route to one version only, you apply virtual services that set the default version for the microservices. In this case, the virtual services will route all traffic to v2 of recommendation microservice.</p>
-</div>
+<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: VirtualService
-metadata:
-  name: recommendation
-spec:
-  hosts:
-  - recommendation
-  http:
-  - route:
-    - destination:
-        host: recommendation
-        subset: version-v2
-      weight: 100</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v2.yml
-
-curl $CUSTOMER_URL</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>you should only see v2 being returned</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="alltorecommendationv1"><a class="anchor" href="#alltorecommendationv1"></a>Route all the traffic to recommendation:v1</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml
-
-curl $CUSTOMER_URL</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="alltorecommendationv1v2"><a class="anchor" href="#alltorecommendationv1v2"></a>Route the traffic to both versions of recommendation: v1 and v2</h3>
-<div class="paragraph">
-<p>By simply removing the virtual service</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete virtualservice recommendation</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and you should see the default behavior of load-balancing between v1 and v2</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="canarydeploymentrecommendation"><a class="anchor" href="#canarydeploymentrecommendation"></a>Canary deployment: Split traffic between v1 and v2</h3>
-<div class="paragraph">
-<p>Canary Deployment scenario: push v2 into the cluster but slowly send end-user traffic to it, if you continue to see success, continue shifting more traffic over time</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods -l app=recommendation
-
-NAME                                  READY     STATUS    RESTARTS   AGE
-recommendation-v1-3719512284-7mlzw   2/2       Running   6          2h
-recommendation-v2-2815683430-vn77w   2/2       Running   0          1h</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Create the <code>virtualservice</code> that will send 90% of requests to v1 and 10% to v2</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1_and_v2.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and send in several requests:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In another terminal, change the mixture to be 75/25</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1_and_v2_75_25.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Clean up</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete virtualservice recommendation
-
-kubectl delete destinationrule recommendation</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete ServiceEntry httpbin-egress-rule
+kubectl delete DestinationRule recommendation
+kubectl delete VirtualService recommendation</code></pre>
 </div>
 </div>
 </div>
@@ -566,8 +463,8 @@ kubectl delete destinationrule recommendation</code></pre>
 <footer class="footer">
   <p>This content is brought to you by <a href="http://developers.redhat.com">Red Hat Developer</a> - Register today!.</p>
 </footer>
-<script src="../../_/js/site.js"></script>
-<script src="../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/site.js"></script>
+<script src="../../../_/js/vendor/highlight.js"></script>
 <script>hljs.initHighlighting()</script>
   </body>
 </html>

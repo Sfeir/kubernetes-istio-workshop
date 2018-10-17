@@ -1,4 +1,4 @@
-* xref:index.adoc[Introduction to Istio Tutorial]
+* Part 2 : Istio
 
 * xref:01_setup.adoc[1. Setup]
 ** xref:01_setup.adoc#prerequisite[Prerequisites]

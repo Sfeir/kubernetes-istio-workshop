@@ -3,19 +3,19 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Egress :: Istio Tutorial Docs</title>
-    <link rel="canonical" href="https://redhat-developer-demos.github.io/istio-tutorial/istio-tutorial/1.0.0/08_egress.html">
+    <title>Monitoring and Tracing :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/03_monitoring-tracing.html">
     <meta name="generator" content="Antora 1.1.1">
-    <link rel="stylesheet" href="../../_/css/site.css">
-<link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">  </head>
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
   <body class="article">
 <header class="header" role="banner">
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <a href="#">Istio Tutorial</a>
+        <a href="#">Kubernetes and Istio Workshop</a>
         <span class="separator">//</span>
-        <a href="https://redhat-developer-demos.github.io/istio-tutorial">Docs</a>
+        <a href="https://github.com/Sfeir/kubernetes-istio-workshop">Docs</a>
       </div>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
@@ -29,11 +29,11 @@
           <div class="navbar-link">Project</div>
           <div class="navbar-dropdown">
             <div class="navbar-item"><strong>GitHub</strong></div>
-            <a class="navbar-item" href="https://github.com/redhat-developer-demos/istio-tutorial">Istio Tutorial Repository</a>
-            <a class="navbar-item" href="https://github.com/redhat-developer-demos/istio-tutorial/issues">Istio Tutorial Issue Tracker</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop/">Istio Tutorial Repository</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop//issues">Istio Tutorial Issue Tracker</a>
           </div>
         </div>
-        <a class="navbar-item" href="https://twitter.com/rhdevelopers">
+        <a class="navbar-item" href="https://twitter.com/sfeir">
           <span class="icon">
             <svg aria-hidden="true" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
               <path fill="#57aaee" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
@@ -43,18 +43,26 @@
       </div>
     </div>
   </nav>
-</header><div class="main-wrapper">
-<div class="navigation-container" data-component="istio-tutorial" data-version="1.0.0">
+</header>
+<div class="main-wrapper">
+<div class="navigation-container" data-component="kubernetes-istio-workshop" data-version="1.0.0">
   <aside class="navigation">
     <div class="panels">
 <div class="navigation-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html">Istio Tutorial</a></h3>
+    <h3 class="title"><a href="../index.html">Kubernetes and Istio Workshop</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="index.html">Introduction to Istio Tutorial</a>
+    <span class="nav-text">Part 1 : kubernetes</span>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <span class="nav-text">Part 2 : Istio</span>
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
@@ -92,18 +100,18 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-toggle"></button>
     <a class="nav-link" href="03_monitoring-tracing.html">3. Monitoring and Tracing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="03_monitoring-tracing.html#monitoring">Monitoring</a>
+    <a class="nav-link" href="#monitoring">Monitoring</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="03_monitoring-tracing.html#custommetrics">Custom Metrics</a>
+    <a class="nav-link" href="#custommetrics">Custom Metrics</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="03_monitoring-tracing.html#tracing">Tracing</a>
+    <a class="nav-link" href="#tracing">Tracing</a>
   </li>
 </ul>
   </li>
@@ -230,15 +238,15 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
     <a class="nav-link" href="08_egress.html">8. Egress</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#createrecommendationv3">Create Recommendation V3</a>
+    <a class="nav-link" href="08_egress.html#createrecommendationv3">Create Recommendation V3</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#istioegress">Istio-ize Egress</a>
+    <a class="nav-link" href="08_egress.html#istioegress">Istio-ize Egress</a>
   </li>
 </ul>
   </li>
@@ -279,15 +287,15 @@
 </div>
 <div class="navigation-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Istio Tutorial</span>
+    <span class="title">Kubernetes and Istio Workshop</span>
     <span class="version">1.0.0</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <span class="title">Istio Tutorial</span>
+      <span class="title">Kubernetes and Istio Workshop</span>
       <ul class="versions">
         <li class="version is-current is-latest">
-          <a href="index.html">1.0.0</a>
+          <a href="../index.html">1.0.0</a>
         </li>
       </ul>
     </li>
@@ -299,153 +307,121 @@
   <main class="main">
 <div class="toolbar" role="navigation">
   <button class="navigation-toggle"></button>
-  <a href="index.html" class="home-link"></a>
+  <a href="../index.html" class="home-link"></a>
 <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
-    <li class="crumb"><a href="index.html">Istio Tutorial</a></li>
-    <li class="crumb"><a href="08_egress.html">8. Egress</a></li>
+    <li class="crumb"><a href="../index.html">Kubernetes and Istio Workshop</a></li>
+    <li class="crumb"><a href="03_monitoring-tracing.html">3. Monitoring and Tracing</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/ROOT/pages/08_egress.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/03_monitoring-tracing.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1>Egress</h1>
-<div id="preamble">
+<h1>Monitoring and Tracing</h1>
+<div class="sect1">
+<h2 id="monitoring"><a class="anchor" href="#monitoring"></a>Monitoring</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Let&#8217;s see an example of using egress route by deploying a recommendation:v3 version. Egress service entry allow you to apply rules to how internal services interact with external services.</p>
+<p>Out of the box, you get monitoring via Prometheus and Grafana.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">open "$(minishift openshift service grafana -u)/d/1/istio-dashboard?refresh=5s&amp;orgId=1"</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>In this case, we are going to configure Istio to access <a href="http://now.httpbin.org" class="bare">http://now.httpbin.org</a> from internal service (recommendation:v3).</p>
+<p><span class="image"><img src="_images/grafana1.png" alt="alt text"></span></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">open "$(minishift openshift service grafana -u)/d/UbsSZTDik/istio-workload-dashboard?refresh=5s&amp;orgId=1"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to check the "Workload of the services"</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/grafana2.png" alt="alt text"></span></p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="createrecommendationv3"><a class="anchor" href="#createrecommendationv3"></a>Create recommendation:v3</h2>
+<h2 id="custommetrics"><a class="anchor" href="#custommetrics"></a>Custom Metrics</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>We can experiment with Egress service entry by making two changes to <code>RecommendationVerticle.java</code> like the following and creating a "v3" docker image.</p>
-</div>
-<div class="paragraph">
-<p>First change is updating the response string to:</p>
+<p>Istio also allows you to specify custom metrics which can be seen inside of the Prometheus dashboard</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private static final String RESPONSE_STRING_FORMAT = "recommendation v3 from '%s': %d\n";</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">open "$(minishift openshift service prometheus -u)/graph?g0.range_input=5m&amp;g0.expr=&amp;g0.tab=0"</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The second change is to change the default output to make a call to <a href="http://now.httpbin.org" class="bare">http://now.httpbin.org</a>.</p>
-</div>
-<div class="paragraph">
-<p>From:</p>
+<p>Add the custom metric and rule. First make sure you are in the "istio-tutorial" directory and then</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">        router.get("/").handler(this::getRecommendations);
-//        router.get("/").handler(this::getNow);</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/recommendation_requestcount.yml -n istio-system</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To:</p>
+<p>In the Prometheus dashboard, add the following</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">//        router.get("/").handler(this::getRecommendations);
-        router.get("/").handler(this::getNow);</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">istio_requests_total{destination_service="recommendation.tutorial.svc.cluster.local"}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><em>Important:</em> We have a 3rd Deployment to manage the v3 version of recommendation.</p>
+<p>and select <code>Execute</code></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/prometheus_custom_metric.png" alt="alt text"></span></p>
+</div>
+<div class="paragraph">
+<p>Then run several requests through the system</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/recommendation-v3.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5;  done</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_wait_for_v3_to_be_deployed"><a class="anchor" href="#_wait_for_v3_to_be_deployed"></a>Wait for v3 to be deployed</h3>
-<div class="paragraph">
-<p>Wait for those pods to show "2/2", the istio-proxy/envoy sidecar is part of that pod</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                  READY     STATUS    RESTARTS   AGE
-customer-3600192384-fpljb             2/2       Running   0          17m
-preference-243057078-8c5hz            2/2       Running   0          15m
-recommendation-v1-60483540-9snd9      2/2       Running   0          12m
-recommendation-v2-2815683430-vpx4p    2/2       Running   0          15s
-recommendation-v3-7b445dd469-j6rkg    2/2       Running   0          2m</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="istioegress"><a class="anchor" href="#istioegress"></a>Istio-ize Egress</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Be sure you do not have any previous destination rule nor virtual service installed.</p>
-</div>
-<div class="paragraph">
-<p>Let&#8217;s redirect all traffic to reccomendation:v3.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/egress/recommendation-destination-rule--v1-v2-v3.yml
-kubectl apply -f manifests/istio/egress/recommendation-v3-virtual-service.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then access to the service:</p>
-</div>
-<div class="admonitionblock important">
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Since no Egress service entry has been registered to access an external site, the timeout error is thrown after 5 seconds of trying to access to the site.
-.
+You may have to refresh the browser for the Prometheus graph to update. And you may wish to make the interval 5m (5 minutes) as seen in the screenshot above.
 </td>
 </tr>
 </table>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tracing"><a class="anchor" href="#tracing"></a>Tracing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Distributed Tracing involves propagating the tracing context from service to service, usually done by sending certain incoming HTTP headers downstream to outbound requests. For services embedding a <a href="http://opentracing.io/">OpenTracing</a> framework instrumentations such as <a href="https://github.com/opentracing-contrib/java-spring-cloud">opentracing-spring-cloud</a>, this might be transparent. For services that are not embedding OpenTracing libraries, this context propagation needs to be done manually.</p>
+</div>
+<div class="paragraph">
+<p>As OpenTracing is "just" an instrumentation library, a concrete tracer is required in order to actually capture the tracing data and report it to a remote server. Our <code>customer</code> and <code>preference</code> services ship with <a href="http://jaegertracing.io/">Jaeger</a> as the concrete tracer. the Istio platform automatically sends collected tracing data to Jaeger, so that we are able to see a trace involving all three services, even if our <code>recommendation</code> service is not aware of OpenTracing or Jaeger at all.</p>
+</div>
+<div class="paragraph">
+<p>Our <code>customer</code> and <code>preference</code> services are using the <a href="https://github.com/jaegertracing/jaeger-client-java/tree/master/jaeger-tracerresolver"><code>TracerResolver</code></a> facility from OpenTracing, so that the concrete tracer can be loaded automatically without our code having a hard dependency on Jaeger. Given that the Jaeger tracer can be configured via environment variables, we don&#8217;t need to do anything in order to get a properly configured Jaeger tracer ready and registered with OpenTracing. That said, there are cases where it&#8217;s appropriate to manually configure a tracer. Refer to the Jaeger documentation for more information on how to do that.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s open the Jaeger console, select <code>customer</code> from the list of services and click <code>Find Traces</code></p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl -m 5 $CUSTOMER_URL
-curl: (28) Operation timed out after 5000 milliseconds with 0 bytes received</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minishift openshift service tracing --in-browser</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s fix it by registering a service entry to allow access to <code>httpbin</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/egress/httpbin-service-entry-egress.yml
-kubectl get serviceentry
-curl $CUSTOMER_URL
-customer =&gt; preference =&gt; Mon, 16 Jul 2018 12:03:38 GMT recommendation v3 from '7b445dd469-j6rkg': 1</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>or shell into the pod by getting its name and then using that name with oc exec</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it $(kubectl get pods -o jsonpath="{.items[*].metadata.name}" -l app=recommendation,version=v3) -c recommendation -- curl http://now.httpbin.org</code></pre>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete ServiceEntry httpbin-egress-rule
-kubectl delete DestinationRule recommendation
-kubectl delete VirtualService recommendation</code></pre>
-</div>
-</div>
+<p><span class="image"><img src="_images/jaegerUI.png" alt="Trace as seen in Jaeger"></span></p>
 </div>
 </div>
 </div>
@@ -455,8 +431,8 @@ kubectl delete VirtualService recommendation</code></pre>
 <footer class="footer">
   <p>This content is brought to you by <a href="http://developers.redhat.com">Red Hat Developer</a> - Register today!.</p>
 </footer>
-<script src="../../_/js/site.js"></script>
-<script src="../../_/js/vendor/highlight.js"></script>
+<script src="../../../_/js/site.js"></script>
+<script src="../../../_/js/vendor/highlight.js"></script>
 <script>hljs.initHighlighting()</script>
   </body>
 </html>
