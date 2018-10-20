@@ -8,7 +8,7 @@ resources:
   properties:
     gkeClusterName: istio-cluster
     zone: europe-west1-b
-    initialNodeCount: 3
+    initialNodeCount: 4
     instanceType: n1-standard-1
     enableAutomaticSidecarInjection: true
     enableMutualTLS: false
