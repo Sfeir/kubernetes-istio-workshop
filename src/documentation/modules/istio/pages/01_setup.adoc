@@ -7,7 +7,8 @@ In this lab, you will learn how to install and configure Istio, on Google Kubern
 
 This setup est based on the official https://istio.io/docs/setup/kubernetes/quick-start-gke-dm/[setup] documentation.
 
-=== Prerequisites
+[#prerequisites]
+== Prerequisites
 
 We will install Istio with Google Cloud Deployment Manager an automation tool for deploying cloud resources.
 
@@ -34,7 +35,8 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
      --role=roles/container.admin
 ----
 
-=== Deploy a new cluster with Istio installed
+[#deploy-istio]
+== Deploy Istio
 
 - Make sure your are in the ``kubernetes-istio-workshop`` directory :
 
@@ -56,12 +58,12 @@ By default the tool creates a GKE cluster with the specified settings in the ``i
 
 Wait until Istio is fully deployed. Note that the Istio installation can take up to five minutes.
 
-=== Bootstrap gcloud
+[#connect-cluster]
+== Connect to the cluster
 
 Once deployment is complete, do the following on Cloud Shell :
 
-1. Bootstrap kubectl for the cluster you just created and confirm the cluster is running and Istio is enabled
-
+1 - Bootstrap ``kubectl`` for the cluster you just created and confirm the cluster is running and Istio is enabled
 [source, bash]
 ----
 gcloud container clusters list
@@ -70,16 +72,15 @@ NAME           LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NOD
 istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9.7-gke.6   3          RUNNING
 ----
 
-In this case, the cluster name is istio-cluster.
-
-1. Now acquire the credentials for the cluster.
+2 - Now acquire the credentials for the cluster.
 
 [source, bash]
 ----
 gcloud container clusters get-credentials istio-cluster
 ----
 
-=== Verify installation
+[#verify-installation]
+== Verify installation
 
 [source, bash]
 ----

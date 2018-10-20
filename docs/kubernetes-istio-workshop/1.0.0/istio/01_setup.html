@@ -72,16 +72,16 @@
     <a class="nav-link" href="01_setup.html">1. Setup</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#prerequisite">Prerequisites</a>
+    <a class="nav-link" href="#prerequisites">Prerequisites</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#minishift">Setup MiniShift</a>
+    <a class="nav-link" href="#deploy-istio">Deploy Istio</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#environment">Setup Environment</a>
+    <a class="nav-link" href="#connect-cluster">Connect to the cluster</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#istioinstallation">Install Istio</a>
+    <a class="nav-link" href="#verify-installation">Verify installation</a>
   </li>
 </ul>
   </li>
@@ -330,8 +330,11 @@
 <div class="paragraph">
 <p>This setup est based on the official <a href="https://istio.io/docs/setup/kubernetes/quick-start-gke-dm/">setup</a> documentation.</p>
 </div>
-<div class="sect2">
-<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="prerequisites"><a class="anchor" href="#prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>We will install Istio with Google Cloud Deployment Manager an automation tool for deploying cloud resources.</p>
 </div>
@@ -365,8 +368,10 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_deploy_a_new_cluster_with_istio_installed"><a class="anchor" href="#_deploy_a_new_cluster_with_istio_installed"></a>Deploy a new cluster with Istio installed</h3>
+</div>
+<div class="sect1">
+<h2 id="deploy-istio"><a class="anchor" href="#deploy-istio"></a>Deploy Istio</h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
@@ -395,17 +400,15 @@ istio-cluster-istio-cluster-waiter  runtimeconfig.v1beta1.waiter  COMPLETED  []<
 <p>Wait until Istio is fully deployed. Note that the Istio installation can take up to five minutes.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_bootstrap_gcloud"><a class="anchor" href="#_bootstrap_gcloud"></a>Bootstrap gcloud</h3>
+</div>
+<div class="sect1">
+<h2 id="connect-cluster"><a class="anchor" href="#connect-cluster"></a>Connect to the cluster</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Once deployment is complete, do the following on Cloud Shell :</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Bootstrap kubectl for the cluster you just created and confirm the cluster is running and Istio is enabled</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>1 - Bootstrap <code>kubectl</code> for the cluster you just created and confirm the cluster is running and Istio is enabled</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -416,14 +419,7 @@ istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9
 </div>
 </div>
 <div class="paragraph">
-<p>In this case, the cluster name is istio-cluster.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Now acquire the credentials for the cluster.</p>
-</li>
-</ol>
+<p>2 - Now acquire the credentials for the cluster.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -431,8 +427,10 @@ istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_verify_installation"><a class="anchor" href="#_verify_installation"></a>Verify installation</h3>
+</div>
+<div class="sect1">
+<h2 id="verify-installation"><a class="anchor" href="#verify-installation"></a>Verify installation</h2>
+<div class="sectionbody">
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployments -n istio-system
@@ -461,7 +459,6 @@ servicegraph               1         1         1            1           3h</code
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get svc istio-ingressgateway -n istio-system
 NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                                                                                                                   AGE
 istio-ingressgateway   LoadBalancer   10.3.252.238   35.195.185.0   80:31380/TCP,443:31390/TCP,31400:31400/TCP,15011:30934/TCP,8060:32220/TCP,853:32629/TCP,15030:32723/TCP,15031:30918/TCP   3h</code></pre>
-</div>
 </div>
 </div>
 </div>

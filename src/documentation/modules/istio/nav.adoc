@@ -1,10 +1,10 @@
 * Part 2 : Istio
 
 * xref:01_setup.adoc[1. Setup]
-** xref:01_setup.adoc#prerequisite[Prerequisites]
-** xref:01_setup.adoc#minishift[Setup MiniShift]
-** xref:01_setup.adoc#environment[Setup Environment]
-** xref:01_setup.adoc#istioinstallation[Install Istio]
+** xref:01_setup.adoc#prerequisites[Prerequisites]
+** xref:01_setup.adoc#deploy-istio[Deploy Istio]
+** xref:01_setup.adoc#connect-cluster[Connect to the cluster]
+** xref:01_setup.adoc#verify-installation[Verify installation]
 
 * xref:02_deploy-microservices.adoc[2. Deploy Microservices]
 ** xref:02_deploy-microservices.adoc#deploycustomer[Deploy Customer]
