@@ -1,34 +1,23 @@
 = Deploy Microservices
 include::_attributes.adoc[]
 
-[#deploycustomer]
-== Deploy customer
+[#create-namespace]
+== Create Namespace
 
-Make sure you are logged in
-
-[source,bash]
-----
-kubectl config current-context
-----
-
-and you have setup the project/namespace
+Create a namespace called ``tutorial`` and enable Istio sidecar injection.
 
 [source,bash]
 ----
 kubectl create namespace tutorial
+kubectl label namespace tutorial istio-injection=enabled
 kubectl config set-context $(kubectl config current-context) --namespace=tutorial
 ----
 
-Then clone the git repository
-
-[source,bash]
-----
-git clone https://github.com/sfeir/kubernetes-istio-workshop
-cd istio-tutorial
-----
+Make sure yout are in the ``kubernetes-istio-workshop`` directory.
 
 Start deploying the microservice projects, starting with customer
 
+[#deploycustomer]
 === Deploy Customer
 
 Now let's deploy the customer pod with its sidecar
@@ -43,22 +32,91 @@ kubectl apply -f manifests/kubernetes/customer.yml
 Since the `customer` service is the one our users will interact with, you need to make it accessible from outside of your Kubernetes cluster. An Istio https://istio.io/docs/concepts/traffic-management/#gateways[Gateway] is used for this purpose.
 
 
+1. Define the ingress gateway for the application:
 [source,bash]
 ----
 kubectl apply -f manifests/istio/gateway/customer-gateway.yml
 ----
 
-Wait until the status is `Running` and there are `2/2` pods in the `Ready` column. To exit, press `Ctrl+C`
+In the following definition, every hit to ``/`` (``prefix : /``) will be routed to the service customer (``host: customer``).
+[source,yaml]
+----
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: customer-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: customer-gateway
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - customer-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: customer
+        port:
+          number: 8080
 
-Then test the customer endpoint
+----
+
+2. Confirm the gateway has been created:
 
 [source,bash]
 ----
+kubectl get gateway
+----
+
+3. set the ``INGRESS_HOST`` and ``INGRESS_PORT`` variables for accessing the gateway :
+
+Execute the following command to make sure that the External-IP of the gateway is not in <pending> state.
+
+Set the ingress IP and ports:
+
+[source,bash]
+----
+export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+----
+
+4. Set GATEWAY_URL:
+
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+
+5. Proceed to Confirm the app is running, below.
+
+$ curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/
+
+6. Then test the customer endpoint. Because of the route defined in the VirtualService, the URL of the customer service is the same as the URL of the gateway.
+
+[source,bash]
+----
+export CUSTOMER_URL=$GATEWAY_URL
+
 curl $CUSTOMER_URL
 ----
 
 You should see the following error because the services `preference` and `recommendation` are not yet deployed.
 
+[source,bash]
 ----
 customer => I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference
 ----
@@ -67,7 +125,7 @@ Also review the logs
 
 [source,bash]
 ----
-stern customer -c customer
+kubectl logs -l app=customer -c customer
 ----
 
 You should see a stacktrace containing this cause:
@@ -114,7 +172,7 @@ and check out the logs
 
 [source,bash]
 ----
-stern preference -c preference
+kubectl logs -l app=preference -c preference
 ----
 
 You should see a stacktrace containing this cause:
@@ -127,7 +185,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on GET request
 [#deployrecommendation]
 == Deploy recommendation
 
-IMPORTANT: The tag `v1` at the end of the image name matters. We will be creating a `v2` version of `recommendation` later in this tutorial. Having both a `v1` and `v2` version of the `recommendation` code will allow us to exercise some interesting aspects of Istio's capabilities.
+IMPORTANT: The tag `v1` at the end of the image name matters. We will be using a `v2` version of `recommendation` later in this tutorial. Having both a `v1` and `v2` version of the `recommendation` code will allow us to exercise some interesting aspects of Istio's capabilities.
 
 
 [source,bash]
@@ -155,5 +213,5 @@ and you can monitor the `recommendation` logs with
 
 [source,bash]
 ----
-stern recommendation -c recommendation
+kubectl logs -l app=recommendation -c recommendation
 ----

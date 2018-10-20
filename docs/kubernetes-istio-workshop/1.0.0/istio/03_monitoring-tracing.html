@@ -321,6 +321,34 @@
 </div>
 <article class="doc">
 <h1>Monitoring and Tracing</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Before Start</div>
+<div class="paragraph">
+<p>The following dashboards are not directly accessible, we need to use a proxy by using <code>kubectl prot-forward</code>.</p>
+</div>
+<div class="paragraph">
+<p>To do that on Cloud Shell, we&#8217;ll use the <strong>Web Preview</strong> feature.</p>
+</div>
+<div class="paragraph">
+<p>To use Web Preview, click the Web Preview button and then select the port number from the displayed menu. Cloud Shell opens the preview URL on its proxy service in a new browser window.</p>
+</div>
+<div class="paragraph">
+<p>You can simultaneously preview four other consoles via Web Preview proxied on ranges 8080 to 8084.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="monitoring"><a class="anchor" href="#monitoring"></a>Monitoring</h2>
 <div class="sectionbody">
@@ -329,7 +357,9 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">open "$(minishift openshift service grafana -u)/d/1/istio-dashboard?refresh=5s&amp;orgId=1"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">open "$(minishift openshift service grafana -u)/d/1/istio-dashboard?refresh=5s&amp;orgId=1"
+
+kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana -o jsonpath='{.items[0].metadata.name}') 3000:3000 &amp;</code></pre>
 </div>
 </div>
 <div class="paragraph">

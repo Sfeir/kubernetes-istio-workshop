@@ -322,39 +322,26 @@
 <article class="doc">
 <h1>Deploy Microservices</h1>
 <div class="sect1">
-<h2 id="deploycustomer"><a class="anchor" href="#deploycustomer"></a>Deploy customer</h2>
+<h2 id="create-namespace"><a class="anchor" href="#create-namespace"></a>Create Namespace</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Make sure you are logged in</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl config current-context</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and you have setup the project/namespace</p>
+<p>Create a namespace called <code>tutorial</code> and enable Istio sidecar injection.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace tutorial
+kubectl label namespace tutorial istio-injection=enabled
 kubectl config set-context $(kubectl config current-context) --namespace=tutorial</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Then clone the git repository</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git clone https://github.com/sfeir/kubernetes-istio-workshop
-cd istio-tutorial</code></pre>
-</div>
+<p>Make sure yout are in the <code>kubernetes-istio-workshop</code> directory.</p>
 </div>
 <div class="paragraph">
 <p>Start deploying the microservice projects, starting with customer</p>
 </div>
 <div class="sect2">
-<h3 id="_deploy_customer"><a class="anchor" href="#_deploy_customer"></a>Deploy Customer</h3>
+<h3 id="deploycustomer"><a class="anchor" href="#deploycustomer"></a>Deploy Customer</h3>
 <div class="paragraph">
 <p>Now let&#8217;s deploy the customer pod with its sidecar</p>
 </div>
@@ -369,20 +356,122 @@ cd istio-tutorial</code></pre>
 <div class="paragraph">
 <p>Since the <code>customer</code> service is the one our users will interact with, you need to make it accessible from outside of your Kubernetes cluster. An Istio <a href="https://istio.io/docs/concepts/traffic-management/#gateways">Gateway</a> is used for this purpose.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/gateway/customer-gateway.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Wait until the status is <code>Running</code> and there are <code>2/2</code> pods in the <code>Ready</code> column. To exit, press <code>Ctrl+C</code></p>
-</div>
-<div class="paragraph">
-<p>Then test the customer endpoint</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Define the ingress gateway for the application:</p>
+</li>
+</ol>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL</code></pre>
+<pre>kubectl apply -f manifests/istio/gateway/customer-gateway.yml</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the following definition, every hit to <code>/</code> (<code>prefix : /</code>) will be routed to the service customer (<code>host: customer</code>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: customer-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: customer-gateway
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - customer-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: customer
+        port:
+          number: 8080</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Confirm the gateway has been created:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get gateway</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>set the <code>INGRESS_HOST</code> and <code>INGRESS_PORT</code> variables for accessing the gateway :</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Execute the following command to make sure that the External-IP of the gateway is not in &lt;pending&gt; state.</p>
+</div>
+<div class="paragraph">
+<p>Set the ingress IP and ports:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Set GATEWAY_URL:</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Proceed to Confirm the app is running, below.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>$ curl -o /dev/null -s -w "%{http_code}\n" <a href="http://${GATEWAY_URL}/" class="bare">http://${GATEWAY_URL}/</a></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Then test the customer endpoint. Because of the route defined in the VirtualService, the URL of the customer service is the same as the URL of the gateway.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export CUSTOMER_URL=$GATEWAY_URL
+
+curl $CUSTOMER_URL</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -390,7 +479,7 @@ cd istio-tutorial</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>customer =&gt; I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -398,7 +487,7 @@ cd istio-tutorial</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">stern customer -c customer</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs -l app=customer -c customer</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -463,7 +552,7 @@ We could make this a bit more resilient in a future iteration of this tutorial
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">stern preference -c preference</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs -l app=preference -c preference</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -487,7 +576,7 @@ We could make this a bit more resilient in a future iteration of this tutorial
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-The tag <code>v1</code> at the end of the image name matters. We will be creating a <code>v2</code> version of <code>recommendation</code> later in this tutorial. Having both a <code>v1</code> and <code>v2</code> version of the <code>recommendation</code> code will allow us to exercise some interesting aspects of Istio&#8217;s capabilities.
+The tag <code>v1</code> at the end of the image name matters. We will be using a <code>v2</code> version of <code>recommendation</code> later in this tutorial. Having both a <code>v1</code> and <code>v2</code> version of the <code>recommendation</code> code will allow us to exercise some interesting aspects of Istio&#8217;s capabilities.
 </td>
 </tr>
 </table>
@@ -520,7 +609,7 @@ The tag <code>v1</code> at the end of the image name matters. We will be creatin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">stern recommendation -c recommendation</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs -l app=recommendation -c recommendation</code></pre>
 </div>
 </div>
 </div>
