@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setup :: Kubernetes &amp; Istio Workshop</title>
+    <title>Setup Istio :: Kubernetes &amp; Istio Workshop</title>
     <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/01_setup.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
@@ -56,6 +56,9 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <span class="nav-text">Part 1 : kubernetes</span>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../kubernetes/01_setup.html">1. Setup</a>
   </li>
 </ul>
   </li>
@@ -317,248 +320,149 @@
   <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/01_setup.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1>Setup</h1>
+<h1>Setup Istio</h1>
 <div class="sect1">
-<h2 id="prerequisite"><a class="anchor" href="#prerequisite"></a>Prerequisite CLI tools</h2>
+<h2 id="summary"><a class="anchor" href="#summary"></a>Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You will need in this tutorial:</p>
+<p>In this lab, you will learn how to install and configure Istio, on Google Kubernetes Engine.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>minishift</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://github.com/minishift/minishift/releases">Mac OS and Fedora</a></p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>docker</p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://www.docker.com/docker-mac">Mac OS</a></p>
-</li>
-<li>
-<p>Fedora: <code>dnf install docker</code></p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>kubectl</p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-binary-via-curl">Mac OS</a></p>
-</li>
-<li>
-<p>Fedora: <code>dnf install kubernetes-client</code></p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>oc (eval $(minishift oc-env))</code></p>
-</li>
-<li>
-<p>Apache Maven</p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://archive.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz">Mac OS</a></p>
-</li>
-<li>
-<p>Fedora: <code>dnf install maven</code></p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><a href="https://github.com/wercker/stern">stern</a></p>
-<div class="ulist">
-<ul>
-<li>
-<p>Mac OS: <code>brew install stern</code></p>
-</li>
-<li>
-<p>Fedora: <code>sudo curl --output /usr/local/bin/stern -L <a href="https://github.com/wercker/stern/releases/download/1.6.0/stern_linux_amd64" class="bare">https://github.com/wercker/stern/releases/download/1.6.0/stern_linux_amd64</a> &amp;&amp; sudo chmod +x /usr/local/bin/stern</code></p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>istioctl (will be installed via the steps below)</p>
-</li>
-<li>
-<p><code>curl</code>, <code>gunzip</code>, <code>tar</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>Mac OS: built-in or part of your bash shell</p>
-</li>
-<li>
-<p>Fedora: should also be installed already, but just in case&#8230;&#8203; <code>dnf install curl gzip tar</code></p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>git</p>
-<div class="ulist">
-<ul>
-<li>
-<p><code>dnf install git</code></p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="minishift"><a class="anchor" href="#minishift"></a>Setup minishift</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>Assumes <code>minishift</code>, tested with minishift v1.22.0+7163416</p>
+<p>This setup est based on the official <a href="https://istio.io/docs/setup/kubernetes/quick-start-gke-dm/">setup</a> documentation.</p>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites</h3>
+<div class="paragraph">
+<p>We will install Istio with Google Cloud Deployment Manager an automation tool for deploying cloud resources.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Ensure that the Kubernetes Engine API is enabled :</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">#!/bin/bash
-
-# add the location of minishift executable to PATH
-# I also keep other handy tools like kubectl and kubetail.sh
-# in that directory
-
-minishift profile set istio-tutorial
-minishift config set memory 8GB
-minishift config set cpus 3
-minishift config set vm-driver virtualbox ## or kvm, for Fedora
-minishift config set image-caching true
-minishift addon enable admin-user
-minishift addon enable anyuid
-
-minishift start</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="environment"><a class="anchor" href="#environment"></a>Setup environment</h2>
-<div class="sectionbody">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">eval $(minishift oc-env)
-eval $(minishift docker-env)
-oc login $(minishift ip):8443 -u admin -p admin</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-In this tutorial, you will often be polling the customer endpoint with <code>curl</code>, while simultaneously viewing logs via <code>stern</code> or <code>kubetail.sh</code> and issuing commands via <code>oc</code> and <code>istioctl</code>. Consider using three terminal windows.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="istioinstallation"><a class="anchor" href="#istioinstallation"></a>Istio installation script</h2>
-<div class="sectionbody">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">#!/bin/bash
-
-# Mac OS:
-curl -L https://github.com/istio/istio/releases/download/1.0.0/istio-1.0.0-osx.tar.gz | tar xz
-
-# Fedora:
-curl -L https://github.com/istio/istio/releases/download/1.0.0/istio-1.0.0-linux.tar.gz | tar xz
-
-# Both:
-cd istio-1.0.0
-export ISTIO_HOME=`pwd`
-export PATH=$ISTIO_HOME/bin:$PATH</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f install/kubernetes/helm/istio/templates/crds.yaml
-or
-kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
-
-
-oc apply -f install/kubernetes/istio-demo.yaml
-or
-kubectl apply -f install/kubernetes/istio-demo.yaml
-
-oc project istio-system
-or
-kubectl config set-context $(kubectl config current-context) --namespace=istio-system
-
-oc expose svc istio-ingressgateway
-oc expose svc servicegraph
-oc expose svc grafana
-oc expose svc prometheus
-oc expose svc tracing</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud services enable container.googleapis.com</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Wait for Istio&#8217;s components to be ready</p>
+<p>To make the installation succeed, you must grant your <strong>default compute service</strong> the following role: <code>role/container.admin</code> (Kubernetes Engine Admin)</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ kubectl get pods -w
-or
-$ kubectl get pods -w
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Make sure that the environment variable is not null
+$PROJECT_ID
 
-NAME                                        READY     STATUS      RESTARTS   AGE
-grafana-6995b4fbd7-ntp4f                    1/1       Running     0          57m
-istio-citadel-54f4678f86-jnv5s              1/1       Running     0          57m
-istio-cleanup-secrets-nch4k                 0/1       Completed   0          57m
-istio-egressgateway-5d7f8fcc7b-r76gg        1/1       Running     0          57m
-istio-galley-7bd8b5f88f-nlczb               1/1       Running     0          57m
-istio-grafana-post-install-lffq2            0/1       Completed   0          57m
-istio-ingressgateway-6f58fdc8d7-gbzzq       1/1       Running     0          57m
-istio-pilot-d99689994-zh66q                 2/2       Running     0          57m
-istio-policy-766bf4bd6d-skwkp               2/2       Running     0          57m
-istio-sidecar-injector-85ccf84984-crmhv     1/1       Running     0          57m
-istio-statsd-prom-bridge-55965ff9c8-76nx4   1/1       Running     0          57m
-istio-telemetry-55b6b5bbc7-qmf2l            2/2       Running     0          57m
-istio-tracing-77f9f94b98-kknh7              1/1       Running     0          57m
-prometheus-7456f56c96-nxdvv                 1/1       Running     0          57m
-servicegraph-684c85ffb9-f7tjp               1/1       Running     2          57m</code></pre>
+# Extract the project number
+PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='value(projectNumber)')
+
+# Grant the roles/container.admin role to the service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+     --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+     --role=roles/container.admin</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deploy_a_new_cluster_with_istio_installed"><a class="anchor" href="#_deploy_a_new_cluster_with_istio_installed"></a>Deploy a new cluster with Istio installed</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Make sure your are in the <code>kubernetes-istio-workshop</code> directory :</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud deployment-manager deployments create istio-cluster --config=src/infrastructure/istio/gcp/deployment_manager/istio-cluster.yaml
+
+The fingerprint of the deployment is 2_hGqA74DjtdLmJDsXp5jg==
+Waiting for update [operation-1540035229383-578a764c9f958-7310630b-4488428e]...done.
+Update operation operation-1540035229383-578a764c9f958-7310630b-4488428e completed successfully.
+NAME                                TYPE                          STATE      ERRORS  INTENT
+istio-cluster                       container.v1.cluster          COMPLETED  []
+istio-cluster-istio-cluster-config  runtimeconfig.v1beta1.config  COMPLETED  []
+istio-cluster-istio-cluster-vm      compute.v1.instance           COMPLETED  []
+istio-cluster-istio-cluster-waiter  runtimeconfig.v1beta1.waiter  COMPLETED  []</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And if you need quick access to the OpenShift console</p>
+<p>By default the tool creates a GKE cluster with the specified settings in the <code>istio-cluster.yaml</code> file, then installs the Istio control plane, <a href="https://istio.io/docs/tasks/telemetry/using-istio-dashboard/">Grafana</a> with <a href="https://istio.io/docs/tasks/telemetry/querying-metrics/">Prometheus</a>, <a href="https://istio.io/docs/tasks/telemetry/servicegraph/">ServiceGraph</a>, and <a href="https://istio.io/docs/tasks/telemetry/distributed-tracing/">Tracing</a>. You’ll find out more about how to access all of these below. This script will enable Istio auto-injection on the default namespace only.</p>
+</div>
+<div class="paragraph">
+<p>Wait until Istio is fully deployed. Note that the Istio installation can take up to five minutes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bootstrap_gcloud"><a class="anchor" href="#_bootstrap_gcloud"></a>Bootstrap gcloud</h3>
+<div class="paragraph">
+<p>Once deployment is complete, do the following on Cloud Shell :</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Bootstrap kubectl for the cluster you just created and confirm the cluster is running and Istio is enabled</p>
+</li>
+</ol>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">minishift console</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud container clusters list
+
+NAME           LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION  NUM_NODES  STATUS
+istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9.7-gke.6   3          RUNNING</code></pre>
 </div>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-On your first launch of the OpenShift console via <code>minishift</code>, you will receive a warning like "Your connection is not private". For our demo, simply select "Proceed to 192.168.xx.xx (unsafe)" to bypass the warning. Both the username and the password are set to <code>admin</code>, thanks to the <code>admin-user</code> add-on.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>In this case, the cluster name is istio-cluster.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Now acquire the credentials for the cluster.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud container clusters get-credentials istio-cluster</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify_installation"><a class="anchor" href="#_verify_installation"></a>Verify installation</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployments -n istio-system
+
+NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+grafana                    1         1         1            1           3h
+istio-citadel              1         1         1            1           3h
+istio-egressgateway        1         1         1            1           3h
+istio-galley               1         1         1            1           3h
+istio-ingressgateway       1         1         1            1           3h
+istio-pilot                1         1         1            1           3h
+istio-policy               1         1         1            1           3h
+istio-sidecar-injector     1         1         1            1           3h
+istio-statsd-prom-bridge   1         1         1            1           3h
+istio-telemetry            1         1         1            1           3h
+istio-tracing              1         1         1            1           3h
+prometheus                 1         1         1            1           3h
+servicegraph               1         1         1            1           3h</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now get the istio-ingress IP:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get svc istio-ingressgateway -n istio-system
+NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                                                                                                                   AGE
+istio-ingressgateway   LoadBalancer   10.3.252.238   35.195.185.0   80:31380/TCP,443:31390/TCP,31400:31400/TCP,15011:30934/TCP,8060:32220/TCP,853:32629/TCP,15030:32723/TCP,15031:30918/TCP   3h</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>

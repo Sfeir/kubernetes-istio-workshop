@@ -1,0 +1,15 @@
+=== Google Cloud Shell
+
+ In this workshop we will be using https://cloud.google.com/shell/docs/[Google Cloud Shell], a command line environment running in the Cloud.
+
+ Cloud Shell is a Debian-based virtual machine is provisionned with all the development tools you'll need (Kubernetes, Docker, Python, Java, Node, etc.). It offers a persistent 5GB home directory. This means that all you will need for this workshop is a browser.
+
+=== Setup Cloud Shell
+- Set default project
+    gcloud config set project $USER-k8s-istio-workshop
+- Set default region/zone
+    gcloud config set compute/region europe-west1
+    gcloud config set compute/zone europe-west1-b
+- Clone the repository
+    git clone https://github.com/Sfeir/kubernetes-istio-workshop.git
+    cd kubernetes-istio-workshop

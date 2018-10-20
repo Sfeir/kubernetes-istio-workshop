@@ -1,143 +1,112 @@
-= Setup
+= Setup Istio
 include::_attributes.adoc[]
 
-[#prerequisite]
-== Prerequisite CLI tools
+[#summary]
+== Summary
+In this lab, you will learn how to install and configure Istio, on Google Kubernetes Engine.
 
-You will need in this tutorial:
+This setup est based on the official https://istio.io/docs/setup/kubernetes/quick-start-gke-dm/[setup] documentation.
 
-* `minishift`
-** https://github.com/minishift/minishift/releases[Mac OS and Fedora]
-* docker
-** https://www.docker.com/docker-mac[Mac OS]
-** Fedora: `dnf install docker`
-* kubectl
-** https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-binary-via-curl[Mac OS]
-** Fedora: `dnf install kubernetes-client`
-* `oc (eval $(minishift oc-env))`
-* Apache Maven
-** https://archive.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz[Mac OS]
-** Fedora: `dnf install maven`
-* link:https://github.com/wercker/stern[stern]
-** Mac OS: `brew install stern`
-** Fedora: `sudo curl --output /usr/local/bin/stern -L https://github.com/wercker/stern/releases/download/1.6.0/stern_linux_amd64 && sudo chmod +x /usr/local/bin/stern`
-* istioctl (will be installed via the steps below)
-* `curl`, `gunzip`, `tar`
-** Mac OS: built-in or part of your bash shell
-** Fedora: should also be installed already, but just in case... `dnf install curl gzip tar`
-* git
-** `dnf install git`
+=== Prerequisites
 
-[#minishift]
-== Setup minishift
+We will install Istio with Google Cloud Deployment Manager an automation tool for deploying cloud resources.
 
-Assumes `minishift`, tested with minishift v1.22.0+7163416
+- Ensure that the Kubernetes Engine API is enabled :
 
-[source,bash]
+[source, bash]
 ----
-#!/bin/bash
-
-# add the location of minishift executable to PATH
-# I also keep other handy tools like kubectl and kubetail.sh
-# in that directory
-
-minishift profile set istio-tutorial
-minishift config set memory 8GB
-minishift config set cpus 3
-minishift config set vm-driver virtualbox ## or kvm, for Fedora
-minishift config set image-caching true
-minishift addon enable admin-user
-minishift addon enable anyuid
-
-minishift start
+gcloud services enable container.googleapis.com
 ----
 
-[#environment]
-== Setup environment
+To make the installation succeed, you must grant your *default compute service* the following role: `role/container.admin` (Kubernetes Engine Admin)
 
-[source,bash]
+[source, bash]
 ----
-eval $(minishift oc-env)
-eval $(minishift docker-env)
-oc login $(minishift ip):8443 -u admin -p admin
-----
+# Make sure that the environment variable is not null
+$PROJECT_ID
 
-NOTE: In this tutorial, you will often be polling the customer endpoint with `curl`, while simultaneously viewing logs via `stern` or `kubetail.sh` and issuing commands via `oc` and `istioctl`. Consider using three terminal windows.
+# Extract the project number
+PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='value(projectNumber)')
 
-[#istioinstallation]
-== Istio installation script
-
-[source,bash]
-----
-#!/bin/bash
-
-# Mac OS:
-curl -L https://github.com/istio/istio/releases/download/1.0.0/istio-1.0.0-osx.tar.gz | tar xz
-
-# Fedora:
-curl -L https://github.com/istio/istio/releases/download/1.0.0/istio-1.0.0-linux.tar.gz | tar xz
-
-# Both:
-cd istio-1.0.0
-export ISTIO_HOME=`pwd`
-export PATH=$ISTIO_HOME/bin:$PATH
-
+# Grant the roles/container.admin role to the service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+     --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+     --role=roles/container.admin
 ----
 
-[source,bash]
+=== Deploy a new cluster with Istio installed
+
+- Make sure your are in the ``kubernetes-istio-workshop`` directory :
+
+[source, bash]
+----
+gcloud deployment-manager deployments create istio-cluster --config=src/infrastructure/istio/gcp/deployment_manager/istio-cluster.yaml
+
+The fingerprint of the deployment is 2_hGqA74DjtdLmJDsXp5jg==
+Waiting for update [operation-1540035229383-578a764c9f958-7310630b-4488428e]...done.
+Update operation operation-1540035229383-578a764c9f958-7310630b-4488428e completed successfully.
+NAME                                TYPE                          STATE      ERRORS  INTENT
+istio-cluster                       container.v1.cluster          COMPLETED  []
+istio-cluster-istio-cluster-config  runtimeconfig.v1beta1.config  COMPLETED  []
+istio-cluster-istio-cluster-vm      compute.v1.instance           COMPLETED  []
+istio-cluster-istio-cluster-waiter  runtimeconfig.v1beta1.waiter  COMPLETED  []
 ----
 
-oc apply -f install/kubernetes/helm/istio/templates/crds.yaml
-or
-kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
+By default the tool creates a GKE cluster with the specified settings in the ``istio-cluster.yaml`` file, then installs the Istio control plane, https://istio.io/docs/tasks/telemetry/using-istio-dashboard/[Grafana] with https://istio.io/docs/tasks/telemetry/querying-metrics/[Prometheus], https://istio.io/docs/tasks/telemetry/servicegraph/[ServiceGraph], and https://istio.io/docs/tasks/telemetry/distributed-tracing/[Tracing]. You’ll find out more about how to access all of these below. This script will enable Istio auto-injection on the default namespace only.
 
+Wait until Istio is fully deployed. Note that the Istio installation can take up to five minutes.
 
-oc apply -f install/kubernetes/istio-demo.yaml
-or
-kubectl apply -f install/kubernetes/istio-demo.yaml
+=== Bootstrap gcloud
 
-oc project istio-system
-or
-kubectl config set-context $(kubectl config current-context) --namespace=istio-system
+Once deployment is complete, do the following on Cloud Shell :
 
-oc expose svc istio-ingressgateway
-oc expose svc servicegraph
-oc expose svc grafana
-oc expose svc prometheus
-oc expose svc tracing
+1. Bootstrap kubectl for the cluster you just created and confirm the cluster is running and Istio is enabled
+
+[source, bash]
+----
+gcloud container clusters list
+
+NAME           LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION  NUM_NODES  STATUS
+istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9.7-gke.6   3          RUNNING
 ----
 
-Wait for Istio's components to be ready
+In this case, the cluster name is istio-cluster.
 
-[source,bash]
+1. Now acquire the credentials for the cluster.
+
+[source, bash]
 ----
-$ kubectl get pods -w
-or
-$ kubectl get pods -w
-
-NAME                                        READY     STATUS      RESTARTS   AGE
-grafana-6995b4fbd7-ntp4f                    1/1       Running     0          57m
-istio-citadel-54f4678f86-jnv5s              1/1       Running     0          57m
-istio-cleanup-secrets-nch4k                 0/1       Completed   0          57m
-istio-egressgateway-5d7f8fcc7b-r76gg        1/1       Running     0          57m
-istio-galley-7bd8b5f88f-nlczb               1/1       Running     0          57m
-istio-grafana-post-install-lffq2            0/1       Completed   0          57m
-istio-ingressgateway-6f58fdc8d7-gbzzq       1/1       Running     0          57m
-istio-pilot-d99689994-zh66q                 2/2       Running     0          57m
-istio-policy-766bf4bd6d-skwkp               2/2       Running     0          57m
-istio-sidecar-injector-85ccf84984-crmhv     1/1       Running     0          57m
-istio-statsd-prom-bridge-55965ff9c8-76nx4   1/1       Running     0          57m
-istio-telemetry-55b6b5bbc7-qmf2l            2/2       Running     0          57m
-istio-tracing-77f9f94b98-kknh7              1/1       Running     0          57m
-prometheus-7456f56c96-nxdvv                 1/1       Running     0          57m
-servicegraph-684c85ffb9-f7tjp               1/1       Running     2          57m
+gcloud container clusters get-credentials istio-cluster
 ----
 
-And if you need quick access to the OpenShift console
+=== Verify installation
 
-[source,bash]
+[source, bash]
 ----
-minishift console
+kubectl get deployments -n istio-system
+
+NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+grafana                    1         1         1            1           3h
+istio-citadel              1         1         1            1           3h
+istio-egressgateway        1         1         1            1           3h
+istio-galley               1         1         1            1           3h
+istio-ingressgateway       1         1         1            1           3h
+istio-pilot                1         1         1            1           3h
+istio-policy               1         1         1            1           3h
+istio-sidecar-injector     1         1         1            1           3h
+istio-statsd-prom-bridge   1         1         1            1           3h
+istio-telemetry            1         1         1            1           3h
+istio-tracing              1         1         1            1           3h
+prometheus                 1         1         1            1           3h
+servicegraph               1         1         1            1           3h
 ----
 
-NOTE: On your first launch of the OpenShift console via `minishift`, you will receive a warning like "Your connection is not private". For our demo, simply select "Proceed to 192.168.xx.xx (unsafe)" to bypass the warning. Both the username and the password are set to `admin`, thanks to the `admin-user` add-on.
+
+Now get the istio-ingress IP:
+
+[source, bash]
+----
+kubectl get svc istio-ingressgateway -n istio-system
+NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                                                                                                                   AGE
+istio-ingressgateway   LoadBalancer   10.3.252.238   35.195.185.0   80:31380/TCP,443:31390/TCP,31400:31400/TCP,15011:30934/TCP,8060:32220/TCP,853:32629/TCP,15030:32723/TCP,15031:30918/TCP   3h
+----
