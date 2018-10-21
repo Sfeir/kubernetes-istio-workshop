@@ -111,9 +111,6 @@
     <a class="nav-link" href="03_monitoring-tracing.html#monitoring">Monitoring</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="03_monitoring-tracing.html#custommetrics">Custom Metrics</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="03_monitoring-tracing.html#tracing">Tracing</a>
   </li>
 </ul>
@@ -356,16 +353,12 @@ kubectl config set-context $(kubectl config current-context) --namespace=tutoria
 <div class="paragraph">
 <p>Since the <code>customer</code> service is the one our users will interact with, you need to make it accessible from outside of your Kubernetes cluster. An Istio <a href="https://istio.io/docs/concepts/traffic-management/#gateways">Gateway</a> is used for this purpose.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Define the ingress gateway for the application:</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>1- Define the ingress gateway for the application:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>kubectl apply -f manifests/istio/gateway/customer-gateway.yml</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/gateway/customer-gateway.yml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -408,24 +401,16 @@ spec:
           number: 8080</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Confirm the gateway has been created:</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>2- Confirm the gateway has been created:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get gateway</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>set the <code>INGRESS_HOST</code> and <code>INGRESS_PORT</code> variables for accessing the gateway :</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>3- set the <code>INGRESS_HOST</code> and <code>INGRESS_PORT</code> variables for accessing the gateway :</p>
 </div>
 <div class="paragraph">
 <p>Execute the following command to make sure that the External-IP of the gateway is not in &lt;pending&gt; state.</p>
@@ -440,32 +425,24 @@ export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Set GATEWAY_URL:</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>4- Set GATEWAY_URL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT</p>
+<p>5- Proceed to confirm the app is running, below.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Proceed to Confirm the app is running, below.</p>
-</li>
-</ol>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>$ curl -o /dev/null -s -w "%{http_code}\n" <a href="http://${GATEWAY_URL}/" class="bare">http://${GATEWAY_URL}/</a></p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Then test the customer endpoint. Because of the route defined in the VirtualService, the URL of the customer service is the same as the URL of the gateway.</p>
-</li>
-</ol>
+<p>6- Then test the customer endpoint. Because of the route defined in the VirtualService, the URL of the customer service is the same as the URL of the gateway.</p>
 </div>
 <div class="listingblock">
 <div class="content">
