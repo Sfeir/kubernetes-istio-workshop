@@ -32,7 +32,7 @@ kubectl apply -f manifests/kubernetes/customer.yml
 Since the `customer` service is the one our users will interact with, you need to make it accessible from outside of your Kubernetes cluster. An Istio https://istio.io/docs/concepts/traffic-management/#gateways[Gateway] is used for this purpose.
 
 
-1. Define the ingress gateway for the application:
+1- Define the ingress gateway for the application:
 [source,bash]
 ----
 kubectl apply -f manifests/istio/gateway/customer-gateway.yml
@@ -77,14 +77,14 @@ spec:
 
 ----
 
-2. Confirm the gateway has been created:
+2- Confirm the gateway has been created:
 
 [source,bash]
 ----
 kubectl get gateway
 ----
 
-3. set the ``INGRESS_HOST`` and ``INGRESS_PORT`` variables for accessing the gateway :
+3- set the ``INGRESS_HOST`` and ``INGRESS_PORT`` variables for accessing the gateway :
 
 Execute the following command to make sure that the External-IP of the gateway is not in <pending> state.
 
@@ -97,15 +97,21 @@ export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -
 export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
 ----
 
-4. Set GATEWAY_URL:
+4- Set GATEWAY_URL:
 
+[source,bash]
+----
 export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+----
 
-5. Proceed to Confirm the app is running, below.
+5- Proceed to confirm the app is running, below.
 
-$ curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/
+[source,bash]
+----
+curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/
+----
 
-6. Then test the customer endpoint. Because of the route defined in the VirtualService, the URL of the customer service is the same as the URL of the gateway.
+6- Then test the customer endpoint. Because of the route defined in the VirtualService, the URL of the customer service is the same as the URL of the gateway.
 
 [source,bash]
 ----
