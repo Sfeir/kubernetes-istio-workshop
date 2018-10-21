@@ -4,90 +4,141 @@ include::_attributes.adoc[]
 [IMPORTANT]
 .Before Start
 ====
-The following dashboards are not directly accessible, we need to use a proxy by using ``kubectl prot-forward``.
+The various dashboards that we will see in this lab are not accessible outside the cluster (for obvious security reasons). To display them we need to use ``kubectl port-forward`` to create a tunnel to those services and view them as if they were on localhost.
 
-To do that on Cloud Shell, we'll use the *Web Preview* feature.
-
-To use Web Preview, click the Web Preview button and then select the port number from the displayed menu. Cloud Shell opens the preview URL on its proxy service in a new browser window.
-
-You can simultaneously preview four other consoles via Web Preview proxied on ranges 8080 to 8084.
+To display services running on localhost on Cloud Shell, it provides a feature called *Web Preview*. We will show you how to use it a little further in the document.
 ====
 
 [#monitoring]
 == Monitoring
 
-Out of the box, you get monitoring via Prometheus and Grafana.
+First examine the Istio running services, and notice the presence of the following services : ``grafana``, ``prometheus``, ``jaeger-query`` and ``servicegraph``.
 
 [source,bash]
 ----
-open "$(minishift openshift service grafana -u)/d/1/istio-dashboard?refresh=5s&orgId=1"
-
-kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana -o jsonpath='{.items[0].metadata.name}') 3000:3000 &
-
+kubectl get services -n istio-system
 ----
 
-image:grafana1.png[alt text]
+Output.
 
 [source,bash]
 ----
-open "$(minishift openshift service grafana -u)/d/UbsSZTDik/istio-workload-dashboard?refresh=5s&orgId=1"
+NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                                                                                                                   AGE
+grafana                    ClusterIP      10.3.255.100   <none>          3000/TCP                                                                                                                  13h
+...
+jaeger-query               ClusterIP      10.3.242.194   <none>          16686/TCP                                                                                                                 13h
+prometheus                 ClusterIP      10.3.247.5     <none>          9090/TCP                                                                                                                  13h
+servicegraph               ClusterIP      10.3.247.56    <none>          8088/TCP                                                                                                                  13h
+...
 ----
 
-to check the "Workload of the services"
+=== Grafana
 
-image:grafana2.png[alt text]
+- Set up a tunnel to Grafana.
 
-[#custommetrics]
-== Custom Metrics
-
-Istio also allows you to specify custom metrics which can be seen inside of the Prometheus dashboard
+NOTE: The Grafana service is running on port ``3000``. In the following command we port-forward the remote port ``3000`` to the local port ``3000``. If the local port were different, say 8080, we would write ``8080:3000``.
 
 [source,bash]
 ----
-open "$(minishift openshift service prometheus -u)/graph?g0.range_input=5m&g0.expr=&g0.tab=0"
+kubectl -n istio-system port-forward service/grafana 3000:3000 &
 ----
 
-Add the custom metric and rule. First make sure you are in the "istio-tutorial" directory and then
+- Display the Grafana dashboard
 
-[source,bash]
+In Cloud Shell, click on Web Preview,
+image:cloud-shell-change-port1.png[Run Web Preview]
+
+then change the default port to ``3000``.
+image:cloud-shell-change-port2.png[Change the port]
+
+The browser will then open a new window displaying the following URL:
+
+[source]
 ----
-kubectl apply -f manifests/istio/recommendation_requestcount.yml -n istio-system
+https://3000-dot-XXXX-dot-devshell.appspot.com/?authuser=0&orgId=1
 ----
 
-In the Prometheus dashboard, add the following
+Replace the path of the URL by ``/d/1/istio-mesh-dashboard``. The URL should look like:
 
-[source,bash]
+[source]
+----
+https://3000-dot-XXXX-dot-devshell.appspot.com/d/1/istio-mesh-dashboard
+
+or
+
+http://localhost:3000/d/1/istio-mesh-dashboard
+----
+
+Examine the dashboard, you should see some statistics for the requests you sent earlier.
+
+image:grafana.png[alt text]
+
+
+=== Prometheus
+
+As you did with Grafana, use the ``port-fowarding`` to display the Prometheus console.
+
+*Hint*: start by finding the Prometheus port.
+
+The Prometheus console should be like this.
+
+image:prometheus1.png[alt text]
+
+Let enter a query the display the total requests sent to the ``recommendation`` service:
+
+Enter:
+
+[source]
 ----
 istio_requests_total{destination_service="recommendation.tutorial.svc.cluster.local"}
 ----
 
-and select `Execute`
-
-image:prometheus_custom_metric.png[alt text]
-
-Then run several requests through the system
+select `Execute`, and run several requests through the system
 
 [source,bash]
 ----
 while true; do curl $CUSTOMER_URL; sleep .5;  done
 ----
 
-NOTE: You may have to refresh the browser for the Prometheus graph to update. And you may wish to make the interval 5m (5 minutes) as seen in the screenshot above.
+Click on the *Graph* to display the graph corresponing to this query.
+
+image:prometheus2.png[alt text]
+
+NOTE: You may have to refresh the browser for the Prometheus graph to update.
+
+== ServiceGraph
+
+- Set up a tunnel to ServiceGraph.
+
+- You should see the service topology at:
+
+[source]
+----
+https://3088-dot-XXXX-dot-devshell.appspot.com/dotviz
+
+or
+
+http://localhost:8088/dotviz
+----
+
+
+image:servicegraph.png[alt text]
 
 [#tracing]
 == Tracing
 
-Distributed Tracing involves propagating the tracing context from service to service, usually done by sending certain incoming HTTP headers downstream to outbound requests. For services embedding a http://opentracing.io/[OpenTracing] framework instrumentations such as https://github.com/opentracing-contrib/java-spring-cloud[opentracing-spring-cloud], this might be transparent. For services that are not embedding OpenTracing libraries, this context propagation needs to be done manually.
+- Set up a tunnel to the tracing dashboard.
+- You should see the trace statistics.
 
-As OpenTracing is "just" an instrumentation library, a concrete tracer is required in order to actually capture the tracing data and report it to a remote server. Our `customer` and `preference` services ship with http://jaegertracing.io/[Jaeger] as the concrete tracer. the Istio platform automatically sends collected tracing data to Jaeger, so that we are able to see a trace involving all three services, even if our `recommendation` service is not aware of OpenTracing or Jaeger at all.
-
-Our `customer` and `preference` services are using the https://github.com/jaegertracing/jaeger-client-java/tree/master/jaeger-tracerresolver[`TracerResolver`] facility from OpenTracing, so that the concrete tracer can be loaded automatically without our code having a hard dependency on Jaeger. Given that the Jaeger tracer can be configured via environment variables, we don't need to do anything in order to get a properly configured Jaeger tracer ready and registered with OpenTracing. That said, there are cases where it's appropriate to manually configure a tracer. Refer to the Jaeger documentation for more information on how to do that.
-
-Let's open the Jaeger console, select `customer` from the list of services and click `Find Traces`
-
-[source,bash]
+[source]
 ----
-minishift openshift service tracing --in-browser
+https://16686-dot-XXXX-dot-devshell.appspot.com/
+
+or
+
+http://localhost:16686/
 ----
 
-image:jaegerUI.png[Trace as seen in Jaeger]
+image:jaeger1.png[Trace as seen in Jaeger]
+
+image:jaeger2.png[Trace as seen in Jaeger]

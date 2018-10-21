@@ -14,7 +14,6 @@
 
 * xref:03_monitoring-tracing.adoc[3. Monitoring and Tracing]
 ** xref:03_monitoring-tracing.adoc#monitoring[Monitoring]
-** xref:03_monitoring-tracing.adoc#custommetrics[Custom Metrics]
 ** xref:03_monitoring-tracing.adoc#tracing[Tracing]
 
 * xref:04_simple-routerules.adoc[4. Simple Routing]
