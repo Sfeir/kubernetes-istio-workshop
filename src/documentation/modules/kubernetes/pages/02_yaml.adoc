@@ -1,0 +1,18 @@
+= Orchestration as Code
+include::_attributes.adoc[]
+
+
+== Yet Another Markup Language
+
+
+== Explain
+
+**TODO:** Explain how to use kubectl explain to get api documentation
+
+ kubectl explain pods
+ kubectl explain pods.spec
+ kubectl explain pods.spec.containers
+
+== Create customer.yaml
+
+Exercice : create file customer.yaml

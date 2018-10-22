@@ -1,0 +1,3 @@
+* **Welcome**
+** xref:welcome.adoc[1. Google Cloud Platform]
+** xref:welcome.adoc#cloud-shell[2. Setup Cloud Shell]

@@ -2,6 +2,7 @@ name: kubernetes-istio-workshop
 title: Kubernetes and Istio Workshop
 version: '1.0.0'
 nav:
+- modules/welcome/nav.adoc
 - modules/kubernetes/nav.adoc
 - modules/istio/nav.adoc
 start_page: ROOT:index.adoc
