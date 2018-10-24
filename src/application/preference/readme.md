@@ -49,23 +49,3 @@ preference => recommendation v1 from 'caju': 3
 And should generate a trace like this:
 
 ![Trace View](trace.png)
-
-Running on OpenShift
-====================
-
-The following commands will build a Docker image containing the application, create a Kubernetes `Deployment` and a corresponding `Service`, so that other services can discover the pods via the service name.
-
-```bash
-mvn clean package
-docker build -t example/preference .
-docker images | grep preference
-oc apply -f ../../kubernetes/Deployment.yml
-oc apply -f ../../kubernetes/Service.yml
-oc expose service preference
-```
-
-The last command will expose the service to the outside world, allowing you to make an HTTP call directly from your host machine:
-
-```
-curl http://preference-tutorial.127.0.0.1.nip.io/
-```

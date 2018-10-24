@@ -29,8 +29,8 @@
           <div class="navbar-link">Project</div>
           <div class="navbar-dropdown">
             <div class="navbar-item"><strong>GitHub</strong></div>
-            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop/">Istio Tutorial Repository</a>
-            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop//issues">Istio Tutorial Issue Tracker</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop/">Istio workshop Repository</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop//issues">Istio workshop Issue Tracker</a>
           </div>
         </div>
         <a class="navbar-item" href="https://twitter.com/sfeir">
@@ -120,9 +120,6 @@
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="#deployrecommendation">Deploy Recommendation</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#redeployingcode">Updating Redeploying Code</a>
   </li>
 </ul>
   </li>
@@ -340,7 +337,7 @@
     <li class="crumb"><a href="02_deploy-microservices.html">2. Deploy Microservices</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/02_deploy-microservices.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/02_deploy-microservices.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Deploy Microservices</h1>
@@ -348,13 +345,13 @@
 <h2 id="create-namespace"><a class="anchor" href="#create-namespace"></a>Create Namespace</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Create a namespace called <code>tutorial</code> and enable Istio sidecar injection.</p>
+<p>Create a namespace called <code>workshop</code> and enable Istio sidecar injection.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace tutorial
-kubectl label namespace tutorial istio-injection=enabled
-kubectl config set-context $(kubectl config current-context) --namespace=tutorial</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace workshop
+kubectl label namespace workshop istio-injection=enabled
+kubectl config set-context $(kubectl config current-context) --namespace=workshop</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -540,7 +537,7 @@ curl $CUSTOMER_URL</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-We could make this a bit more resilient in a future iteration of this tutorial
+We could make this a bit more resilient in a future iteration of this workshop
 </td>
 </tr>
 </table>
@@ -579,7 +576,7 @@ We could make this a bit more resilient in a future iteration of this tutorial
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-The tag <code>v1</code> at the end of the image name matters. We will be using a <code>v2</code> version of <code>recommendation</code> later in this tutorial. Having both a <code>v1</code> and <code>v2</code> version of the <code>recommendation</code> code will allow us to exercise some interesting aspects of Istio&#8217;s capabilities.
+The tag <code>v1</code> at the end of the image name matters. We will be using a <code>v2</code> version of <code>recommendation</code> later in this workshop. Having both a <code>v1</code> and <code>v2</code> version of the <code>recommendation</code> code will allow us to exercise some interesting aspects of Istio&#8217;s capabilities.
 </td>
 </tr>
 </table>

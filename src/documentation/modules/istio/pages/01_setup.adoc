@@ -3,14 +3,21 @@ include::_attributes.adoc[]
 
 [#summary]
 == Summary
-In this lab, you will learn how to install and configure Istio, on Google Kubernetes Engine.
+In this lab, you will learn how to install and configure Istio, on _Google Kubernetes Engine_.
 
-This setup est based on the official https://istio.io/docs/setup/kubernetes/quick-start-gke-dm/[setup] documentation.
+[IMPORTANT]
+.Before you begin, make sure that:
+====
+- You already created a GCP project and the envrionement variable ``$PROJECT_ID`` is set.
+- You already cloned the directory : ``https://github.com/Sfeir/kubernetes-istio-workshop`` and all operations must take place into the root of the ``kubernetes-istio-workshop`` directory.
+====
+
+
 
 [#prerequisites]
 == Prerequisites
 
-We will install Istio with Google Cloud Deployment Manager an automation tool for deploying cloud resources.
+You will install Istio with https://cloud.google.com/deployment-manager/docs/[Google Cloud Deployment Manager] an automation tool for deploying cloud resources.
 
 - Ensure that the Kubernetes Engine API is enabled :
 
@@ -19,12 +26,12 @@ We will install Istio with Google Cloud Deployment Manager an automation tool fo
 gcloud services enable container.googleapis.com
 ----
 
-To make the installation succeed, you must grant your *default compute service* the following role: `role/container.admin` (Kubernetes Engine Admin)
+- To make the installation succeed, you must grant your *default compute service account* the following role: `role/container.admin` (Kubernetes Engine Admin)
 
 [source, bash]
 ----
 # Make sure that the environment variable is not null
-$PROJECT_ID
+echo $PROJECT_ID
 
 # Extract the project number
 PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='value(projectNumber)')
@@ -38,12 +45,25 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 [#deploy-istio]
 == Deploy Istio
 
-- Make sure your are in the ``kubernetes-istio-workshop`` directory :
+[IMPORTANT]
+.Remember !
+====
+- All the commands must be run in the ``kubernetes-istio-workshop`` directory.
+====
 
 [source, bash]
 ----
 gcloud deployment-manager deployments create istio-cluster --config=src/infrastructure/istio/gcp/deployment_manager/istio-cluster.yaml
+----
 
+By default the tool creates a kubernetes cluster with the specified settings in the https://github.com/Sfeir/kubernetes-istio-workshop/blob/master/src/infrastructure/istio/gcp/deployment_manager/istio-cluster.yaml[istio-cluster.yaml] file, then installs the Istio control plane, https://istio.io/docs/tasks/telemetry/using-istio-dashboard/[Grafana] with https://istio.io/docs/tasks/telemetry/querying-metrics/[Prometheus], https://istio.io/docs/tasks/telemetry/servicegraph/[ServiceGraph], and https://istio.io/docs/tasks/telemetry/distributed-tracing/[Tracing]. You’ll find out more about how to access all of these in the next lab.
+
+⏳ Wait until Istio is fully deployed. Note that the Istio installation can take up to five minutes.
+
+Output.
+
+[source, bash]
+----
 The fingerprint of the deployment is 2_hGqA74DjtdLmJDsXp5jg==
 Waiting for update [operation-1540035229383-578a764c9f958-7310630b-4488428e]...done.
 Update operation operation-1540035229383-578a764c9f958-7310630b-4488428e completed successfully.
@@ -54,25 +74,25 @@ istio-cluster-istio-cluster-vm      compute.v1.instance           COMPLETED  []
 istio-cluster-istio-cluster-waiter  runtimeconfig.v1beta1.waiter  COMPLETED  []
 ----
 
-By default the tool creates a GKE cluster with the specified settings in the ``istio-cluster.yaml`` file, then installs the Istio control plane, https://istio.io/docs/tasks/telemetry/using-istio-dashboard/[Grafana] with https://istio.io/docs/tasks/telemetry/querying-metrics/[Prometheus], https://istio.io/docs/tasks/telemetry/servicegraph/[ServiceGraph], and https://istio.io/docs/tasks/telemetry/distributed-tracing/[Tracing]. You’ll find out more about how to access all of these below. This script will enable Istio auto-injection on the default namespace only.
-
-Wait until Istio is fully deployed. Note that the Istio installation can take up to five minutes.
-
 [#connect-cluster]
 == Connect to the cluster
 
-Once deployment is complete, do the following on Cloud Shell :
+Once the deployment is complete, do the following on Cloud Shell :
 
 1 - Bootstrap ``kubectl`` for the cluster you just created and confirm the cluster is running and Istio is enabled
 [source, bash]
 ----
 gcloud container clusters list
+----
 
+Output.
+[source, bash]
+----
 NAME           LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION  NUM_NODES  STATUS
 istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9.7-gke.6   3          RUNNING
 ----
 
-2 - Now acquire the credentials for the cluster.
+2 - Finally, acquire the credentials to connect to the cluster.
 
 [source, bash]
 ----
@@ -82,10 +102,18 @@ gcloud container clusters get-credentials istio-cluster
 [#verify-installation]
 == Verify installation
 
+Let's get the deployments (you can also get pods, services, etc.)
+
+⚠️ Do not forget to specify the Istio's namespace (``-n istio-system``).
+
 [source, bash]
 ----
 kubectl get deployments -n istio-system
+----
 
+Output.
+[source, bash]
+----
 NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 grafana                    1         1         1            1           3h
 istio-citadel              1         1         1            1           3h
@@ -102,12 +130,4 @@ prometheus                 1         1         1            1           3h
 servicegraph               1         1         1            1           3h
 ----
 
-
-Now get the istio-ingress IP:
-
-[source, bash]
-----
-kubectl get svc istio-ingressgateway -n istio-system
-NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                                                                                                                   AGE
-istio-ingressgateway   LoadBalancer   10.3.252.238   35.195.185.0   80:31380/TCP,443:31390/TCP,31400:31400/TCP,15011:30934/TCP,8060:32220/TCP,853:32629/TCP,15030:32723/TCP,15031:30918/TCP   3h
-----
+- Congratulations, you finished the lab !

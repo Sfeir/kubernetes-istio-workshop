@@ -90,7 +90,7 @@ Enter:
 
 [source]
 ----
-istio_requests_total{destination_service="recommendation.tutorial.svc.cluster.local"}
+istio_requests_total{destination_service="recommendation.workshop.svc.cluster.local"}
 ----
 
 select `Execute`, and run several requests through the system

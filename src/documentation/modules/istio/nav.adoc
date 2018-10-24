@@ -10,7 +10,6 @@
 *** xref:02_deploy-microservices.adoc#deploycustomer[Deploy Customer]
 *** xref:02_deploy-microservices.adoc#deploypreference[Deploy Preference]
 *** xref:02_deploy-microservices.adoc#deployrecommendation[Deploy Recommendation]
-*** xref:02_deploy-microservices.adoc#redeployingcode[Updating Redeploying Code]
 
 ** xref:03_monitoring-tracing.adoc[3. Monitoring and Tracing]
 *** xref:03_monitoring-tracing.adoc#monitoring[Monitoring]

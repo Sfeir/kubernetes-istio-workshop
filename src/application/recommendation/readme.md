@@ -41,23 +41,3 @@ Subsequent calls will respond with an HTTP Status Code 503. To get the service t
 ```
 curl http://localhost:8080/behave
 ```
-
-Running on OpenShift
-====================
-
-The following commands will build a Docker image containing the application, create a Kubernetes `Deployment` and a corresponding `Service`, so that other services can discover the pods via the service name.
-
-```bash
-mvn clean package
-docker build -t example/recommendation:v1 .
-docker images | grep recommendation
-oc apply -f ../../kubernetes/Deployment.yml
-oc apply -f ../../kubernetes/Service.yml
-oc expose service recommendation
-```
-
-The last command will expose the service to the outside world, allowing you to make an HTTP call directly from your host machine:
-
-```
-curl http://recommendation-tutorial.127.0.0.1.nip.io/
-```

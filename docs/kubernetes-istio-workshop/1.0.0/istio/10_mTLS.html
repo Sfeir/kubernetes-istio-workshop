@@ -29,8 +29,8 @@
           <div class="navbar-link">Project</div>
           <div class="navbar-dropdown">
             <div class="navbar-item"><strong>GitHub</strong></div>
-            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop/">Istio Tutorial Repository</a>
-            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop//issues">Istio Tutorial Issue Tracker</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop/">Istio workshop Repository</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop//issues">Istio workshop Issue Tracker</a>
           </div>
         </div>
         <a class="navbar-item" href="https://twitter.com/sfeir">
@@ -120,9 +120,6 @@
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="02_deploy-microservices.html#deployrecommendation">Deploy Recommendation</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="02_deploy-microservices.html#redeployingcode">Updating Redeploying Code</a>
   </li>
 </ul>
   </li>
@@ -340,7 +337,7 @@
     <li class="crumb"><a href="10_mTLS.html">10. Mutual TLS and Istio</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/10_mTLS.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/10_mTLS.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Mutual TLS and Istio</h1>
@@ -360,11 +357,11 @@ kubectl apply -f manifests/istio/mutual-tls/destination-rule-tls.yml <i class="c
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Enables mTLS into <code>tutorial</code> namespace</td>
+<td>Enables mTLS into <code>workshop</code> namespace</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Makes that services withn <code>tutorial</code> namespace communicates with <em>mTLS</em></td>
+<td>Makes that services withn <code>workshop</code> namespace communicates with <em>mTLS</em></td>
 </tr>
 </table>
 </div>
@@ -386,11 +383,11 @@ How can you check that?</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl authn tls-check | grep tutorial
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl authn tls-check | grep workshop
 
-customer.tutorial.svc.cluster.local:8080                         OK         mTLS       mTLS       default/tutorial                             default/tutorial
-preference.tutorial.svc.cluster.local:8080                       OK         mTLS       mTLS       default/tutorial                             default/tutorial
-recommendation.tutorial.svc.cluster.local:8080                   OK         mTLS       mTLS       default/tutorial                             default/tutorial</code></pre>
+customer.workshop.svc.cluster.local:8080                         OK         mTLS       mTLS       default/workshop                             default/workshop
+preference.workshop.svc.cluster.local:8080                       OK         mTLS       mTLS       default/workshop                             default/workshop
+recommendation.workshop.svc.cluster.local:8080                   OK         mTLS       mTLS       default/workshop                             default/workshop</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -494,7 +491,7 @@ x-forwarded-for: 172.17.0.1
 x-forwarded-proto: http
 x-envoy-internal: true
 x-request-id: e5c0b90f-341b-9edc-ac3e-7dd8b33f0e8b
-x-envoy-decorator-operation: customer.tutorial.svc.cluster.local:8080/
+x-envoy-decorator-operation: customer.workshop.svc.cluster.local:8080/
 x-b3-traceid: ce289e960a639d11
 x-b3-spanid: ce289e960a639d11
 x-b3-sampled: 1</code></pre>

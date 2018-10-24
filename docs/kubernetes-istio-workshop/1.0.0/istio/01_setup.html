@@ -29,8 +29,8 @@
           <div class="navbar-link">Project</div>
           <div class="navbar-dropdown">
             <div class="navbar-item"><strong>GitHub</strong></div>
-            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop/">Istio Tutorial Repository</a>
-            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop//issues">Istio Tutorial Issue Tracker</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop/">Istio workshop Repository</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop//issues">Istio workshop Issue Tracker</a>
           </div>
         </div>
         <a class="navbar-item" href="https://twitter.com/sfeir">
@@ -120,9 +120,6 @@
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="02_deploy-microservices.html#deployrecommendation">Deploy Recommendation</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="02_deploy-microservices.html#redeployingcode">Updating Redeploying Code</a>
   </li>
 </ul>
   </li>
@@ -340,7 +337,7 @@
     <li class="crumb"><a href="01_setup.html">1. Setup</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/01_setup.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/01_setup.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Setup Istio</h1>
@@ -348,10 +345,29 @@
 <h2 id="summary"><a class="anchor" href="#summary"></a>Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this lab, you will learn how to install and configure Istio, on Google Kubernetes Engine.</p>
+<p>In this lab, you will learn how to install and configure Istio, on <em>Google Kubernetes Engine</em>.</p>
 </div>
-<div class="paragraph">
-<p>This setup est based on the official <a href="https://istio.io/docs/setup/kubernetes/quick-start-gke-dm/">setup</a> documentation.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Before you begin, make sure that:</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You already created a GCP project and the envrionement variable <code>$PROJECT_ID</code> is set.</p>
+</li>
+<li>
+<p>You already cloned the directory : <code><a href="https://github.com/Sfeir/kubernetes-istio-workshop" class="bare">https://github.com/Sfeir/kubernetes-istio-workshop</a></code> and all operations must take place into the root of the <code>kubernetes-istio-workshop</code> directory.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -359,7 +375,7 @@
 <h2 id="prerequisites"><a class="anchor" href="#prerequisites"></a>Prerequisites</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>We will install Istio with Google Cloud Deployment Manager an automation tool for deploying cloud resources.</p>
+<p>You will install Istio with <a href="https://cloud.google.com/deployment-manager/docs/">Google Cloud Deployment Manager</a> an automation tool for deploying cloud resources.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -373,13 +389,17 @@
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud services enable container.googleapis.com</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>To make the installation succeed, you must grant your <strong>default compute service</strong> the following role: <code>role/container.admin</code> (Kubernetes Engine Admin)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>To make the installation succeed, you must grant your <strong>default compute service account</strong> the following role: <code>role/container.admin</code> (Kubernetes Engine Admin)</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Make sure that the environment variable is not null
-$PROJECT_ID
+echo $PROJECT_ID
 
 # Extract the project number
 PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='value(projectNumber)')
@@ -395,18 +415,42 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 <div class="sect1">
 <h2 id="deploy-istio"><a class="anchor" href="#deploy-istio"></a>Deploy Istio</h2>
 <div class="sectionbody">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Remember !</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Make sure your are in the <code>kubernetes-istio-workshop</code> directory :</p>
+<p>All the commands must be run in the <code>kubernetes-istio-workshop</code> directory.</p>
 </li>
 </ul>
 </div>
+</td>
+</tr>
+</table>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud deployment-manager deployments create istio-cluster --config=src/infrastructure/istio/gcp/deployment_manager/istio-cluster.yaml
-
-The fingerprint of the deployment is 2_hGqA74DjtdLmJDsXp5jg==
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud deployment-manager deployments create istio-cluster --config=src/infrastructure/istio/gcp/deployment_manager/istio-cluster.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default the tool creates a kubernetes cluster with the specified settings in the <a href="https://github.com/Sfeir/kubernetes-istio-workshop/blob/master/src/infrastructure/istio/gcp/deployment_manager/istio-cluster.yaml">istio-cluster.yaml</a> file, then installs the Istio control plane, <a href="https://istio.io/docs/tasks/telemetry/using-istio-dashboard/">Grafana</a> with <a href="https://istio.io/docs/tasks/telemetry/querying-metrics/">Prometheus</a>, <a href="https://istio.io/docs/tasks/telemetry/servicegraph/">ServiceGraph</a>, and <a href="https://istio.io/docs/tasks/telemetry/distributed-tracing/">Tracing</a>. You’ll find out more about how to access all of these in the next lab.</p>
+</div>
+<div class="paragraph">
+<p>⏳ Wait until Istio is fully deployed. Note that the Istio installation can take up to five minutes.</p>
+</div>
+<div class="paragraph">
+<p>Output.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">The fingerprint of the deployment is 2_hGqA74DjtdLmJDsXp5jg==
 Waiting for update [operation-1540035229383-578a764c9f958-7310630b-4488428e]...done.
 Update operation operation-1540035229383-578a764c9f958-7310630b-4488428e completed successfully.
 NAME                                TYPE                          STATE      ERRORS  INTENT
@@ -416,33 +460,33 @@ istio-cluster-istio-cluster-vm      compute.v1.instance           COMPLETED  []
 istio-cluster-istio-cluster-waiter  runtimeconfig.v1beta1.waiter  COMPLETED  []</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>By default the tool creates a GKE cluster with the specified settings in the <code>istio-cluster.yaml</code> file, then installs the Istio control plane, <a href="https://istio.io/docs/tasks/telemetry/using-istio-dashboard/">Grafana</a> with <a href="https://istio.io/docs/tasks/telemetry/querying-metrics/">Prometheus</a>, <a href="https://istio.io/docs/tasks/telemetry/servicegraph/">ServiceGraph</a>, and <a href="https://istio.io/docs/tasks/telemetry/distributed-tracing/">Tracing</a>. You’ll find out more about how to access all of these below. This script will enable Istio auto-injection on the default namespace only.</p>
-</div>
-<div class="paragraph">
-<p>Wait until Istio is fully deployed. Note that the Istio installation can take up to five minutes.</p>
-</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="connect-cluster"><a class="anchor" href="#connect-cluster"></a>Connect to the cluster</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Once deployment is complete, do the following on Cloud Shell :</p>
+<p>Once the deployment is complete, do the following on Cloud Shell :</p>
 </div>
 <div class="paragraph">
 <p>1 - Bootstrap <code>kubectl</code> for the cluster you just created and confirm the cluster is running and Istio is enabled</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud container clusters list
-
-NAME           LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION  NUM_NODES  STATUS
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud container clusters list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME           LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION  NUM_NODES  STATUS
 istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9.7-gke.6   3          RUNNING</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>2 - Now acquire the credentials for the cluster.</p>
+<p>2 - Finally, acquire the credentials to connect to the cluster.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -454,11 +498,23 @@ istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9
 <div class="sect1">
 <h2 id="verify-installation"><a class="anchor" href="#verify-installation"></a>Verify installation</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s get the deployments (you can also get pods, services, etc.)</p>
+</div>
+<div class="paragraph">
+<p>⚠️ Do not forget to specify the Istio&#8217;s namespace (<code>-n istio-system</code>).</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployments -n istio-system
-
-NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployments -n istio-system</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 grafana                    1         1         1            1           3h
 istio-citadel              1         1         1            1           3h
 istio-egressgateway        1         1         1            1           3h
@@ -474,15 +530,12 @@ prometheus                 1         1         1            1           3h
 servicegraph               1         1         1            1           3h</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Now get the istio-ingress IP:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get svc istio-ingressgateway -n istio-system
-NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)                                                                                                                   AGE
-istio-ingressgateway   LoadBalancer   10.3.252.238   35.195.185.0   80:31380/TCP,443:31390/TCP,31400:31400/TCP,15011:30934/TCP,8060:32220/TCP,853:32629/TCP,15030:32723/TCP,15031:30918/TCP   3h</code></pre>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Congratulations, you finished the lab !</p>
+</li>
+</ul>
 </div>
 </div>
 </div>

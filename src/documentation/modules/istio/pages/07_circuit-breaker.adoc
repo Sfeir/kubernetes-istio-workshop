@@ -128,7 +128,7 @@ Scale number of instances of `v2` deployment
 
 [source,bash]
 ----
-kubectl scale deployment recommendation-v2 --replicas=2 -n tutorial
+kubectl scale deployment recommendation-v2 --replicas=2 -n workshop
 ----
 
 Wait for all the pods to be in the ready state.
@@ -379,7 +379,7 @@ Clean up
 
 [source,bash]
 ----
-kubectl scale deployment recommendation-v2 --replicas=1 -n tutorial
+kubectl scale deployment recommendation-v2 --replicas=1 -n workshop
 kubectl delete pod -l app=recommendation,version=v2
 
 kubectl delete virtualservice recommendation
