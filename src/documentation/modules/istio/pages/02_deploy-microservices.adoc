@@ -4,23 +4,27 @@ include::_attributes.adoc[]
 [#create-namespace]
 == Create Namespace
 
-Create a namespace called ``workshop`` and enable Istio sidecar injection.
+Create a namespace called ``workshop`` and enable Istio sidecar injection by adding to it this label (``istio-injection=enabled``).
 
 [source,bash]
 ----
+# Create the namespace
 kubectl create namespace workshop
+
+# Enable sidecar injection
 kubectl label namespace workshop istio-injection=enabled
+
+# Set this namespace as the default one
 kubectl config set-context $(kubectl config current-context) --namespace=workshop
 ----
 
-Make sure yout are in the ``kubernetes-istio-workshop`` directory.
-
-Start deploying the microservice projects, starting with customer
+== Deploy
+Start deploying the microservice projects, starting with Customer.
 
 [#deploycustomer]
 === Deploy Customer
 
-Now let's deploy the customer pod with its sidecar
+Now let's deploy the customer pod.
 
 [source,bash]
 ----
@@ -29,7 +33,7 @@ kubectl apply -f manifests/kubernetes/customer.yml
 
 === Expose customer
 
-Since the `customer` service is the one our users will interact with, you need to make it accessible from outside of your Kubernetes cluster. An Istio https://istio.io/docs/concepts/traffic-management/#gateways[Gateway] is used for this purpose.
+Since the `customer` service is the one our users will interact with, you need to make it accessible from outside of your Kubernetes cluster. With Istio we use a https://istio.io/docs/concepts/traffic-management/#gateways[Gateway] for this purpose.
 
 
 1- Define the ingress gateway for the application:
@@ -84,11 +88,7 @@ spec:
 kubectl get gateway
 ----
 
-3- set the ``INGRESS_HOST`` and ``INGRESS_PORT`` variables for accessing the gateway :
-
-Execute the following command to make sure that the External-IP of the gateway is not in <pending> state.
-
-Set the ingress IP and ports:
+3- set the ``INGRESS_HOST`` and ``INGRESS_PORT`` variables for accessing the gateway:
 
 [source,bash]
 ----
@@ -111,7 +111,7 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/
 ----
 
-6- Then test the customer endpoint. Because of the route defined in the VirtualService, the URL of the customer service is the same as the URL of the gateway.
+6- Then test the customer endpoint. Because of the route defined in the ``VirtualService`` (that we will see later), the URL of the customer service is mapped to the root URL of the gateway.
 
 [source,bash]
 ----
@@ -143,8 +143,6 @@ org.springframework.web.client.ResourceAccessException: I/O error on GET request
 
 [#deploypreference]
 == Deploy preference
-
-=== Preference build using Docker daemon
 
 [source,bash]
 ----
@@ -221,3 +219,5 @@ and you can monitor the `recommendation` logs with
 ----
 kubectl logs -l app=recommendation -c recommendation
 ----
+
+- Congratulations, you finished the lab !

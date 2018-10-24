@@ -99,7 +99,7 @@ If you are monitoring the logs for recommendation v1 and v2, you will also see t
 
 [source,bash]
 ----
-stern recommendation -c recommendation
+kubectl logs -l app=recommendation -c recommendation
 ----
 
 Clean up
