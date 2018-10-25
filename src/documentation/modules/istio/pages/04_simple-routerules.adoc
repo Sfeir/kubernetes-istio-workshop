@@ -10,7 +10,6 @@ We will show you how to route requests dynamically to multiple versions of a mic
 [source,bash]
 ----
 kubectl apply -f manifests/kubernetes/recommendation-v2.yml
-kubectl get pods -w
 ----
 
 Wait for those pods to show "2/2", the istio-proxy/envoy sidecar is part of that pod
@@ -207,7 +206,7 @@ In another terminal, change the mixture to be 75/25
 kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1_and_v2_75_25.yml
 ----
 
-Clean up
+=== Clean up
 
 [source,bash]
 ----

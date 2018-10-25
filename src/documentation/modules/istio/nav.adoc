@@ -16,10 +16,10 @@
 *** xref:03_monitoring-tracing.adoc#tracing[Tracing]
 
 ** xref:04_simple-routerules.adoc[4. Simple Routing]
-*** xref:04_simple-routerules.adoc#deployrecommendationv2[Create Recommendation V2]
+*** xref:04_simple-routerules.adoc#deployrecommendationv2[Deploy Recommendation V2]
 *** xref:04_simple-routerules.adoc#istiorouting[Changing Istio Routings]
-**** xref:04_simple-routerules.adoc#routeallthetraffictorecommendationv2[Route all the traffic to recommendation:v2]
-**** xref:04_simple-routerules.adoc#routeallthetraffictorecommendationv1[Route all the traffic to recommendation:v1]
+**** xref:04_simple-routerules.adoc#alltorecommendationv2[All the traffic to recommendation:v2]
+**** xref:04_simple-routerules.adoc#alltorecommendationv1[Al the traffic to recommendation:v1]
 **** xref:04_simple-routerules.adoc#alltorecommendationv1v2[All Users To Recommendation V1 and V2]
 **** xref:04_simple-routerules.adoc#canarydeploymentrecommendation[Canary Deployment Between v1 And v2]
 
