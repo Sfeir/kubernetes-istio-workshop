@@ -352,7 +352,7 @@
 <td class="content">
 <div class="title">Before Start</div>
 <div class="paragraph">
-<p>The various dashboards that we will see in this lab are not accessible outside the cluster (for obvious security reasons). To display them we need to use <code>kubectl port-forward</code> to create a tunnel to those services and view them as if they were on localhost.</p>
+<p>The various dashboards that we will see in this lab are not accessible outside the cluster (for obvious security reasons). To display them we need to use <code>kubectl port-forward</code> to create a tunnel to those services and view them as if they were running on localhost.</p>
 </div>
 <div class="paragraph">
 <p>To display services running on localhost on Cloud Shell, it provides a feature called <strong>Web Preview</strong>. We will show you how to use it a little further in the document.</p>
@@ -404,7 +404,7 @@ servicegraph               ClusterIP      10.3.247.56    &lt;none&gt;          8
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The Grafana service is running on port <code>3000</code>. In the following command we port-forward the remote port <code>3000</code> to the local port <code>3000</code>. If the local port were different, say 8080, we would write <code>8080:3000</code>.
+The Grafana service is running on port <code>3000</code>. In the following command we port-forward the remote port <code>3000</code> to the local port <code>3000</code>. If the local port were different, for example 8080, we would write <code>8080:3000</code>.
 </td>
 </tr>
 </table>
@@ -422,15 +422,16 @@ The Grafana service is running on port <code>3000</code>. In the following comma
 </ul>
 </div>
 <div class="paragraph">
-<p>In Cloud Shell, click on Web Preview,
-<span class="image"><img src="_images/cloud-shell-change-port1.png" alt="Run Web Preview"></span></p>
+<p>In Cloud Shell, click on Web Preview, then change the default port to <code>3000</code>.</p>
 </div>
 <div class="paragraph">
-<p>then change the default port to <code>3000</code>.
-<span class="image"><img src="_images/cloud-shell-change-port2.png" alt="Change the port"></span></p>
+<p><span class="image"><img src="_images/cloud-shell-change-port1.png" alt="Run Web Preview"></span></p>
 </div>
 <div class="paragraph">
-<p>The browser will then open a new window displaying the following URL:</p>
+<p><span class="image"><img src="_images/cloud-shell-change-port2.png" alt="Change the port"></span></p>
+</div>
+<div class="paragraph">
+<p>The browser will then open a new window with URL that looks like:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -438,13 +439,13 @@ The Grafana service is running on port <code>3000</code>. In the following comma
 </div>
 </div>
 <div class="paragraph">
-<p>Replace the path of the URL by <code>/d/1/istio-mesh-dashboard</code>. The URL should look like:</p>
+<p>To display the Istio dashboard, replace the path of the URL by <code>/d/1/istio-mesh-dashboard</code>. The URL should look like:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code>https://3000-dot-XXXX-dot-devshell.appspot.com/d/1/istio-mesh-dashboard
 
-or
+# or if you are on your machine
 
 http://localhost:3000/d/1/istio-mesh-dashboard</code></pre>
 </div>
@@ -462,16 +463,16 @@ http://localhost:3000/d/1/istio-mesh-dashboard</code></pre>
 <p>As you did with Grafana, use the <code>port-fowarding</code> to display the Prometheus console.</p>
 </div>
 <div class="paragraph">
-<p><strong>Hint</strong>: start by finding the Prometheus port.</p>
+<p><strong>Hint</strong>: start by finding the <code>prometheus</code> service port.</p>
 </div>
 <div class="paragraph">
-<p>The Prometheus console should be like this.</p>
+<p>The Prometheus console should look like this.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="_images/prometheus1.png" alt="alt text"></span></p>
 </div>
 <div class="paragraph">
-<p>Let enter a query the display the total requests sent to the <code>recommendation</code> service:</p>
+<p>Let&#8217;s enter a query to display the total requests sent to the <code>recommendation</code> service:</p>
 </div>
 <div class="paragraph">
 <p>Enter:</p>
@@ -482,7 +483,7 @@ http://localhost:3000/d/1/istio-mesh-dashboard</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>select <code>Execute</code>, and run several requests through the system</p>
+<p>select <code>Execute</code>, and run several requests through the system:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -490,7 +491,7 @@ http://localhost:3000/d/1/istio-mesh-dashboard</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Click on the <strong>Graph</strong> to display the graph corresponing to this query.</p>
+<p>Click on the <strong>Graph</strong> to display the graph corresponding to this query.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="_images/prometheus2.png" alt="alt text"></span></p>

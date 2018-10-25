@@ -4,7 +4,7 @@ include::_attributes.adoc[]
 [IMPORTANT]
 .Before Start
 ====
-The various dashboards that we will see in this lab are not accessible outside the cluster (for obvious security reasons). To display them we need to use ``kubectl port-forward`` to create a tunnel to those services and view them as if they were on localhost.
+The various dashboards that we will see in this lab are not accessible outside the cluster (for obvious security reasons). To display them we need to use ``kubectl port-forward`` to create a tunnel to those services and view them as if they were running on localhost.
 
 To display services running on localhost on Cloud Shell, it provides a feature called *Web Preview*. We will show you how to use it a little further in the document.
 ====
@@ -20,7 +20,6 @@ kubectl get services -n istio-system
 ----
 
 Output.
-
 [source,bash]
 ----
 NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                                                                                                                   AGE
@@ -36,7 +35,7 @@ servicegraph               ClusterIP      10.3.247.56    <none>          8088/TC
 
 - Set up a tunnel to Grafana.
 
-NOTE: The Grafana service is running on port ``3000``. In the following command we port-forward the remote port ``3000`` to the local port ``3000``. If the local port were different, say 8080, we would write ``8080:3000``.
+NOTE: The Grafana service is running on port ``3000``. In the following command we port-forward the remote port ``3000`` to the local port ``3000``. If the local port were different, for example 8080, we would write ``8080:3000``.
 
 [source,bash]
 ----
@@ -45,26 +44,27 @@ kubectl -n istio-system port-forward service/grafana 3000:3000 &
 
 - Display the Grafana dashboard
 
-In Cloud Shell, click on Web Preview,
+In Cloud Shell, click on Web Preview, then change the default port to ``3000``.
+
 image:cloud-shell-change-port1.png[Run Web Preview]
 
-then change the default port to ``3000``.
+
 image:cloud-shell-change-port2.png[Change the port]
 
-The browser will then open a new window displaying the following URL:
+The browser will then open a new window with URL that looks like:
 
 [source]
 ----
 https://3000-dot-XXXX-dot-devshell.appspot.com/?authuser=0&orgId=1
 ----
 
-Replace the path of the URL by ``/d/1/istio-mesh-dashboard``. The URL should look like:
+To display the Istio dashboard, replace the path of the URL by ``/d/1/istio-mesh-dashboard``. The URL should look like:
 
 [source]
 ----
 https://3000-dot-XXXX-dot-devshell.appspot.com/d/1/istio-mesh-dashboard
 
-or
+# or if you are on your machine
 
 http://localhost:3000/d/1/istio-mesh-dashboard
 ----
@@ -78,13 +78,13 @@ image:grafana.png[alt text]
 
 As you did with Grafana, use the ``port-fowarding`` to display the Prometheus console.
 
-*Hint*: start by finding the Prometheus port.
+*Hint*: start by finding the ``prometheus`` service port.
 
-The Prometheus console should be like this.
+The Prometheus console should look like this.
 
 image:prometheus1.png[alt text]
 
-Let enter a query the display the total requests sent to the ``recommendation`` service:
+Let's enter a query to display the total requests sent to the ``recommendation`` service:
 
 Enter:
 
@@ -93,14 +93,14 @@ Enter:
 istio_requests_total{destination_service="recommendation.workshop.svc.cluster.local"}
 ----
 
-select `Execute`, and run several requests through the system
+select `Execute`, and run several requests through the system:
 
 [source,bash]
 ----
 while true; do curl $CUSTOMER_URL; sleep .5;  done
 ----
 
-Click on the *Graph* to display the graph corresponing to this query.
+Click on the *Graph* to display the graph corresponding to this query.
 
 image:prometheus2.png[alt text]
 
