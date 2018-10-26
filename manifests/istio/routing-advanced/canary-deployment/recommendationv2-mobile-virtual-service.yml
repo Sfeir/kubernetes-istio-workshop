@@ -9,13 +9,13 @@ spec:
   - route:
     - destination:
         host: recommendation
-        subset: version-v1
-  - route:
-    - destination:
-        host: recommendation
         subset: version-v2
     match:
     - headers:
         baggage-user-agent:
           regex: .*Mobile.*
+  - route:
+    - destination:
+        host: recommendation
+        subset: version-v1
 ---
