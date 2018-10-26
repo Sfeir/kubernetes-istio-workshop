@@ -41,6 +41,10 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
      --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
      --role=roles/container.admin
 ----
+[IMPORTANT]
+.to avoid loosing your settings after closing your cloudshell console you can store your different settings and variables into the ~.bashrc file which is loaded for each cloudshell session.
+====
+====
 
 [#deploy-istio]
 == Deploy Istio
