@@ -86,7 +86,7 @@ Once the deployment is complete, do the following on Cloud Shell :
 1 - Bootstrap ``kubectl`` for the cluster you just created and confirm the cluster is running and Istio is enabled
 [source, bash]
 ----
-gcloud container clusters list
+gcloud container clusters list --zone europe-west1-b
 ----
 
 Output.
