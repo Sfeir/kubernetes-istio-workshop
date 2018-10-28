@@ -7,13 +7,13 @@ spec:
   - recommendation
   http:
   - route:
-    - destination:
-        host: recommendation
-        subset: version-v2
     match:
     - headers:
         baggage-user-agent:
           regex: .*Safari.*
+    - destination:
+        host: recommendation
+        subset: version-v2
   - route:
     - destination:
         host: recommendation

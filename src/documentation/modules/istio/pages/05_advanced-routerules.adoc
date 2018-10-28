@@ -1,24 +1,14 @@
 = Advanced Route Rules
 include::_attributes.adoc[]
 
-[IMPORTANT]
-.Before Start
-====
-You should have NO virtualservice nor destinationrule (in `workshop` namespace) if so run:
+[#traffic-steering]
+== Traffic Steering
 
-[source, bash]
-----
-kubectl delete virtualservices --all
-kubectl delete destinationrules --all
-----
-====
+https://opentracing.io/docs/overview/[OpenTracing], the tracing tool that Istio uses, adds the ``user-agent`` header to its _baggage_ in the Customer service. A baggage is a set of ``key:value`` pairs that cross service-boundaries to carry some data that will be available throughout the trace.
 
-[#canarydeploymentuseragent]
-== Smart routing based on user-agent header (Canary Deployment)
+From Customer, the baggage is automatically propagated to all downstream services. To enable automatic
+baggage propagation all intermediate services must to be instrumented with OpenTracing.
 
-Note: the "user-agent" header is added to OpenTracing baggage in the Customer service. From
-there it is automatically propagated to all downstream services. To enable automatic
-baggage propagation all intermediate services have to be instrumented with OpenTracing.
 The baggage header for user agent has following form `baggage-user-agent: <value>`.
 
 [#alltorecommendationv1]
@@ -38,6 +28,30 @@ kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v
 kubectl apply -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-safari-virtual-service.yml
 ----
 
+[source,yaml]
+----
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - route:
+    match:
+    - headers:
+        baggage-user-agent:
+          regex: .*Safari.*
+    - destination:
+        host: recommendation
+        subset: version-v2
+  - route:
+    - destination:
+        host: recommendation
+        subset: version-v1
+----
+
 and test with a Safari (or even Chrome on Mac since it includes Safari in the string). Safari only sees v2 responses from recommendation
 
 and test with a Firefox browser, it should only see v1 responses from recommendation.
@@ -50,36 +64,19 @@ curl -A Safari $CUSTOMER_URL
 curl -A Firefox $CUSTOMER_URL
 ----
 
-You can describe the virtualservice to see its configuration
+You can describe the ``virtualservice`` to see its configuration
 
 [source,bash]
 ----
-kubectl get virtualservice -o yaml -n workshop
-----
-
-==== Remove the Safari rule
-
-[source,bash]
-----
-kubectl delete -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-safari-virtual-service.yml
-----
-
-[#mobiletov2]
-=== Set mobile users to v2
-
-[source,bash]
-----
-kubectl apply -f -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-mobile-virtual-service.yml
-
-curl -A "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4(KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5" $CUSTOMER_URL
+kubectl get virtualservice -o yaml
 ----
 
 ==== Clean up
 
 [source,bash]
 ----
-kubectl delete -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
-kubectl delete -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml
+kubectl delete destinationrule recommendation
+kubectl delete virtualservice recommendation
 ----
 
 [#accesscontrol]

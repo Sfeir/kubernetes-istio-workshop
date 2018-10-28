@@ -24,10 +24,9 @@
 **** xref:04_simple-routerules.adoc#canarydeploymentrecommendation[Canary Deployment Between v1 And v2]
 
 ** xref:05_advanced-routerules.adoc[5. Advanced Routing]
-*** xref:05_advanced-routerules.adoc#canarydeploymentuseragent[Canary Deployment based on user-agent]
+*** xref:05_advanced-routerules.adoc#traffic-steering[Traffic Steering]
 **** xref:05_advanced-routerules.adoc#alltorecommendationv1[All Users To Recommendation V1]
 **** xref:05_advanced-routerules.adoc#safaritov2[All Safari Users To Recommendation V2]
-**** xref:05_advanced-routerules.adoc#mobiletov2[All Mobile Users To Recommendation V2]
 *** xref:05_advanced-routerules.adoc#mirroringtraffic[Mirroring Traffic]
 *** xref:05_advanced-routerules.adoc#accesscontrol[Access Control]
 **** xref:05_advanced-routerules.adoc#whitelist[White List]

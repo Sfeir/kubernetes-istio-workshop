@@ -168,16 +168,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="05_advanced-routerules.html#canarydeploymentuseragent">Canary Deployment based on user-agent</a>
+    <a class="nav-link" href="05_advanced-routerules.html#traffic-steering">Traffic Steering</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="4">
     <a class="nav-link" href="05_advanced-routerules.html#alltorecommendationv1">All Users To Recommendation V1</a>
   </li>
   <li class="nav-item" data-depth="4">
     <a class="nav-link" href="05_advanced-routerules.html#safaritov2">All Safari Users To Recommendation V2</a>
-  </li>
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="05_advanced-routerules.html#mobiletov2">All Mobile Users To Recommendation V2</a>
   </li>
 </ul>
   </li>
@@ -409,6 +406,19 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
      --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
      --role=roles/container.admin</code></pre>
 </div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">to avoid loosing your settings after closing your cloudshell console you can store your different settings and variables into the ~.bashrc file which is loaded for each cloudshell session.</div>
+
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

@@ -150,8 +150,22 @@ you should only see v2 being returned
 [source,bash]
 ----
 kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml
+----
 
-curl $CUSTOMER_URL
+[source,yaml]
+----
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - route:
+    - destination:
+        host: recommendation
+        subset: version-v1
 ----
 
 [#alltorecommendationv1v2]
@@ -190,6 +204,26 @@ Create the `virtualservice` that will send 90% of requests to v1 and 10% to v2
 [source,bash]
 ----
 kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1_and_v2.yml
+----
+
+[source,yaml]
+----
+kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - route:
+    - destination:
+        host: recommendation
+        subset: version-v1
+      weight: 90
+    - destination:
+        host: recommendation
+        subset: version-v2
+      weight: 10
 ----
 
 and send in several requests:

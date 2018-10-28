@@ -168,16 +168,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="05_advanced-routerules.html#canarydeploymentuseragent">Canary Deployment based on user-agent</a>
+    <a class="nav-link" href="05_advanced-routerules.html#traffic-steering">Traffic Steering</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="4">
     <a class="nav-link" href="05_advanced-routerules.html#alltorecommendationv1">All Users To Recommendation V1</a>
   </li>
   <li class="nav-item" data-depth="4">
     <a class="nav-link" href="05_advanced-routerules.html#safaritov2">All Safari Users To Recommendation V2</a>
-  </li>
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="05_advanced-routerules.html#mobiletov2">All Mobile Users To Recommendation V2</a>
   </li>
 </ul>
   </li>
@@ -514,9 +511,23 @@ curl $CUSTOMER_URL</code></pre>
 <h3 id="alltorecommendationv1"><a class="anchor" href="#alltorecommendationv1"></a>Route all the traffic to recommendation:v1</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml
-
-curl $CUSTOMER_URL</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - route:
+    - destination:
+        host: recommendation
+        subset: version-v1</code></pre>
 </div>
 </div>
 </div>
@@ -559,6 +570,26 @@ recommendation-v2-2815683430-vn77w   2/2       Running   0          1h</code></p
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1_and_v2.yml</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - route:
+    - destination:
+        host: recommendation
+        subset: version-v1
+      weight: 90
+    - destination:
+        host: recommendation
+        subset: version-v2
+      weight: 10</code></pre>
 </div>
 </div>
 <div class="paragraph">

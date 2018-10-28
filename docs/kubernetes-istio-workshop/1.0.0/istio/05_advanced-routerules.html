@@ -168,16 +168,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="#canarydeploymentuseragent">Canary Deployment based on user-agent</a>
+    <a class="nav-link" href="#traffic-steering">Traffic Steering</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="4">
     <a class="nav-link" href="#alltorecommendationv1">All Users To Recommendation V1</a>
   </li>
   <li class="nav-item" data-depth="4">
     <a class="nav-link" href="#safaritov2">All Safari Users To Recommendation V2</a>
-  </li>
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="#mobiletov2">All Mobile Users To Recommendation V2</a>
   </li>
 </ul>
   </li>
@@ -341,39 +338,18 @@
 </div>
 <article class="doc">
 <h1>Advanced Route Rules</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="title">Before Start</div>
-<div class="paragraph">
-<p>You should have NO virtualservice nor destinationrule (in <code>workshop</code> namespace) if so run:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete virtualservices --all
-kubectl delete destinationrules --all</code></pre>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
 <div class="sect1">
-<h2 id="canarydeploymentuseragent"><a class="anchor" href="#canarydeploymentuseragent"></a>Smart routing based on user-agent header (Canary Deployment)</h2>
+<h2 id="traffic-steering"><a class="anchor" href="#traffic-steering"></a>Traffic Steering</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Note: the "user-agent" header is added to OpenTracing baggage in the Customer service. From
-there it is automatically propagated to all downstream services. To enable automatic
-baggage propagation all intermediate services have to be instrumented with OpenTracing.
-The baggage header for user agent has following form <code>baggage-user-agent: &lt;value&gt;</code>.</p>
+<p><a href="https://opentracing.io/docs/overview/">OpenTracing</a>, the tracing tool that Istio uses, adds the <code>user-agent</code> header to its <em>baggage</em> in the Customer service. A baggage is a set of <code>key:value</code> pairs that cross service-boundaries to carry some data that will be available throughout the trace.</p>
+</div>
+<div class="paragraph">
+<p>From Customer, the baggage is automatically propagated to all downstream services. To enable automatic
+baggage propagation all intermediate services must to be instrumented with OpenTracing.</p>
+</div>
+<div class="paragraph">
+<p>The baggage header for user agent has following form <code>baggage-user-agent: &lt;value&gt;</code>.</p>
 </div>
 <div class="sect2">
 <h3 id="alltorecommendationv1"><a class="anchor" href="#alltorecommendationv1"></a>Set recommendation to all v1</h3>
@@ -389,6 +365,30 @@ kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-safari-virtual-service.yml</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - route:
+    match:
+    - headers:
+        baggage-user-agent:
+          regex: .*Safari.*
+    - destination:
+        host: recommendation
+        subset: version-v2
+  - route:
+    - destination:
+        host: recommendation
+        subset: version-v1</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -407,37 +407,19 @@ curl -A Firefox $CUSTOMER_URL</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can describe the virtualservice to see its configuration</p>
+<p>You can describe the <code>virtualservice</code> to see its configuration</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get virtualservice -o yaml -n workshop</code></pre>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_remove_the_safari_rule"><a class="anchor" href="#_remove_the_safari_rule"></a>Remove the Safari rule</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-safari-virtual-service.yml</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="mobiletov2"><a class="anchor" href="#mobiletov2"></a>Set mobile users to v2</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-mobile-virtual-service.yml
-
-curl -A "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4(KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5" $CUSTOMER_URL</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get virtualservice -o yaml</code></pre>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
-kubectl delete -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete destinationrule recommendation
+kubectl delete virtualservice recommendation</code></pre>
 </div>
 </div>
 </div>
