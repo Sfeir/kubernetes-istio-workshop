@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mutual TLS and Istio :: Kubernetes &amp; Istio Workshop</title>
+    <title>Mutual TLS :: Kubernetes &amp; Istio Workshop</title>
     <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/10_mTLS.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
@@ -116,6 +116,9 @@
     <a class="nav-link" href="02_deploy-microservices.html#deploycustomer">Deploy Customer</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="02_deploy-microservices.html#expose-customer">Expose Customer</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="02_deploy-microservices.html#deploypreference">Deploy Preference</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -177,9 +180,6 @@
     <a class="nav-link" href="05_advanced-routerules.html#safaritov2">All Safari Users To Recommendation V2</a>
   </li>
 </ul>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="05_advanced-routerules.html#mirroringtraffic">Mirroring Traffic</a>
   </li>
   <li class="nav-item" data-depth="3">
     <button class="nav-toggle"></button>
@@ -257,7 +257,7 @@
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="10_mTLS.html">8. Mutual TLS and Istio</a>
+    <a class="nav-link" href="10_mTLS.html">8. Mutual TLS</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="#preparation">Preparation</a>
@@ -337,13 +337,13 @@
   <ul>
     <li class="crumb"><a href="../index.html">Kubernetes and Istio Workshop</a></li>
     <li class="crumb"><strong>Part 2 : Istio</strong></li>
-    <li class="crumb"><a href="10_mTLS.html">8. Mutual TLS and Istio</a></li>
+    <li class="crumb"><a href="10_mTLS.html">8. Mutual TLS</a></li>
   </ul>
 </nav>
   <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/10_mTLS.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1>Mutual TLS and Istio</h1>
+<h1>Mutual TLS</h1>
 <div class="sect1">
 <h2 id="enablingtls"><a class="anchor" href="#enablingtls"></a>Enabling mTLS</h2>
 <div class="sectionbody">

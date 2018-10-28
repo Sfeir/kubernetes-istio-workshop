@@ -1,4 +1,4 @@
-= Mutual TLS and Istio
+= Mutual TLS
 include::_attributes.adoc[]
 
 

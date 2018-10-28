@@ -18,20 +18,17 @@ kubectl label namespace workshop istio-injection=enabled
 kubectl config set-context $(kubectl config current-context) --namespace=workshop
 ----
 
-== Deploy
-Start deploying the microservice projects, starting with Customer.
-
 [#deploycustomer]
-=== Deploy Customer
-
-Now let's deploy the customer pod.
+== Deploy Customer
+Start deploying the microservice projects, starting with Customer.
 
 [source,bash]
 ----
 kubectl apply -f manifests/kubernetes/customer.yml
 ----
 
-=== Expose customer
+[#expose-customer]
+== Expose customer
 
 Since the `customer` service is the one our users will interact with, you need to make it accessible from outside of your Kubernetes cluster. With Istio we use a https://istio.io/docs/concepts/traffic-management/#gateways[Gateway] for this purpose.
 

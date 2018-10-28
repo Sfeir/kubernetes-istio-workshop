@@ -8,6 +8,7 @@
 
 ** xref:02_deploy-microservices.adoc[2. Deploy Microservices]
 *** xref:02_deploy-microservices.adoc#deploycustomer[Deploy Customer]
+*** xref:02_deploy-microservices.adoc#expose-customer[Expose Customer]
 *** xref:02_deploy-microservices.adoc#deploypreference[Deploy Preference]
 *** xref:02_deploy-microservices.adoc#deployrecommendation[Deploy Recommendation]
 
@@ -27,7 +28,6 @@
 *** xref:05_advanced-routerules.adoc#traffic-steering[Traffic Steering]
 **** xref:05_advanced-routerules.adoc#alltorecommendationv1[All Users To Recommendation V1]
 **** xref:05_advanced-routerules.adoc#safaritov2[All Safari Users To Recommendation V2]
-*** xref:05_advanced-routerules.adoc#mirroringtraffic[Mirroring Traffic]
 *** xref:05_advanced-routerules.adoc#accesscontrol[Access Control]
 **** xref:05_advanced-routerules.adoc#whitelist[White List]
 **** xref:05_advanced-routerules.adoc#blacklist[Black List]
@@ -50,7 +50,7 @@
 **** xref:07_circuit-breaker.adoc#failinginstancespoolejection[Failing Instance Pool Ejection]
 *** xref:07_circuit-breaker.adoc#circuitbreakerandpoolejection[Circuit Breaker + Pool Ejection]
 
-** xref:10_mTLS.adoc[8. Mutual TLS and Istio]
+** xref:10_mTLS.adoc[8. Mutual TLS]
 *** xref:10_mTLS.adoc#preparation[Preparation]
 *** xref:10_mTLS.adoc#enablingtls[Enabling TLS]
 *** xref:10_mTLS.adoc#restore[Restore Environment]
