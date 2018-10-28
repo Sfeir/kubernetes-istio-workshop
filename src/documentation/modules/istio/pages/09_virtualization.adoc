@@ -1,8 +1,8 @@
 = Traffic Mirroring and Service Virtualization
 include::_attributes.adoc[]
 
-[#mirroringtraffic]
-== Mirroring Traffic
+[#deploypreferencev2]
+== Deploy Preference v2
 
 We'll use version 2 of preferences service. The only difference between v1 and V2 is that v2 prints its name in capital letters (PREFERENCE).
 
@@ -85,6 +85,7 @@ kubectl delete -f manifests/istio/traffic-mirroring/preference-destination-rule-
 kubectl delete -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml
 ----
 
+[#virtualize-dependencies]
 == Virtualizing Mirrored Service Dependencies
 
 To avoid side-effects from the version 2 of preferences service, instead of communicating with recommendation service, we are going to make the preference:v2 communicate with a virtualized recommendation service.
@@ -98,8 +99,8 @@ For this concrete case, virtualized recommendation service will return `recommen
 kubectl apply -f manifests/kubernetes/recommendation-virtualized.yml
 ----
 
-[#servicevirtualization]
-== Adding Service Virtualization
+[#mirroring-traffic]
+== Mirroring Traffic to Preference
 
 After this step, you should have three versions of recommendation service (v1, v2 and virtualized).
 

@@ -257,7 +257,28 @@
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="08_egress.html">8. Egress</a>
+    <a class="nav-link" href="10_mTLS.html">8. Mutual TLS and Istio</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="10_mTLS.html#preparation">Preparation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="10_mTLS.html#enablingtls">Enabling TLS</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="10_mTLS.html#restore">Restore Environment</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-toggle"></button>
+    <span class="nav-text"><strong>Bonus</strong></span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="08_egress.html">B1. Egress</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="08_egress.html#createrecommendationv3">Create Recommendation V3</a>
@@ -269,31 +290,16 @@
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="09_virtualization.html">9. Service Virtualization and Istio</a>
+    <a class="nav-link" href="09_virtualization.html">B2. Traffic Mirroring</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="#deploypreferencev2">Deploy Preference V2</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#servicevirtualization">Adding Service Virtualization</a>
+    <a class="nav-link" href="#virtualize-dependencies">Virtualizing Dependencies</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#cleanup">Clean Up</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-toggle"></button>
-    <a class="nav-link" href="10_mTLS.html">10. Mutual TLS and Istio</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="10_mTLS.html#preparation">Preparation</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="10_mTLS.html#enablingtls">Enabling TLS</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="10_mTLS.html#restore">Restore Environment</a>
+    <a class="nav-link" href="#mirroring-traffic">Mirroring Traffic</a>
   </li>
 </ul>
   </li>
@@ -330,8 +336,8 @@
 <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="../index.html">Kubernetes and Istio Workshop</a></li>
-    <li class="crumb"><strong>Part 2 : Istio</strong></li>
-    <li class="crumb"><a href="09_virtualization.html">9. Service Virtualization and Istio</a></li>
+    <li class="crumb"><strong>Bonus</strong></li>
+    <li class="crumb"><a href="09_virtualization.html">B2. Traffic Mirroring</a></li>
   </ul>
 </nav>
   <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/09_virtualization.adoc">Edit this Page</a></div>
@@ -339,7 +345,7 @@
 <article class="doc">
 <h1>Traffic Mirroring and Service Virtualization</h1>
 <div class="sect1">
-<h2 id="mirroringtraffic"><a class="anchor" href="#mirroringtraffic"></a>Mirroring Traffic</h2>
+<h2 id="deploypreferencev2"><a class="anchor" href="#deploypreferencev2"></a>Deploy Preference v2</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>We&#8217;ll use version 2 of preferences service. The only difference between v1 and V2 is that v2 prints its name in capital letters (PREFERENCE).</p>
@@ -436,7 +442,7 @@ kubectl delete -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virt
 </div>
 </div>
 <div class="sect1">
-<h2 id="_virtualizing_mirrored_service_dependencies"><a class="anchor" href="#_virtualizing_mirrored_service_dependencies"></a>Virtualizing Mirrored Service Dependencies</h2>
+<h2 id="virtualize-dependencies"><a class="anchor" href="#virtualize-dependencies"></a>Virtualizing Mirrored Service Dependencies</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To avoid side-effects from the version 2 of preferences service, instead of communicating with recommendation service, we are going to make the preference:v2 communicate with a virtualized recommendation service.</p>
@@ -455,7 +461,7 @@ kubectl delete -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virt
 </div>
 </div>
 <div class="sect1">
-<h2 id="servicevirtualization"><a class="anchor" href="#servicevirtualization"></a>Adding Service Virtualization</h2>
+<h2 id="mirroring-traffic"><a class="anchor" href="#mirroring-traffic"></a>Mirroring Traffic to Preference</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>After this step, you should have three versions of recommendation service (v1, v2 and virtualized).</p>

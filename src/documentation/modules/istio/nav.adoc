@@ -50,16 +50,19 @@
 **** xref:07_circuit-breaker.adoc#failinginstancespoolejection[Failing Instance Pool Ejection]
 *** xref:07_circuit-breaker.adoc#circuitbreakerandpoolejection[Circuit Breaker + Pool Ejection]
 
-** xref:08_egress.adoc[8. Egress]
-*** xref:08_egress.adoc#createrecommendationv3[Create Recommendation V3]
-*** xref:08_egress.adoc#istioegress[Istio-ize Egress]
-
-** xref:09_virtualization.adoc[9. Service Virtualization and Istio]
-*** xref:09_virtualization.adoc#deploypreferencev2[Deploy Preference V2]
-*** xref:09_virtualization.adoc#servicevirtualization[Adding Service Virtualization]
-*** xref:09_virtualization.adoc#cleanup[Clean Up]
-
-** xref:10_mTLS.adoc[10. Mutual TLS and Istio]
+** xref:10_mTLS.adoc[8. Mutual TLS and Istio]
 *** xref:10_mTLS.adoc#preparation[Preparation]
 *** xref:10_mTLS.adoc#enablingtls[Enabling TLS]
 *** xref:10_mTLS.adoc#restore[Restore Environment]
+
+* **Bonus**
+** xref:08_egress.adoc[B1. Egress]
+*** xref:08_egress.adoc#createrecommendationv3[Create Recommendation V3]
+*** xref:08_egress.adoc#istioegress[Istio-ize Egress]
+
+** xref:09_virtualization.adoc[B2. Traffic Mirroring]
+*** xref:09_virtualization.adoc#deploypreferencev2[Deploy Preference V2]
+*** xref:09_virtualization.adoc#virtualize-dependencies[Virtualizing Dependencies]
+*** xref:09_virtualization.adoc#mirroring-traffic[Mirroring Traffic]
+
+
