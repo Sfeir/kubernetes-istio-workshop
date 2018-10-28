@@ -254,7 +254,7 @@ Wait only N seconds before giving up and failing. At this point, no other virtua
 
 First, introduce some wait time in `recommendation v2` by deploying a slow version making it a slow performer with a 3 second delay.
 
-[source,java]
+[source,bash]
 ----
 kubectl apply -f manifests/kubernetes/recommendation-v2_slow.yml
 ----
