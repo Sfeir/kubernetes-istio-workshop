@@ -6,16 +6,15 @@ spec:
   hosts:
   - recommendation
   http:
-  - route:
-    match:
-    - headers:
-        baggage-user-agent:
-          regex: .*Safari.*
-    - destination:
-        host: recommendation
-        subset: version-v2
-  - route:
-    - destination:
-        host: recommendation
-        subset: version-v1
----
+    - match:
+      - headers:
+          baggage-user-agent:
+            regex: .*Safari.*
+      route:
+      - destination:
+          host: recommendation
+          subset: version-v2
+    - route:
+      - destination:
+          host: recommendation
+          subset: version-v1
