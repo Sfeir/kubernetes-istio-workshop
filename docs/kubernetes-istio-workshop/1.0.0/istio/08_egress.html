@@ -426,7 +426,7 @@ recommendation-v3-7b445dd469-j6rkg    2/2       Running   0          2m</code></
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/egress/recommendation-destination-rule--v1-v2-v3.yml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/egress/recommendation-destination-rule-v1-v2-v3.yml
 kubectl apply -f manifests/istio/egress/recommendation-v3-virtual-service.yml</code></pre>
 </div>
 </div>
@@ -448,7 +448,7 @@ Since no Egress service entry has been registered to access an external site, th
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl -m 5 $CUSTOMER_URL
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -m 5 $CUSTOMER_URL
 curl: (28) Operation timed out after 5000 milliseconds with 0 bytes received</code></pre>
 </div>
 </div>
@@ -477,7 +477,8 @@ customer =&gt; preference =&gt; Mon, 16 Jul 2018 12:03:38 GMT recommendation v3 
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete ServiceEntry httpbin-egress-rule
 kubectl delete DestinationRule recommendation
-kubectl delete VirtualService recommendation</code></pre>
+kubectl delete VirtualService recommendation
+kubectl delete -f manifests/kubernetes/recommendation-v3.yml</code></pre>
 </div>
 </div>
 </div>
