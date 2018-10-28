@@ -340,7 +340,7 @@
     <li class="crumb"><a href="10_mTLS.html">8. Mutual TLS</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/10_mTLS.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/10_mTLS.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Mutual TLS</h1>
@@ -364,7 +364,7 @@ kubectl apply -f manifests/istio/mutual-tls/destination-rule-tls.yml <i class="c
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Makes that services with <code>workshop</code> namespace communicates with <em>mTLS</em></td>
+<td>Makes that services withn <code>workshop</code> namespace communicates with <em>mTLS</em></td>
 </tr>
 </table>
 </div>
@@ -386,7 +386,7 @@ How can you check that?</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl auth tls-check | grep workshop
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl authn tls-check | grep workshop
 
 customer.workshop.svc.cluster.local:8080                         OK         mTLS       mTLS       default/workshop                             default/workshop
 preference.workshop.svc.cluster.local:8080                       OK         mTLS       mTLS       default/workshop                             default/workshop
@@ -402,23 +402,7 @@ recommendation.workshop.svc.cluster.local:8080                   OK         mTLS
 PREFERENCE_POD=$(kubectl get pod | grep preference | awk '{ print $1}' | head -1) <i class="conum" data-value="1"></i><b>(1)</b>
 
 kubectl exec -it $CUSTOMER_POD -c istio-proxy /bin/bash <i class="conum" data-value="2"></i><b>(2)</b>
-
-# Inside pod shell
-
-ifconfig <i class="conum" data-value="3"></i><b>(3)</b>
-
-sudo tcpdump -vvvv -A -i eth0 '((dst port 8080) and (net 10.0.3.3))' <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Now, open a second terminal tab and run next command:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">CUSTOMER_POD=$(kubectl get pod | grep customer | awk '{ print $1}'| head -1 ) <i class="conum" data-value="1"></i><b>(1)</b>
-PREFERENCE_POD=$(kubectl get pod | grep preference | awk '{ print $1}' | head -1) <i class="conum" data-value="1"></i><b>(1)</b>
-
-kubectl exec -it $PREFERENCE_POD -c istio-proxy /bin/bash <i class="conum" data-value="2"></i><b>(2)</b>
+kubectl exec -it $PREFERENCE_POD -c istio-proxy /bin/bash
 
 # Inside pod shell
 
@@ -443,12 +427,12 @@ sudo tcpdump -vvvv -A -i eth0 '((dst port 8080) and (net 10.0.3.3))' <i class="c
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Capture traffic from <code>eth0</code> (or your interface) of port <code>8080</code> and network <code>10.0.3.3</code> (Don't forget to replace this IP by your IP from <code>ifconfig</code>)</td>
+<td>Capture traffic from <code>eth0</code> (or your interface) of port <code>8080</code> and network <code>10.0.3.3</code> (your IP from <code>ifconfig</code>)</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Now all communication that happens between <code>customer</code> service and <code>preference</code> service is dumped in the 2 consoles.</p>
+<p>Now all communication that happens between <code>customer</code> service and <code>preference</code> service is dumped in the console.</p>
 </div>
 <div class="paragraph">
 <p>So now go to a terminal and execute:</p>
@@ -460,7 +444,7 @@ customer =&gt; preference =&gt; recommendation v1 from 'b87789c58-mfrhr': 2</cod
 </div>
 </div>
 <div class="paragraph">
-<p>Obviously, the response is exactly the same, but if you go to the terminals where you are executing <code>tcpdump</code>, you should see something like:</p>
+<p>Obviously, the response is exactly the same, but if you go to the terminal where you are executing <code>tcpdump</code>, you should see something like:</p>
 </div>
 <div class="listingblock">
 <div class="content">

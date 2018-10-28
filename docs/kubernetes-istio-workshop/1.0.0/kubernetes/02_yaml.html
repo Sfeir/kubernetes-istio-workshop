@@ -340,106 +340,12 @@
     <li class="crumb"><a href="02_yaml.html">2. Orchestration as Code</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/kubernetes/pages/02_yaml.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/kubernetes/pages/02_yaml.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Orchestration as Code</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>Kubernetes use YAML format to define Kubernetes' resources like pods</p>
-</div>
-</div>
-</div>
 <div class="sect1">
-<h2 id="_yaml_ain_t_markup_language"><a class="anchor" href="#_yaml_ain_t_markup_language"></a>YAML Ain&#8217;t Markup Language</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>YAML is a human-readable data sequencing language. It has four main syntactic features.</p>
-</div>
-<div class="paragraph">
-<p>Keywords in yaml are represented as a word followed by a colon on a line by itself.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>accessConfigs:</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Key value pairs are represented with the key and value on either side of a colon
-on a line by itself.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>key: value</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Nesting of elements occurs through indentation (like Python) rather than braces
-or brackets as in other languages, but the number of spaces is not significant.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>accessConfigs:
-  name: samuel
-    type: clemens</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Is the same as</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>accessConfigs:
-      name: samuel
-            type: clemens</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Never use tabs in YAML.</p>
-</div>
-<div class="paragraph">
-<p>Finally, a list is represented by a dash in the whitespace before the start of
-the list and is terminated by the end of the in-line indentation.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>accessConfigs:
-  name: samuel
-  type: clemens</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This one produces a sequence: <strong>accessConfigs( name:samuel, type:clemens )</strong></p>
-</div>
-<div class="paragraph">
-<p>Notice that each pair is a property.</p>
-</div>
-<div class="paragraph">
-<p>that is different from</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>accessConfigs:
-  - name: samuel
-    type: clemens</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This one produce a list: <strong>accessConfigs( [ (name:samuel), (type:clemens) ], &#8230;&#8203; )</strong></p>
-</div>
-<div class="paragraph">
-<p>Notice that the collection of pairs is the first property.</p>
-</div>
-<div class="paragraph">
-<p>This means that when you create a YAML file, if you get a dash out of place or
-leave it off when it is expected, it will create a syntax error in the call to
-the underlying API and your deployment will fail.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_your_first_pod_manifest"><a class="anchor" href="#_your_first_pod_manifest"></a>Your first Pod manifest</h2>
+<h2 id="_yet_another_markup_language"><a class="anchor" href="#_yet_another_markup_language"></a>Yet Another Markup Language</h2>
 <div class="sectionbody">
 
 </div>
