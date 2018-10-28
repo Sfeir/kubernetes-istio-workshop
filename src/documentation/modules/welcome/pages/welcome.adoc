@@ -14,27 +14,49 @@ It offers a persistent 5GB home directory.
 
 __This means that all you will need for this workshop is a browser.__
 
-Let's start by connecting to http://console.cloud.google.com[GCP Console].
-Log in and open your project.
+Let's start by connecting to https://console.cloud.google.com/projectselector/home/dashboard?organizationId=925474410831[GCP Console]. Log in and select the project named "Workshop Istio XXX".
 
+image:gcp-dashboard-select-project.png[GCP organisation dashboard]
+image:gcp-dashboard-project-selector.png[GCP project selector]
 
 
 [#cloud-shell]
 == Setup Cloud Shell
-- Open Cloud Shell (on the upper-left corner)
+
+On the project dashboard, note your project ID. You'll use it later
+
+image:gcp-dashboard-project-info.png[GCP project info with project ID]
+
+Clic on "Activate Cloud Shell" (on the upper-left corner)
 
 image:open-cloud-shell.png[Cloud Shell icon]
 
-- Set default project
+Once Cloud Shell provisionning ends, this kind of prompt displays
 
- gcloud config set project $USER-k8s-istio-workshop
+image:cloud-shell-prompt.png[Cloud Shell prompt]
 
-- Set default region/zone
+Execute commands bellow to display your currrent account and project
 
- gcloud config set compute/region europe-west1
- gcloud config set compute/zone europe-west1-b
+```shell
+gcloud config list account
+gcloud config list project
+```
 
-- Clone the repository
+Set current project if it's not yours project ID
+```shell
+gcloud config set project <project ID>
+```
 
-    git clone https://github.com/Sfeir/kubernetes-istio-workshop.git
-    cd kubernetes-istio-workshop
+Set default region/zone
+```shell
+gcloud config set compute/region europe-west1
+gcloud config set compute/zone europe-west1-b
+```
+
+Clone the workshop repository
+```shell
+git clone https://github.com/Sfeir/kubernetes-istio-workshop.git
+cd kubernetes-istio-workshop
+```
+
+Congratulations, you're ready to start this workshop !!

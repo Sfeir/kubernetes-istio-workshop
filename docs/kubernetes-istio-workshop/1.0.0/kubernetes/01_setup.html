@@ -56,10 +56,10 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <span class="nav-text"><strong>Welcome</strong></span>
+    <a class="nav-link" href="../welcome/welcome.html"><strong>Welcome</strong></a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../welcome/welcome.html">1. Google Cloud Platform</a>
+    <a class="nav-link" href="../welcome/welcome.html#gcp">1. Google Cloud Platform</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../welcome/welcome.html#cloud-shell">2. Setup Cloud Shell</a>
@@ -340,7 +340,7 @@
     <li class="crumb"><a href="01_setup.html">1. Getting started</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/kubernetes/pages/01_setup.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/kubernetes/pages/01_setup.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Getting started</h1>
@@ -353,15 +353,38 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="deploy-nginx"><a class="anchor" href="#deploy-nginx"></a>Deploy Web Server</h2>
+<h2 id="deploy-nginx"><a class="anchor" href="#deploy-nginx"></a>Deploy a Web Server</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>TODO:</strong> Explain</p>
+<p>First, list what is running on your Kubernetes:</p>
 </div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>kubectl run nginx --image=nginx:1.15</pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl get all</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>On an empty cluster, you only have a <em>service</em> resource named <em>kubernetes</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    &lt;none&gt;        443/TCP   124d</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This resource allow to</p>
+</div>
+<div class="paragraph">
+<p>Now Let&#8217;s run you first workload : an nginx http server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl run nginx --image=nginx:1.15</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Kubernetes creates a <em>deployment</em> to manage your nginx server.</p>
 </div>
 </div>
 </div>

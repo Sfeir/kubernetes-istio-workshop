@@ -54,12 +54,12 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <button class="nav-toggle"></button>
-    <span class="nav-text"><strong>Welcome</strong></span>
+    <a class="nav-link" href="welcome.html"><strong>Welcome</strong></a>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="welcome.html">1. Google Cloud Platform</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#gcp">1. Google Cloud Platform</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="#cloud-shell">2. Setup Cloud Shell</a>
@@ -336,11 +336,10 @@
 <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="../index.html">Kubernetes and Istio Workshop</a></li>
-    <li class="crumb"><strong>Welcome</strong></li>
-    <li class="crumb"><a href="welcome.html">1. Google Cloud Platform</a></li>
+    <li class="crumb"><a href="welcome.html"><strong>Welcome</strong></a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/welcome/pages/welcome.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/welcome/pages/welcome.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Welcome</h1>
@@ -361,53 +360,72 @@ It offers a persistent 5GB home directory.</p>
 <p><em>This means that all you will need for this workshop is a browser.</em></p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s start by connecting to <a href="http://console.cloud.google.com">GCP Console</a>.
-Log in and open your project.</p>
+<p>Let&#8217;s start by connecting to <a href="https://console.cloud.google.com/projectselector/home/dashboard?organizationId=925474410831">GCP Console</a>. Log in and select the project named "Workshop Istio XXX".</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/gcp-dashboard-select-project.png" alt="GCP organisation dashboard"></span>
+<span class="image"><img src="_images/gcp-dashboard-project-selector.png" alt="GCP project selector"></span></p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="cloud-shell"><a class="anchor" href="#cloud-shell"></a>Setup Cloud Shell</h2>
 <div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Open Cloud Shell (on the upper-left corner)</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>On the project dashboard, note your project ID. You&#8217;ll use it later</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/gcp-dashboard-project-info.png" alt="GCP project info with project ID"></span></p>
+</div>
+<div class="paragraph">
+<p>Clic on "Activate Cloud Shell" (on the upper-left corner)</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="_images/open-cloud-shell.png" alt="Cloud Shell icon"></span></p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Set default project</p>
-<div class="literalblock">
+<div class="paragraph">
+<p>Once Cloud Shell provisionning ends, this kind of prompt displays</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/cloud-shell-prompt.png" alt="Cloud Shell prompt"></span></p>
+</div>
+<div class="paragraph">
+<p>Execute commands bellow to display your currrent account and project</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<pre>gcloud config set project $USER-k8s-istio-workshop</pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">gcloud config list account
+gcloud config list project</code></pre>
 </div>
 </div>
-</li>
-<li>
+<div class="paragraph">
+<p>Set current project if it&#8217;s not yours project ID</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">gcloud config set project &lt;project ID&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Set default region/zone</p>
-<div class="literalblock">
+</div>
+<div class="listingblock">
 <div class="content">
-<pre>gcloud config set compute/region europe-west1
-gcloud config set compute/zone europe-west1-b</pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">gcloud config set compute/region europe-west1
+gcloud config set compute/zone europe-west1-b</code></pre>
 </div>
 </div>
-</li>
-<li>
-<p>Clone the repository</p>
-<div class="literalblock">
+<div class="paragraph">
+<p>Clone the workshop repository</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<pre>git clone https://github.com/Sfeir/kubernetes-istio-workshop.git
-cd kubernetes-istio-workshop</pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">git clone https://github.com/Sfeir/kubernetes-istio-workshop.git
+cd kubernetes-istio-workshop</code></pre>
 </div>
 </div>
-</li>
-</ul>
+<div class="paragraph">
+<p>Congratulations, you&#8217;re ready to start this workshop !!</p>
 </div>
 </div>
 </div>
