@@ -30,7 +30,7 @@ How can you check that?
 
 [source, bash]
 ----
-kubectl authn tls-check | grep workshop
+kubectl auth tls-check | grep workshop
 
 customer.workshop.svc.cluster.local:8080                         OK         mTLS       mTLS       default/workshop                             default/workshop
 preference.workshop.svc.cluster.local:8080                       OK         mTLS       mTLS       default/workshop                             default/workshop
