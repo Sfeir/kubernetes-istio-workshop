@@ -1,21 +1,62 @@
-= Getting started
+= Getting started with Kubernetes
 include::_attributes.adoc[]
+
+== Summary
+
+The first part of this workshop demonstrates how to build a simple multi-tiers application using Kubernetes Engine. The tutorial application is a guestbook that allows visitors to enter text in a log and to see the last few logged entries.
+
+The tutorial shows how to set up the guestbook web service on an external IP with a load balancer and how to run a Redis cluster with a single master and multiple workers.
+
+To deploy and run the guestbook application on Kubernetes Engine, you must:
+
+* Create a GKE cluster
+* Set up a Redis master
+* Set up Redis workers
+* Set up the guestbook web frontend
+* Visit the guestbook website
+* Scale up the guestbook web frontend
 
 [#start-gke]
 == Create Kubernetes cluster on GKE
 
-**TODO:** Step to step create a GKE cluster
+You'll create a Kubernetes cluster using Google Kubernetes Engine web UI.
 
-[#deploy-nginx]
-== Deploy Web Server
+Click the 3 bar menu - aka. the __Burger__ - on the upper-right corner of the GCP Console.
 
-**TODO:** Explain
+When you mouse over the menu item __Kubernetes Engine__, a pin appear on the right. Click it to pin __Kubernetes Engine__ on top of the menu. You can do the same with __Compute Engine__ and __Container Registry__.
 
- kubectl run nginx --image=nginx:1.15
+image:gke-on-burger-menu.png[Burger menu opened on Kubernetes Engine]
 
-[#expose-nginx]
-== Expose Web Server
+Then click on __Kubernetes Engine__ to open the list of GKE clusters.
 
-**TODO:** Explain
+You don't have any cluster now. Click the __Create cluster__ button to open the cluster creation wizard. Choose a "Standard cluster".
 
- kubectl expose nginx --type=LoadBalancer
+On the right part of the wizard:
+
+* Give your cluster the name *kube-cluster*
+* Choose `europe-west1-b` as Zone for this cluster (to have it closer to the user)
+* Click the __Create__ button to create the cluster
+
+⏳ Wait until the cluster is fully started. It should takes 2-3 minutes.
+
+== Configure Kubernetes command-line client
+
+List Kubernetes clusters from Cloud Shell
+```shell
+gcloud container clusters list
+```
+
+`kubectl` is the command-line client for Kubernetes. It's a user interface to Kubernetes REST API's.
+Next command will generate a kube configuration for you (in `~/.kube/config`) to securely connect to your cluster with kubectl
+```shell
+gcloud container clusters get-credentials kube-cluster --zone=europe-west1-b
+```
+
+You can now list the nodes composing your cluster what is running inside it
+```shell
+kubectl get nodes
+kubectl get all
+```
+
+You have 3 nodes and a single service running in Kubernetes.
+This `service/kubernetes` resource is a service exposing the REST API of your Kubernetes cluster to the Pods, allowing them to execute `kubectl` commands if they want to (very few applications do that).

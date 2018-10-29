@@ -1,0 +1,23 @@
+= Set up a Redis master
+
+In your Cloud Shell, move to directory guestbook
+```shell
+cd guestbook
+```
+
+You are in the main directory for the sample code. First, look at the files that configure your application. Open the Cloud Shell Editor
+
+image:cloud-shell-editor.png[Cloud Shell Editor button]
+
+From the source tree on the left, open the file `kubernetes-istio-workshop/guestbook/redis-master-deployment.yaml`
+
+
+== Your first Deployment manifest
+
+== Explain
+
+**TODO:** Explain how to use kubectl explain to get api documentation
+
+ kubectl explain pods
+ kubectl explain pods.spec
+ kubectl explain pods.spec.containers

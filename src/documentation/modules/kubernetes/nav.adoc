@@ -1,3 +1,5 @@
-* **Part 1 : kubernetes**
-** xref:01_setup.adoc[1. Getting started]
+* **Part 1 : Kubernetes**
+** xref:01_setup.adoc[1. Create cluster]
 ** xref:02_yaml.adoc[2. Orchestration as Code]
+** xref:03_deploy_redis.adoc[3. Setup Redis master]
+

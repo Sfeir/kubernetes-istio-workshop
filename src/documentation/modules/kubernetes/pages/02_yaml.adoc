@@ -1,18 +1,63 @@
 = Orchestration as Code
 include::_attributes.adoc[]
 
+Kubernetes use YAML format to define Kubernetes' resources like pods.
+Here is a quick explanation of YAML syntax.
 
-== Yet Another Markup Language
+You can go to xref:03_deploy_redis.adoc[3. Setup Redis master] if you already know YAML.
 
+[#yaml]
+== YAML Ain't Markup Language
 
-== Explain
+YAML is a human-readable data sequencing language. It has four main syntactic features.
 
-**TODO:** Explain how to use kubectl explain to get api documentation
+Keywords in yaml are represented as a word followed by a colon on a line by itself.
+```
+accessConfigs:
+```
+Key value pairs are represented with the key and value on either side of a colon
+on a line by itself.
+```
+key: value
+```
+Nesting of elements occurs through indentation (like Python) rather than braces
+or brackets as in other languages, but the number of spaces is not significant.
+```
+accessConfigs:
+  name: samuel
+    type: clemens
+```
+Is the same as
+```
+accessConfigs:
+      name: samuel
+            type: clemens
+```
+Never use tabs in YAML.
 
- kubectl explain pods
- kubectl explain pods.spec
- kubectl explain pods.spec.containers
+Finally, a list is represented by a dash in the whitespace before the start of
+the list and is terminated by the end of the in-line indentation.
 
-== Create customer.yaml
+```
+accessConfigs:
+  name: samuel
+  type: clemens
+```
+This one produces a sequence: *accessConfigs( name:samuel, type:clemens )*
 
-Exercice : create file customer.yaml
+Notice that each pair is a property.
+
+that is different from
+
+```
+accessConfigs:
+  - name: samuel
+    type: clemens
+```
+This one produce a list: *accessConfigs( [ (name:samuel), (type:clemens) ], ... )*
+
+Notice that the collection of pairs is the first property.
+
+This means that when you create a YAML file, if you get a dash out of place or
+leave it off when it is expected, it will create a syntax error in the call to
+the underlying API and your deployment will fail.
