@@ -2,4 +2,5 @@
 ** xref:01_setup.adoc[1. Create cluster]
 ** xref:02_yaml.adoc[2. Orchestration as Code]
 ** xref:03_deploy_redis.adoc[3. Setup Redis master]
+** xref:04_expose_redis.adoc[4. Expose Redis master]
 

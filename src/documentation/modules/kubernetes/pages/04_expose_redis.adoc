@@ -1,0 +1,65 @@
+= Expose Redis master
+
+You need to create a __Service__ to proxy the traffic to the Redis master Pod. Use the following command to create the service.
+
+Look at `kubernetes-istio-workshop/guestbook/redis-master-service.yaml` in Cloud Shell Editor.
+
+There is two important parts in the __Service__ yaml: the `ports` and the `selector`.
+
+```yaml
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+    role: master
+    tier: backend
+```
+== Service ports
+
+The `ports` define the __Service__'s listening port (defined by property `port`)
+and the __Pod__'s listening port `targetPort`.
+
+== Selectors
+
+The `selector` is the universal way for Kubernetes to identify a resource using *labels*.
+If you look at our __Deployment__'s yaml, we defined some `labels` in the `metadata` part of our __Pods__ templates.
+
+```yaml
+template:
+    metadata:
+      labels:
+        app: redis
+        role: master
+        tier: backend
+```
+
+With *selectors*, you can target any resource or group of resource.
+
+For exemple, this selector will target all resources associated to the `backend` tier.
+```yaml
+selector:
+    tier: backend
+```
+
+Or this one will target all `Redis master`, whichever is its tier.
+```yaml
+selector:
+    app: redis
+    role: master
+```
+
+You can put any *label* on your Kubernetes resource to match your own organisation on the cluster, for exemple `environment, team, owner, version, application...`
+
+
+== Create Redis master __Service__
+
+Run the creation command then look at your new service
+
+```shell
+kubectl apply -f guestbook/redis-master-service.yaml
+kubectl get services
+```
+
+Our new __Service__ `redis-master` is of type ClusterIP, which mean that any __Pod__ in the cluster can connect to the `redis-master` __Pod__ using either its `CLUSTER-IP` or the internal dns name `redis-master.svc.cluster.local`.
