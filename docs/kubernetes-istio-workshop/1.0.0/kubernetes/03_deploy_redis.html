@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/welcome/welcome.html">
+    <title>Set up Redis master :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/03_deploy_redis.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -54,15 +54,15 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <a class="nav-link" href="welcome.html"><strong>Welcome</strong></a>
+    <a class="nav-link" href="../welcome/welcome.html"><strong>Welcome</strong></a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#gcp">1. Google Cloud Platform</a>
+    <a class="nav-link" href="../welcome/welcome.html#gcp">1. Google Cloud Platform</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="#cloud-shell">2. Setup Cloud Shell</a>
+    <a class="nav-link" href="../welcome/welcome.html#cloud-shell">2. Setup Cloud Shell</a>
   </li>
 </ul>
   </li>
@@ -75,13 +75,13 @@
     <span class="nav-text"><strong>Part 1 : Kubernetes</strong></span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../kubernetes/01_setup.html">1. Create cluster</a>
+    <a class="nav-link" href="01_setup.html">1. Create cluster</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../kubernetes/02_yaml.html">2. Orchestration as Code</a>
+    <a class="nav-link" href="02_yaml.html">2. Orchestration as Code</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../kubernetes/03_deploy_redis.html">3. Setup Redis master</a>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="03_deploy_redis.html">3. Setup Redis master</a>
   </li>
 </ul>
   </li>
@@ -339,96 +339,105 @@
 <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="../index.html">Kubernetes and Istio Workshop</a></li>
-    <li class="crumb"><a href="welcome.html"><strong>Welcome</strong></a></li>
+    <li class="crumb"><strong>Part 1 : Kubernetes</strong></li>
+    <li class="crumb"><a href="03_deploy_redis.html">3. Setup Redis master</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/welcome/pages/welcome.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/kubernetes/pages/03_deploy_redis.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1>Welcome</h1>
-<div class="sect1">
-<h2 id="gcp"><a class="anchor" href="#gcp"></a>Google Cloud Platform</h2>
+<h1>Set up Redis master</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this workshop we will be using <a href="https://cloud.google.com/">Google Cloud Platform (GCP)</a>.
-GCP provides both a managed Kubernetes cluster: <a href="https://cloud.google.com/kubernetes-engine/">Google Kubernetes Engine</a>,
-and a hosted command line environment: <a href="https://cloud.google.com/shell/docs/">Google Cloud Shell</a>.</p>
+<p>First, look at the files that configure your application. Open the Cloud Shell Editor</p>
 </div>
 <div class="paragraph">
-<p>Cloud Shell is a Debian-based virtual machine is provisionned with all the
-development tools you&#8217;ll need (Kubernetes, Docker, Python, Java, Node, etc.).
-It offers a persistent 5GB home directory.</p>
-</div>
-<div class="paragraph">
-<p><em>This means that all you will need for this workshop is a browser.</em></p>
-</div>
-<div class="paragraph">
-<p>Let&#8217;s start by connecting to <a href="https://console.cloud.google.com/projectselector/home/dashboard?organizationId=925474410831">GCP Console</a>. Log in and select the project named "Workshop Istio XXX".</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/gcp-dashboard-select-project.png" alt="GCP organisation dashboard"></span>
-<span class="image"><img src="_images/gcp-dashboard-project-selector.png" alt="GCP project selector"></span></p>
+<p><span class="image"><img src="_images/cloud-shell-editor.png" alt="Cloud Shell Editor button"></span></p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="cloud-shell"><a class="anchor" href="#cloud-shell"></a>Setup Cloud Shell</h2>
+<h2 id="_explain_kubernetes_resource"><a class="anchor" href="#_explain_kubernetes_resource"></a>Explain Kubernetes resource</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>On the project dashboard, note your project ID. You&#8217;ll use it later</p>
+<p>From the source tree on the left, open the file <code>kubernetes-istio-workshop/guestbook/redis-master-deployment.yaml</code>.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="_images/gcp-dashboard-project-info.png" alt="GCP project info with project ID"></span></p>
+<p>It&#8217;s the yaml file to define the <em>Deployment</em> resource for the Redis Master.
+A <em>Deployment</em> manage <em>Pod</em> definition, replicas (number of instances of a <em>Pod</em>),
+and <em>Pod</em> rolling-upgrade.</p>
 </div>
 <div class="paragraph">
-<p>Clic on "Activate Cloud Shell" (on the upper-left corner)</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/open-cloud-shell.png" alt="Cloud Shell icon"></span></p>
-</div>
-<div class="paragraph">
-<p>Once Cloud Shell provisionning ends, this kind of prompt displays</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/cloud-shell-prompt.png" alt="Cloud Shell prompt"></span></p>
-</div>
-<div class="paragraph">
-<p>Execute commands bellow to display your currrent account and project</p>
+<p>Find the Docker image declaration. It&#8217;s located in the tree path <code>spec.template.spec.containers.image</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">gcloud config list account
-gcloud config list project</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  template:
+    spec:
+      containers:
+        image: k8s.gcr.io/redis:e2e</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Set current project if it&#8217;s not yours project ID</p>
+<p>The second <code>spec</code> field defines the <em>Pod</em> specification which the <em>ReplicaSet</em> will use to create the Redis <em>Pod</em>. The <code>image</code> tag refers to a Docker image to be pulled from a registry.</p>
+</div>
+<div class="paragraph">
+<p>You can explain any Kubernetes resource using the tree path (including the resource type)</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">gcloud config set project &lt;project ID&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl explain pod.spec
+kubectl explain deployment.spec.template.spec.containers.image</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Set default region/zone</p>
+<p>You can also get all available properties recursively</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">gcloud config set compute/region europe-west1
-gcloud config set compute/zone europe-west1-b</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl explain --recursive pod</code></pre>
 </div>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_launch_redis_master"><a class="anchor" href="#_launch_redis_master"></a>Launch Redis Master</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Clone the workshop repository</p>
+<p>Run the following command to deploy the Redis master.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">git clone https://github.com/Sfeir/kubernetes-istio-workshop.git
-cd kubernetes-istio-workshop</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f guestbook/redis-master-deployment.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Congratulations, you&#8217;re ready to start this workshop !!</p>
+<p>Now look at what is running on the cluster</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl get pod,replicaset,deployment</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>NAME                                READY     STATUS    RESTARTS   AGE
+pod/redis-master-585798d8ff-tkslt   1/1       Running   0          1m
+
+NAME                                            DESIRED   CURRENT   READY     AGE
+replicaset.extensions/redis-master-585798d8ff   1         1         1         1m
+
+NAME                                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/redis-master   1         1         1            1           1m</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Kubernetes <em>Deployment</em> is running. It created a <em>ReplicaSet</em> which at its turn created a <em>Pod</em> in which our Redis master container is running.</p>
 </div>
 </div>
 </div>

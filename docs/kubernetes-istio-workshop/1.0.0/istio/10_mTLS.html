@@ -72,13 +72,16 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <span class="nav-text"><strong>Part 1 : kubernetes</strong></span>
+    <span class="nav-text"><strong>Part 1 : Kubernetes</strong></span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../kubernetes/01_setup.html">1. Getting started</a>
+    <a class="nav-link" href="../kubernetes/01_setup.html">1. Create cluster</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../kubernetes/02_yaml.html">2. Orchestration as Code</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../kubernetes/03_deploy_redis.html">3. Setup Redis master</a>
   </li>
 </ul>
   </li>
@@ -340,7 +343,7 @@
     <li class="crumb"><a href="10_mTLS.html">8. Mutual TLS</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/10_mTLS.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/10_mTLS.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Mutual TLS</h1>
@@ -386,7 +389,7 @@ How can you check that?</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl authn tls-check | grep workshop
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl auth tls-check | grep workshop
 
 customer.workshop.svc.cluster.local:8080                         OK         mTLS       mTLS       default/workshop                             default/workshop
 preference.workshop.svc.cluster.local:8080                       OK         mTLS       mTLS       default/workshop                             default/workshop

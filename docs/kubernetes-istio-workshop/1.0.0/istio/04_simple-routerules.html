@@ -72,13 +72,16 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <span class="nav-text"><strong>Part 1 : kubernetes</strong></span>
+    <span class="nav-text"><strong>Part 1 : Kubernetes</strong></span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../kubernetes/01_setup.html">1. Getting started</a>
+    <a class="nav-link" href="../kubernetes/01_setup.html">1. Create cluster</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../kubernetes/02_yaml.html">2. Orchestration as Code</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../kubernetes/03_deploy_redis.html">3. Setup Redis master</a>
   </li>
 </ul>
   </li>
@@ -340,7 +343,7 @@
     <li class="crumb"><a href="04_simple-routerules.html">4. Simple Routing</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/04_simple-routerules.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/04_simple-routerules.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Simple Route Rules</h1>
@@ -383,7 +386,7 @@ recommendation-v2-2815683430-vpx4p   2/2       Running   0          15s</code></
 </div>
 </div>
 <div class="paragraph">
-<p>you likely see <code>"customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 3"</code>, where '99634814-d2z2t' is the pod running <code>v1</code> and the <code>3</code> is basically the number of times you hit the endpoint.</p>
+<p>you would likely see <code>"customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 3"</code>, where '99634814-d2z2t' is the pod running <code>v1</code> and the <code>3</code> is basically the number of times you hit the endpoint.</p>
 </div>
 <div class="paragraph">
 <p>Run again the command:</p>
@@ -394,7 +397,7 @@ recommendation-v2-2815683430-vpx4p   2/2       Running   0          15s</code></
 </div>
 </div>
 <div class="paragraph">
-<p>you likely see <code>"customer =&gt; preference =&gt; recommendation v2 from '2819441432-5v22s': 1"</code> as by default you get round-robin load-balancing when there is more than one Pod behind a Service</p>
+<p>you would likely see <code>"customer =&gt; preference =&gt; recommendation v2 from '2819441432-5v22s': 1"</code> as by default you get round-robin load-balancing when there is more than one Pod behind a Service</p>
 </div>
 <div class="paragraph">
 <p>Send several requests to see their responses:</p>

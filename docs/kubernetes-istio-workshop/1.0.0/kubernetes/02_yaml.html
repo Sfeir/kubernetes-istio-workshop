@@ -72,13 +72,16 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-toggle"></button>
-    <span class="nav-text"><strong>Part 1 : kubernetes</strong></span>
+    <span class="nav-text"><strong>Part 1 : Kubernetes</strong></span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="01_setup.html">1. Getting started</a>
+    <a class="nav-link" href="01_setup.html">1. Create cluster</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="02_yaml.html">2. Orchestration as Code</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="03_deploy_redis.html">3. Setup Redis master</a>
   </li>
 </ul>
   </li>
@@ -336,40 +339,109 @@
 <nav class="crumbs" aria-label="breadcrumbs">
   <ul>
     <li class="crumb"><a href="../index.html">Kubernetes and Istio Workshop</a></li>
-    <li class="crumb"><strong>Part 1 : kubernetes</strong></li>
+    <li class="crumb"><strong>Part 1 : Kubernetes</strong></li>
     <li class="crumb"><a href="02_yaml.html">2. Orchestration as Code</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/kubernetes/pages/02_yaml.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/kubernetes/pages/02_yaml.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Orchestration as Code</h1>
-<div class="sect1">
-<h2 id="_yet_another_markup_language"><a class="anchor" href="#_yet_another_markup_language"></a>Yet Another Markup Language</h2>
-<div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="_explain"><a class="anchor" href="#_explain"></a>Explain</h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>TODO:</strong> Explain how to use kubectl explain to get api documentation</p>
+<p>Kubernetes use YAML format to define Kubernetes' resources like pods.
+Here is a quick explanation of YAML syntax.</p>
 </div>
-<div class="literalblock">
+<div class="paragraph">
+<p>If you already know YAML, you can go to <a href="03_deploy_redis.html" class="page">3. Setup Redis master</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="yaml"><a class="anchor" href="#yaml"></a>YAML Ain&#8217;t Markup Language</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>YAML is a human-readable data sequencing language. It has four main syntactic features.</p>
+</div>
+<div class="paragraph">
+<p>Keywords in yaml are represented as a word followed by a colon on a line by itself.</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<pre>kubectl explain pods
-kubectl explain pods.spec
-kubectl explain pods.spec.containers</pre>
+<pre class="highlightjs highlight"><code>accessConfigs:</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_create_customer_yaml"><a class="anchor" href="#_create_customer_yaml"></a>Create customer.yaml</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>Exercice : create file customer.yaml</p>
+<p>Key value pairs are represented with the key and value on either side of a colon
+on a line by itself.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>key: value</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Nesting of elements occurs through indentation (like Python) rather than braces
+or brackets as in other languages, but the number of spaces is not significant.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>accessConfigs:
+  name: samuel
+    type: clemens</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Is the same as</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>accessConfigs:
+      name: samuel
+            type: clemens</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Never use tabs in YAML.</p>
+</div>
+<div class="paragraph">
+<p>Finally, a list is represented by a dash in the whitespace before the start of
+the list and is terminated by the end of the in-line indentation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>accessConfigs:
+  name: samuel
+  type: clemens</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This one produces a sequence: <strong>accessConfigs( name:samuel, type:clemens )</strong></p>
+</div>
+<div class="paragraph">
+<p>Notice that each pair is a property.</p>
+</div>
+<div class="paragraph">
+<p>that is different from</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>accessConfigs:
+  - name: samuel
+    type: clemens</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This one produce a list: <strong>accessConfigs( [ (name:samuel), (type:clemens) ], &#8230;&#8203; )</strong></p>
+</div>
+<div class="paragraph">
+<p>Notice that the collection of pairs is the first property.</p>
+</div>
+<div class="paragraph">
+<p>This means that when you create a YAML file, if you get a dash out of place or
+leave it off when it is expected, it will create a syntax error in the call to
+the underlying API and your deployment will fail.</p>
 </div>
 </div>
 </div>

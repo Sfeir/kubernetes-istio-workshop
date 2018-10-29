@@ -4,7 +4,7 @@ include::_attributes.adoc[]
 Kubernetes use YAML format to define Kubernetes' resources like pods.
 Here is a quick explanation of YAML syntax.
 
-You can go to xref:03_deploy_redis.adoc[3. Setup Redis master] if you already know YAML.
+If you already know YAML, you can go to xref:03_deploy_redis.adoc[3. Setup Redis master].
 
 [#yaml]
 == YAML Ain't Markup Language

@@ -1,23 +1,63 @@
-= Set up a Redis master
+= Set up Redis master
 
-In your Cloud Shell, move to directory guestbook
-```shell
-cd guestbook
-```
-
-You are in the main directory for the sample code. First, look at the files that configure your application. Open the Cloud Shell Editor
+First, look at the files that configure your application. Open the Cloud Shell Editor
 
 image:cloud-shell-editor.png[Cloud Shell Editor button]
 
-From the source tree on the left, open the file `kubernetes-istio-workshop/guestbook/redis-master-deployment.yaml`
 
+== Explain Kubernetes resource
 
-== Your first Deployment manifest
+From the source tree on the left, open the file `kubernetes-istio-workshop/guestbook/redis-master-deployment.yaml`.
 
-== Explain
+It's the yaml file to define the __Deployment__ resource for the Redis Master.
+A __Deployment__ manage __Pod__ definition, replicas (number of instances of a __Pod__),
+and __Pod__ rolling-upgrade.
 
-**TODO:** Explain how to use kubectl explain to get api documentation
+Find the Docker image declaration. It's located in the tree path `spec.template.spec.containers.image`
 
- kubectl explain pods
- kubectl explain pods.spec
- kubectl explain pods.spec.containers
+```yaml
+spec:
+  template:
+    spec:
+      containers:
+        image: k8s.gcr.io/redis:e2e
+```
+
+The second `spec` field defines the __Pod__ specification which the __ReplicaSet__ will use to create the Redis __Pod__. The `image` tag refers to a Docker image to be pulled from a registry.
+
+You can explain any Kubernetes resource using the tree path (including the resource type)
+```shell
+kubectl explain pod.spec
+kubectl explain deployment.spec.template.spec.containers.image
+```
+
+You can also get all available properties recursively
+```shell
+kubectl explain --recursive pod
+```
+
+== Launch Redis Master
+
+Run the following command to deploy the Redis master.
+```shell
+kubectl apply -f guestbook/redis-master-deployment.yaml
+```
+
+Now look at what is running on the cluster
+```shell
+kubectl get pod,replicaset,deployment
+```
+
+Output:
+```
+NAME                                READY     STATUS    RESTARTS   AGE
+pod/redis-master-585798d8ff-tkslt   1/1       Running   0          1m
+
+NAME                                            DESIRED   CURRENT   READY     AGE
+replicaset.extensions/redis-master-585798d8ff   1         1         1         1m
+
+NAME                                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/redis-master   1         1         1            1           1m
+```
+
+Kubernetes __Deployment__ is running. It created a __ReplicaSet__ which at its turn created a __Pod__ in which our Redis master container is running.
