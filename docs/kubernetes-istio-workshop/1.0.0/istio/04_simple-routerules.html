@@ -346,7 +346,7 @@
     <li class="crumb"><a href="04_simple-routerules.html">4. Simple Routing</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/04_simple-routerules.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/04_simple-routerules.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Simple Route Rules</h1>
@@ -381,6 +381,9 @@ recommendation-v2-2815683430-vpx4p   2/2       Running   0          15s</code></
 </div>
 </div>
 <div class="paragraph">
+<p><span class="image"><img src="_images/4-simple-routing-1.png" alt="4 simple routing 1"></span></p>
+</div>
+<div class="paragraph">
 <p>and test the customer endpoint:</p>
 </div>
 <div class="listingblock">
@@ -413,6 +416,9 @@ recommendation-v2-2815683430-vpx4p   2/2       Running   0          15s</code></
 <div class="paragraph">
 <p>The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service. Add another replica of recommendation-v2 Deployment.</p>
 </div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-k8s-istio-4-simple-scale-v2.png" alt="k8s istio k8s istio 4 simple scale v2"></span></p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale --replicas=2 deployment/recommendation-v2</code></pre>
@@ -425,7 +431,7 @@ recommendation-v2-2815683430-vpx4p   2/2       Running   0          15s</code></
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v1 from '2819441432-qsp25': 29
 customer =&gt; preference =&gt; recommendation v2 from '99634814-sf4cl': 37
-customer =&gt; preference =&gt; recommendation v2 from '99634814-sf4cl': 38</code></pre>
+customer =&gt; preference =&gt; recommendation v2 from '99634814-xq3c5': 38</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -492,6 +498,9 @@ spec:
 <div class="paragraph">
 <p>To route to one version only, you apply virtual services that set the default version for the microservices. In this case, the virtual services will route all traffic to v2 of recommendation microservice.</p>
 </div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-4-simple-routing-all-v2.png" alt="k8s istio 4 simple routing all v2"></span></p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: VirtualService
@@ -521,6 +530,9 @@ curl $CUSTOMER_URL</code></pre>
 </div>
 <div class="sect2">
 <h3 id="alltorecommendationv1"><a class="anchor" href="#alltorecommendationv1"></a>Route all the traffic to recommendation:v1</h3>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-4-simple-routing-all-v1.png" alt="k8s istio 4 simple routing all v1"></span></p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml</code></pre>
@@ -566,6 +578,9 @@ spec:
 <h3 id="canarydeploymentrecommendation"><a class="anchor" href="#canarydeploymentrecommendation"></a>Canary deployment: Split traffic between v1 and v2</h3>
 <div class="paragraph">
 <p>Canary Deployment scenario: push v2 into the cluster but slowly send end-user traffic to it, if you continue to see success, continue shifting more traffic over time</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-4-simple-routing-split-90-10.png" alt="k8s istio 4 simple routing split 90 10"></span></p>
 </div>
 <div class="listingblock">
 <div class="content">

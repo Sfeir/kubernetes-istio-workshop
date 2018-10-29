@@ -23,6 +23,8 @@ recommendation-v1-60483540-9snd9     2/2       Running   0          12m
 recommendation-v2-2815683430-vpx4p   2/2       Running   0          15s
 ----
 
+image:4-simple-routing-1.png[]
+
 and test the customer endpoint:
 
 [source,bash]
@@ -49,6 +51,8 @@ while true; do curl $CUSTOMER_URL; sleep .5; done
 
 The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service. Add another replica of recommendation-v2 Deployment.
 
+image:k8s-istio-k8s-istio-4-simple-scale-v2.png[]
+
 [source,bash]
 ----
 kubectl scale --replicas=2 deployment/recommendation-v2
@@ -60,7 +64,7 @@ Now, you will see two requests into the v2 and one for v1.
 ----
 customer => preference => recommendation v1 from '2819441432-qsp25': 29
 customer => preference => recommendation v2 from '99634814-sf4cl': 37
-customer => preference => recommendation v2 from '99634814-sf4cl': 38
+customer => preference => recommendation v2 from '99634814-xq3c5': 38
 ----
 
 Scale back to a single replica of the recommendation-v2 Deployment
@@ -119,6 +123,8 @@ kubectl get destinationrules -o yaml
 
 To route to one version only, you apply virtual services that set the default version for the microservices. In this case, the virtual services will route all traffic to v2 of recommendation microservice.
 
+image:k8s-istio-4-simple-routing-all-v2.png[]
+
 [source,yaml]
 ----
 kind: VirtualService
@@ -146,6 +152,8 @@ you should only see v2 being returned
 
 [#alltorecommendationv1]
 === Route all the traffic to recommendation:v1
+
+image:k8s-istio-4-simple-routing-all-v1.png[]
 
 [source,bash]
 ----
@@ -189,6 +197,8 @@ curl $CUSTOMER_URL
 === Canary deployment: Split traffic between v1 and v2
 
 Canary Deployment scenario: push v2 into the cluster but slowly send end-user traffic to it, if you continue to see success, continue shifting more traffic over time
+
+image:k8s-istio-4-simple-routing-split-90-10.png[]
 
 [source,bash]
 ----

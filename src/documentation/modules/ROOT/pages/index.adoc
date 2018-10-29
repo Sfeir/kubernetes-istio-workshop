@@ -6,8 +6,6 @@
 
 There are three different and super simple microservices in this system and they are chained together in the following sequence:
 
-```
-customer → preference → recommendation
-```
+image:k8s-istio-Initial.png[Super simple microservices]
 
 For now, they have a simple exception handling solution for dealing with a missing dependent service: it just returns the error message to the end-user.
