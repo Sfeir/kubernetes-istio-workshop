@@ -176,28 +176,7 @@
     <a class="nav-link" href="05_advanced-routerules.html">5. Advanced Routing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <button class="nav-toggle"></button>
     <a class="nav-link" href="#traffic-steering">Traffic Steering</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="#alltorecommendationv1">All Users To Recommendation V1</a>
-  </li>
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="#safaritov2">All Safari Users To Recommendation V2</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <button class="nav-toggle"></button>
-    <a class="nav-link" href="#accesscontrol">Access Control</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="#whitelist">White List</a>
-  </li>
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="#blacklist">Black List</a>
-  </li>
-</ul>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="#loadbalancer">Load Balancer</a>
@@ -309,6 +288,18 @@
   </li>
 </ul>
   </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="11_access-control.html#accesscontrol">B3. Access Control</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="11_access-control.html#whitelist">White List</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="11_access-control.html#blacklist">Black List</a>
+  </li>
+</ul>
+  </li>
 </ul>
   </li>
 </ul>
@@ -363,17 +354,20 @@ baggage propagation all intermediate services must to be instrumented with OpenT
 <div class="paragraph">
 <p>The baggage header for user agent has following form <code>baggage-user-agent: &lt;value&gt;</code>.</p>
 </div>
-<div class="sect2">
-<h3 id="alltorecommendationv1"><a class="anchor" href="#alltorecommendationv1"></a>Set recommendation to all v1</h3>
+<div id="alltorecommendationv1" class="paragraph">
+<p>Set <code>recommendation:v1</code> and <code>recommendation:v2</code> as subsets.</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
-kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml</code></pre>
 </div>
 </div>
+<div id="safaritov2" class="paragraph">
+<p>Set Safari users to v2.</p>
 </div>
-<div class="sect2">
-<h3 id="safaritov2"><a class="anchor" href="#safaritov2"></a>Set Safari users to v2</h3>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-5-traffic-steering.png" alt="k8s istio 5 traffic steering"></span></p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-safari-virtual-service.yml</code></pre>
@@ -426,80 +420,12 @@ curl -A Firefox $CUSTOMER_URL</code></pre>
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get virtualservice -o yaml</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h4>
+<div class="sect2">
+<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete destinationrule recommendation
 kubectl delete virtualservice recommendation</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="accesscontrol"><a class="anchor" href="#accesscontrol"></a>Access Control</h2>
-<div class="sectionbody">
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-The Access Control rules take some time to be applied and reflected. Be patient here!
-</td>
-</tr>
-</table>
-</div>
-<div class="sect2">
-<h3 id="whitelist"><a class="anchor" href="#whitelist"></a>Whitelist</h3>
-<div class="paragraph">
-<p>We&#8217;ll create a whitelist on the preference service to only allow requests from the recommendation service, which will make the preference service invisible to the customer service. Requests from the customer service to the preference service will return a 404 Not Found HTTP error code.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-advanced/access-control/acl-whitelist.yml</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL
-customer =&gt; 404 NOT_FOUND:preferencewhitelist.listchecker.workshop:customer is not whitelisted</code></pre>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean up</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/routing-advanced/access-control/acl-whitelist.yml</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="blacklist"><a class="anchor" href="#blacklist"></a>Blacklist</h3>
-<div class="paragraph">
-<p>We&#8217;ll create a blacklist making the customer service blacklist to the preference service. Requests from the customer service to the preference service will return a 403 Forbidden HTTP error code.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-advanced/access-control/acl-blacklist.yml</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL
-customer =&gt; 403 PERMISSION_DENIED:denycustomerhandler.denier.workshop:Not allowed</code></pre>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_clean_up_3"><a class="anchor" href="#_clean_up_3"></a>Clean up</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/routing-advanced/access-control/acl-blacklist.yml</code></pre>
-</div>
 </div>
 </div>
 </div>
@@ -574,8 +500,23 @@ customer =&gt; preference =&gt; recommendation v2 from '2819441432-bs5ck': 182</
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-advanced/load-balancer/recommendation-destination-rule-lb_policy_random.yml</code></pre>
 </div>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: DestinationRule
+metadata:
+  name: recommendation
+spec:
+  host: recommendation
+  trafficPolicy:
+    loadBalancer:
+      simple: RANDOM</code></pre>
+</div>
+</div>
 <div class="paragraph">
 <p>And you should see a different pattern of which pod is being selected</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-5-randome-lb.png" alt="k8s istio 5 randome lb"></span></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -628,6 +569,30 @@ The Rate Limiting rules take some time to be applied and reflected. Be patient h
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-advanced/rate-limiting/recommendation_rate_limit_handler.yml</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: "config.istio.io/v1alpha2"
+kind: memquota
+metadata:
+  name: handler
+  namespace: istio-system
+spec:
+  quotas:
+  - name: requestcount.quota.istio-system
+    # default rate limit is 5000qps
+    maxAmount: 5000
+    validDuration: 1s
+    # The first matching override is applied.
+    # A requestcount instance is checked against override dimensions.
+    overrides:
+    - dimensions:
+        destination: recommendation
+        destinationVersion: v2
+        source: preference
+      maxAmount: 1
+      validDuration: 1s</code></pre>
 </div>
 </div>
 <div class="paragraph">

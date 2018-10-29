@@ -176,28 +176,7 @@
     <a class="nav-link" href="05_advanced-routerules.html">5. Advanced Routing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <button class="nav-toggle"></button>
     <a class="nav-link" href="05_advanced-routerules.html#traffic-steering">Traffic Steering</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="05_advanced-routerules.html#alltorecommendationv1">All Users To Recommendation V1</a>
-  </li>
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="05_advanced-routerules.html#safaritov2">All Safari Users To Recommendation V2</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <button class="nav-toggle"></button>
-    <a class="nav-link" href="05_advanced-routerules.html#accesscontrol">Access Control</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="05_advanced-routerules.html#whitelist">White List</a>
-  </li>
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="05_advanced-routerules.html#blacklist">Black List</a>
-  </li>
-</ul>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="05_advanced-routerules.html#loadbalancer">Load Balancer</a>
@@ -309,6 +288,18 @@
   </li>
 </ul>
   </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="11_access-control.html#accesscontrol">B3. Access Control</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="11_access-control.html#whitelist">White List</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="11_access-control.html#blacklist">Black List</a>
+  </li>
+</ul>
+  </li>
 </ul>
   </li>
 </ul>
@@ -375,6 +366,9 @@ recommendation-v2-7bc4f7f696-d9j2m   2/2       Running   1          10h</code></
 <div class="paragraph">
 <p>You can inject 503&#8217;s, for approximately 50% of the requests.</p>
 </div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-6.http-503.png" alt="k8s istio 6.http 503"></span></p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: VirtualService
@@ -407,12 +401,12 @@ curl $CUSTOMER_URL
 customer =&gt; preference =&gt; recommendation v2 from '2819441432-qsp25': 51</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Clean up</p>
-</div>
+<div class="sect2">
+<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/fault-injection/inject-error/recommendation-virtual-service-503.yml</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -422,6 +416,9 @@ customer =&gt; preference =&gt; recommendation v2 from '2819441432-qsp25': 51</c
 <div class="sectionbody">
 <div class="paragraph">
 <p>The most insidious of possible distributed computing faults is not a "down" service but a service that is responding slowly, potentially causing a cascading failure in your network of services.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-6.delay.png" alt="k8s istio 6.delay"></span></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -486,16 +483,8 @@ kubectl delete -f manifests/istio/fault-injection/delay/recommendation-virtual-s
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation /bin/bash</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You will be inside the application container of your pod <code>recommendation-v2-2036617847-spdrb</code>. Now execute:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl 127.0.0.1:8080/misbehave
-exit</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) \
+-c recommendation -- curl 127.0.0.1:8080/misbehave</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -503,6 +492,9 @@ exit</code></pre>
 </div>
 <div class="paragraph">
 <p>Now, if you hit the customer endpoint several times, you should see some <code>503</code>'s</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-6.retry.png" alt="k8s istio 6.retry"></span></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -549,6 +541,9 @@ spec:
 </div>
 <div class="paragraph">
 <p>You will see it work every time because Istio will retry the recommendation service and it will land on v1 only.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-6.retry2.png" alt="k8s istio 6.retry2"></span></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -599,16 +594,8 @@ customer =&gt; 503 preference =&gt; 503 recommendation misbehavior from '6f64f9c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation /bin/bash</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You will be inside the application container of your pod <code>recommendation-v2-2036617847-spdrb</code>. Now execute:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl 127.0.0.1:8080/behave
-exit</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) \
+-c recommendation -- curl 127.0.0.1:8080/behave</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -641,6 +628,9 @@ customer =&gt; preference =&gt; recommendation v1 from '2039379827-h58vw': 130</
 </div>
 <div class="paragraph">
 <p>Hit the customer endpoint a few times, to see the load-balancing between v1 and v2 but with v2 taking a bit of time to respond</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-6.timeout.1.png" alt="k8s istio 6.timeout.1"></span></p>
 </div>
 <div class="listingblock">
 <div class="content">

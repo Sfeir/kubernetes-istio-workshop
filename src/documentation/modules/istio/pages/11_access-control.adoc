@@ -1,0 +1,53 @@
+= Access Control
+include::_attributes.adoc[]
+
+[#accesscontrol]
+== Access Control
+
+IMPORTANT: The Access Control rules take some time to be applied and reflected. Be patient here!
+
+[#whitelist]
+=== Whitelist
+
+We'll create a whitelist on the preference service to only allow requests from the recommendation service, which will make the preference service invisible to the customer service. Requests from the customer service to the preference service will return a 404 Not Found HTTP error code.
+
+[source,bash]
+----
+kubectl apply -f manifests/istio/routing-advanced/access-control/acl-whitelist.yml
+----
+
+[source,bash]
+----
+curl $CUSTOMER_URL
+customer => 404 NOT_FOUND:preferencewhitelist.listchecker.workshop:customer is not whitelisted
+----
+
+==== Clean up
+
+[source,bash]
+----
+kubectl delete -f manifests/istio/routing-advanced/access-control/acl-whitelist.yml
+----
+
+[#blacklist]
+=== Blacklist
+
+We'll create a blacklist making the customer service blacklist to the preference service. Requests from the customer service to the preference service will return a 403 Forbidden HTTP error code.
+
+[source,bash]
+----
+kubectl apply -f manifests/istio/routing-advanced/access-control/acl-blacklist.yml
+----
+
+[source,bash]
+----
+curl $CUSTOMER_URL
+customer => 403 PERMISSION_DENIED:denycustomerhandler.denier.workshop:Not allowed
+----
+
+==== Clean up
+
+[source,bash]
+----
+kubectl delete -f manifests/istio/routing-advanced/access-control/acl-blacklist.yml
+----

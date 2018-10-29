@@ -12,16 +12,19 @@ baggage propagation all intermediate services must to be instrumented with OpenT
 The baggage header for user agent has following form `baggage-user-agent: <value>`.
 
 [#alltorecommendationv1]
-=== Set recommendation to all v1
+
+Set ``recommendation:v1`` and ``recommendation:v2`` as subsets.
 
 [source,bash]
 ----
-kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
 kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml
 ----
 
 [#safaritov2]
-=== Set Safari users to v2
+
+Set Safari users to v2.
+
+image:k8s-istio-5-traffic-steering.png[]
 
 [source,bash]
 ----
@@ -71,63 +74,12 @@ You can describe the ``virtualservice`` to see its configuration
 kubectl get virtualservice -o yaml
 ----
 
-==== Clean up
+=== Clean up
 
 [source,bash]
 ----
 kubectl delete destinationrule recommendation
 kubectl delete virtualservice recommendation
-----
-
-[#accesscontrol]
-== Access Control
-
-IMPORTANT: The Access Control rules take some time to be applied and reflected. Be patient here!
-
-[#whitelist]
-=== Whitelist
-
-We'll create a whitelist on the preference service to only allow requests from the recommendation service, which will make the preference service invisible to the customer service. Requests from the customer service to the preference service will return a 404 Not Found HTTP error code.
-
-[source,bash]
-----
-kubectl apply -f manifests/istio/routing-advanced/access-control/acl-whitelist.yml
-----
-
-[source,bash]
-----
-curl $CUSTOMER_URL
-customer => 404 NOT_FOUND:preferencewhitelist.listchecker.workshop:customer is not whitelisted
-----
-
-==== Clean up
-
-[source,bash]
-----
-kubectl delete -f manifests/istio/routing-advanced/access-control/acl-whitelist.yml
-----
-
-[#blacklist]
-=== Blacklist
-
-We'll create a blacklist making the customer service blacklist to the preference service. Requests from the customer service to the preference service will return a 403 Forbidden HTTP error code.
-
-[source,bash]
-----
-kubectl apply -f manifests/istio/routing-advanced/access-control/acl-blacklist.yml
-----
-
-[source,bash]
-----
-curl $CUSTOMER_URL
-customer => 403 PERMISSION_DENIED:denycustomerhandler.denier.workshop:Not allowed
-----
-
-==== Clean up
-
-[source,bash]
-----
-kubectl delete -f manifests/istio/routing-advanced/access-control/acl-blacklist.yml
 ----
 
 [#loadbalancer]
@@ -192,7 +144,21 @@ Now, add the Random LB DestinationPolicy
 kubectl apply -f manifests/istio/routing-advanced/load-balancer/recommendation-destination-rule-lb_policy_random.yml
 ----
 
+[source,yaml]
+----
+kind: DestinationRule
+metadata:
+  name: recommendation
+spec:
+  host: recommendation
+  trafficPolicy:
+    loadBalancer:
+      simple: RANDOM
+----
+
 And you should see a different pattern of which pod is being selected
+
+image:k8s-istio-5-randome-lb.png[]
 
 [source,bash]
 ----
@@ -230,6 +196,30 @@ Now apply the rate limit handler
 [source,bash]
 ----
 kubectl apply -f manifests/istio/routing-advanced/rate-limiting/recommendation_rate_limit_handler.yml
+----
+
+[source,yaml]
+----
+apiVersion: "config.istio.io/v1alpha2"
+kind: memquota
+metadata:
+  name: handler
+  namespace: istio-system
+spec:
+  quotas:
+  - name: requestcount.quota.istio-system
+    # default rate limit is 5000qps
+    maxAmount: 5000
+    validDuration: 1s
+    # The first matching override is applied.
+    # A requestcount instance is checked against override dimensions.
+    overrides:
+    - dimensions:
+        destination: recommendation
+        destinationVersion: v2
+        source: preference
+      maxAmount: 1
+      validDuration: 1s
 ----
 
 Now setup the requestcount quota

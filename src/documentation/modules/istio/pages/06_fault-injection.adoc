@@ -19,6 +19,8 @@ recommendation-v2-7bc4f7f696-d9j2m   2/2       Running   1          10h
 
 You can inject 503's, for approximately 50% of the requests.
 
+image:k8s-istio-6.http-503.png[]
+
 [source,yaml]
 ----
 kind: VirtualService
@@ -51,7 +53,7 @@ curl $CUSTOMER_URL
 customer => preference => recommendation v2 from '2819441432-qsp25': 51
 ----
 
-Clean up
+=== Clean up
 
 [source,bash]
 ----
@@ -62,6 +64,8 @@ kubectl apply -f manifests/istio/fault-injection/inject-error/recommendation-vir
 == Delay
 
 The most insidious of possible distributed computing faults is not a "down" service but a service that is responding slowly, potentially causing a cascading failure in your network of services.
+
+image:k8s-istio-6.delay.png[]
 
 [source,yaml]
 ----
@@ -119,20 +123,15 @@ We will make pod recommendation-v2 fail 100% of the time. Get one of the pod nam
 
 [source,bash]
 ----
-kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation /bin/bash
-----
-
-You will be inside the application container of your pod `recommendation-v2-2036617847-spdrb`. Now execute:
-
-[source,bash]
-----
-curl 127.0.0.1:8080/misbehave
-exit
+kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) \
+-c recommendation -- curl 127.0.0.1:8080/misbehave
 ----
 
 This is a special endpoint that will make our application return only ``503``s.
 
 Now, if you hit the customer endpoint several times, you should see some ``503``'s
+
+image:k8s-istio-6.retry.png[]
 
 [source,bash]
 ----
@@ -178,6 +177,8 @@ kubectl apply -f manifests/istio/fault-injection/retry/recommendation-virtual-se
 ----
 
 You will see it work every time because Istio will retry the recommendation service and it will land on v1 only.
+
+image:k8s-istio-6.retry2.png[]
 
 [source,bash]
 ----
@@ -225,15 +226,8 @@ Now, make the pod v2 behave well again
 
 [source,bash]
 ----
-kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) -c recommendation /bin/bash
-----
-
-You will be inside the application container of your pod `recommendation-v2-2036617847-spdrb`. Now execute:
-
-[source,bash]
-----
-curl 127.0.0.1:8080/behave
-exit
+kubectl exec -it $(kubectl get pods|grep recommendation-v2|awk '{ print $1 }'|head -1) \
+-c recommendation -- curl 127.0.0.1:8080/behave
 ----
 
 The application is back to random load-balancing between v1 and v2
@@ -260,6 +254,8 @@ kubectl apply -f manifests/kubernetes/recommendation-v2_slow.yml
 ----
 
 Hit the customer endpoint a few times, to see the load-balancing between v1 and v2 but with v2 taking a bit of time to respond
+
+image:k8s-istio-6.timeout.1.png[]
 
 [source,bash]
 ----

@@ -176,28 +176,7 @@
     <a class="nav-link" href="05_advanced-routerules.html">5. Advanced Routing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <button class="nav-toggle"></button>
     <a class="nav-link" href="05_advanced-routerules.html#traffic-steering">Traffic Steering</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="05_advanced-routerules.html#alltorecommendationv1">All Users To Recommendation V1</a>
-  </li>
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="05_advanced-routerules.html#safaritov2">All Safari Users To Recommendation V2</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <button class="nav-toggle"></button>
-    <a class="nav-link" href="05_advanced-routerules.html#accesscontrol">Access Control</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="05_advanced-routerules.html#whitelist">White List</a>
-  </li>
-  <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="05_advanced-routerules.html#blacklist">Black List</a>
-  </li>
-</ul>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="05_advanced-routerules.html#loadbalancer">Load Balancer</a>
@@ -306,6 +285,18 @@
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="09_virtualization.html#mirroring-traffic">Mirroring Traffic</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="11_access-control.html#accesscontrol">B3. Access Control</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="11_access-control.html#whitelist">White List</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="11_access-control.html#blacklist">Black List</a>
   </li>
 </ul>
   </li>
@@ -463,7 +454,8 @@ spec:
 </div>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="_images/siege_cb_503.png" alt="siege output with some 503 requests due to open circuit breaker"></span></p>
+<p><span class="image"><img src="_images/k8s-istio-7.circuit-breaker.png" alt="k8s istio 7.circuit breaker"></span>
+<span class="image"><img src="_images/siege_cb_503.png" alt="siege output with some 503 requests due to open circuit breaker"></span></p>
 </div>
 <div class="paragraph">
 <p>You can run siege multiple times, but in all of the executions you should see some <code>503</code> errors being displayed in the results. That&#8217;s the circuit breaker being opened whenever Istio detects more than 1 pending request being handled by the instance.</p>
@@ -502,7 +494,7 @@ kubectl apply -f manifests/istio/circuit-breaker/fail-fast/recommendation-virtua
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment recommendation-v2 --replicas=2 -n workshop</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment recommendation-v2 --replicas=2</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -773,7 +765,7 @@ customer =&gt; preference =&gt; recommendation v1 from '2039379827-jmm6x': 554</
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment recommendation-v2 --replicas=1 -n workshop
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment recommendation-v2 --replicas=1
 kubectl delete pod -l app=recommendation,version=v2
 
 kubectl delete virtualservice recommendation

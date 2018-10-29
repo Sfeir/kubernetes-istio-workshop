@@ -97,6 +97,7 @@ Now let's see what is the behavior of the system running `siege` again:
 docker run lonelyplanet/siege siege -r 2 -c 20 -v $CUSTOMER_URL
 ----
 
+image:k8s-istio-7.circuit-breaker.png[]
 image:siege_cb_503.png[siege output with some 503 requests due to open circuit breaker]
 
 You can run siege multiple times, but in all of the executions you should see some `503` errors being displayed in the results. That's the circuit breaker being opened whenever Istio detects more than 1 pending request being handled by the instance.
@@ -128,7 +129,7 @@ Scale number of instances of `v2` deployment
 
 [source,bash]
 ----
-kubectl scale deployment recommendation-v2 --replicas=2 -n workshop
+kubectl scale deployment recommendation-v2 --replicas=2
 ----
 
 Wait for all the pods to be in the ready state.
@@ -379,7 +380,7 @@ Clean up
 
 [source,bash]
 ----
-kubectl scale deployment recommendation-v2 --replicas=1 -n workshop
+kubectl scale deployment recommendation-v2 --replicas=1
 kubectl delete pod -l app=recommendation,version=v2
 
 kubectl delete virtualservice recommendation
