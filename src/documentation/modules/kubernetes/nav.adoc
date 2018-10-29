@@ -3,4 +3,6 @@
 ** xref:02_yaml.adoc[2. Orchestration as Code]
 ** xref:03_deploy_redis.adoc[3. Setup Redis master]
 ** xref:04_expose_redis.adoc[4. Expose Redis master]
+** xref:05_deploy_redis_slaves.adoc[5. Deploy Redis slaves]
+** xref:06_deploy_webapp.adoc[6. Deploy Guestbook web frontend]
 

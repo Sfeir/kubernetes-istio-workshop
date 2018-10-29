@@ -1,0 +1,34 @@
+= Deploy Guestbook app
+
+
+== Set up the guestbook web frontend
+
+Now that you have the Redis storage of your guestbook up and running,
+start the guestbook web servers. Like the Redis workers, 
+this is a replicated application managed by a Deployment.
+
+This tutorial uses a simple PHP frontend. It is configured to talk to 
+either the Redis worker or master __Services__, depending on whether the 
+request is a read or a write. It exposes a simple JSON interface, 
+and serves a jQuery-Ajax-based UX.
+
+```shell
+kubectl apply -f guestbook/frontend-deployment.yaml
+```
+
+== Expose frontend on an external IP address
+
+The __Services__ you created in the previous steps are only accessible within the container cluster, because the default type for a __Service__ is `ClusterIP`. To make the Guestbook web frontend __Service__ to be externally visible, you need to specify `type: LoadBalancer` in the __Service__ configuration.
+
+This `LoadBalancer` type is only available on specific clusters, especially on Kubernetes cluster managed by cloud providers (AKS on Azure, EKS on AWS, GKE on GCP, ...).
+
+
+== Create the service
+
+To create the __Service__, comment the line `type: NodePort` in the `guestbook/frontend-service.yaml` file and an uncomment the line `type: LoadBalancer`.
+
+Use the following command the create the service.
+```shell
+kubeclt apply -f guestbook/frontend-service.yaml
+```
+
