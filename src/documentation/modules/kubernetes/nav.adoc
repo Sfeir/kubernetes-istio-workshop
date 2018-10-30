@@ -1,8 +1,9 @@
 * **Part 1 : Kubernetes**
 ** xref:01_setup.adoc[1. Create cluster]
-** xref:02_yaml.adoc[2. Orchestration as Code]
-** xref:03_deploy_redis.adoc[3. Setup Redis master]
-** xref:04_expose_redis.adoc[4. Expose Redis master]
-** xref:05_deploy_redis_slaves.adoc[5. Deploy Redis slaves]
-** xref:06_deploy_webapp.adoc[6. Deploy Guestbook web frontend]
-
+** xref:02_creating-and-managing-pods.adoc[2. Pods]
+** xref:03_monitoring-and-health-checks.adoc[3. Monitoring apps]
+** xref:04_managing-application-configurations-and-secrets.adoc[4. ConfigMaps & Secrets]
+** xref:05_creating-and-managing-services.adoc[5. Services]
+** xref:06_creating-and-managing-deployments.adoc[6. Deployments]
+** xref:07_rolling-out-updates.adoc[7. Rolling-upgrade]
+** xref:08_cleanup.adoc[8. Cleanup]

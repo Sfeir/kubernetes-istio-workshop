@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Getting started with Kubernetes :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/01_setup.html">
+    <title>Set up Redis master :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/03_deploy_redis.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -74,29 +74,23 @@
     <button class="nav-toggle"></button>
     <span class="nav-text"><strong>Part 1 : Kubernetes</strong></span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="01_setup.html">1. Create cluster</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="02_creating-and-managing-pods.html">2. Pods</a>
+    <a class="nav-link" href="02_yaml.html">2. Orchestration as Code</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="03_deploy_redis.html">3. Setup Redis master</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="03_monitoring-and-health-checks.html">3. Monitoring apps</a>
+    <a class="nav-link" href="04_expose_redis.html">4. Expose Redis master</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="04_managing-application-configurations-and-secrets.html">4. ConfigMaps &amp; Secrets</a>
+    <a class="nav-link" href="05_deploy_redis_slaves.html">5. Deploy Redis slaves</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="05_creating-and-managing-services.html">5. Services</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="06_creating-and-managing-deployments.html">6. Deployments</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="07_rolling-out-updates.html">7. Rolling-upgrade</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="08_cleanup.html">8. Cleanup</a>
+    <a class="nav-link" href="06_deploy_webapp.html">6. Deploy Guestbook web frontend</a>
   </li>
 </ul>
   </li>
@@ -188,7 +182,28 @@
     <a class="nav-link" href="../istio/05_advanced-routerules.html">5. Advanced Routing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <button class="nav-toggle"></button>
     <a class="nav-link" href="../istio/05_advanced-routerules.html#traffic-steering">Traffic Steering</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/05_advanced-routerules.html#alltorecommendationv1">All Users To Recommendation V1</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/05_advanced-routerules.html#safaritov2">All Safari Users To Recommendation V2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="../istio/05_advanced-routerules.html#accesscontrol">Access Control</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/05_advanced-routerules.html#whitelist">White List</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/05_advanced-routerules.html#blacklist">Black List</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/05_advanced-routerules.html#loadbalancer">Load Balancer</a>
@@ -257,7 +272,13 @@
     <a class="nav-link" href="../istio/10_mTLS.html">8. Mutual TLS</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/10_mTLS.html#preparation">Preparation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/10_mTLS.html#enablingtls">Enabling TLS</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/10_mTLS.html#restore">Restore Environment</a>
   </li>
 </ul>
   </li>
@@ -291,18 +312,6 @@
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/09_virtualization.html#mirroring-traffic">Mirroring Traffic</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-toggle"></button>
-    <a class="nav-link" href="../istio/11_access-control.html#accesscontrol">B3. Access Control</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../istio/11_access-control.html#whitelist">White List</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../istio/11_access-control.html#blacklist">Black List</a>
   </li>
 </ul>
   </li>
@@ -340,114 +349,104 @@
   <ul>
     <li class="crumb"><a href="../index.html">Kubernetes and Istio Workshop</a></li>
     <li class="crumb"><strong>Part 1 : Kubernetes</strong></li>
-    <li class="crumb"><a href="01_setup.html">1. Create cluster</a></li>
+    <li class="crumb"><a href="03_deploy_redis.html">3. Setup Redis master</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/kubernetes/pages/01_setup.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="https://github.com/Sfeir/kubernetes-istio-workshop/edit/master/src/documentation/modules/kubernetes/pages/03_deploy_redis.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1>Getting started with Kubernetes</h1>
-<div class="sect1">
-<h2 id="_summary"><a class="anchor" href="#_summary"></a>Summary</h2>
+<h1>Set up Redis master</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Kubernetes is all about applications and in this section you will utilize the Kubernetes API to deploy, manage, and upgrade applications. In this part of the workshop you will use an example application called "app" to complete the chapters.</p>
+<p>First, look at the files that configure your application. Open the Cloud Shell Editor</p>
 </div>
 <div class="paragraph">
-<p>App is hosted on GitHub and provides an example 12 Facter application. During this workshop you will be working with the following Docker images:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://hub.docker.com/r/kelseyhightower/monolith">kelseyhightower/monolith</a> - Monolith includes auth and hello services.</p>
-</li>
-<li>
-<p><a href="https://hub.docker.com/r/kelseyhightower/auth">kelseyhightower/auth</a> - Auth microservice. Generates JWT tokens for authenticated users.</p>
-</li>
-<li>
-<p><a href="https://hub.docker.com/r/kelseyhightower/monolith">kelseyhightower/hello</a> - Hello microservice. Greets authenticated users.</p>
-</li>
-<li>
-<p><a href="https://hub.docker.com/_/nginx">nginx</a> - Frontend to the auth and hello services.</p>
-</li>
-</ul>
+<p><span class="image"><img src="_images/cloud-shell-editor.png" alt="Cloud Shell Editor button"></span></p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="start-gke"><a class="anchor" href="#start-gke"></a>Create Kubernetes cluster on GKE</h2>
+<h2 id="_explain_kubernetes_resource"><a class="anchor" href="#_explain_kubernetes_resource"></a>Explain Kubernetes resource</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You&#8217;ll create a Kubernetes cluster using Google Kubernetes Engine web UI.</p>
+<p>From the source tree on the left, open the file <code>kubernetes-istio-workshop/guestbook/redis-master-deployment.yaml</code>.</p>
 </div>
 <div class="paragraph">
-<p>Click the 3 bar menu - aka. the <em>Burger</em> - on the upper-right corner of the GCP Console.</p>
+<p>It&#8217;s the yaml file to define the <em>Deployment</em> resource for the Redis Master.
+A <em>Deployment</em> manage <em>Pod</em> definition, replicas (number of instances of a <em>Pod</em>),
+and <em>Pod</em> rolling-upgrade.</p>
 </div>
 <div class="paragraph">
-<p>When you mouse over the menu item <em>Kubernetes Engine</em>, a pin appear on the right. Click it to pin <em>Kubernetes Engine</em> on top of the menu. You can do the same with <em>Compute Engine</em> and <em>Container Registry</em>.</p>
+<p>Find the Docker image declaration. It&#8217;s located in the tree path <code>spec.template.spec.containers.image</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  template:
+    spec:
+      containers:
+        image: k8s.gcr.io/redis:e2e</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="_images/gke-on-burger-menu.png" alt="Burger menu opened on Kubernetes Engine"></span></p>
+<p>The second <code>spec</code> field defines the <em>Pod</em> specification which the <em>ReplicaSet</em> will use to create the Redis <em>Pod</em>. The <code>image</code> tag refers to a Docker image to be pulled from a registry.</p>
 </div>
 <div class="paragraph">
-<p>Then click on <em>Kubernetes Engine</em> to open the list of GKE clusters.</p>
+<p>You can explain any Kubernetes resource using the tree path (including the resource type)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl explain pod.spec
+kubectl explain deployment.spec.template.spec.containers.image</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>You don&#8217;t have any cluster now. Click the <em>Create cluster</em> button to open the cluster creation wizard. Choose a "Standard cluster".</p>
+<p>You can also get all available properties recursively</p>
 </div>
-<div class="paragraph">
-<p>On the right part of the wizard:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl explain --recursive pod</code></pre>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Give your cluster the name <strong>kube-cluster</strong></p>
-</li>
-<li>
-<p>Choose <code>europe-west1-b</code> as Zone for this cluster (to have it closer to the user)</p>
-</li>
-<li>
-<p>Click the <em>Create</em> button to create the cluster</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>⏳ Wait until the cluster is fully started. It should takes 2-3 minutes.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_configure_kubernetes_command_line_client"><a class="anchor" href="#_configure_kubernetes_command_line_client"></a>Configure Kubernetes command-line client</h2>
+<h2 id="_launch_redis_master"><a class="anchor" href="#_launch_redis_master"></a>Launch Redis Master</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>List Kubernetes clusters from Cloud Shell</p>
+<p>Run the following command to deploy the Redis master.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">gcloud container clusters list</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f guestbook/redis-master-deployment.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>kubectl</code> is the command-line client for Kubernetes. It&#8217;s a user interface to Kubernetes REST API&#8217;s.
-Next command will generate a kube configuration for you (in <code>~/.kube/config</code>) to securely connect to your cluster with kubectl</p>
+<p>Now look at what is running on the cluster</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">gcloud container clusters get-credentials kube-cluster --zone=europe-west1-b</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl get pod,replicaset,deployment</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can now list the nodes composing your cluster what is running inside it</p>
+<p>Output:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl get nodes
-kubectl get all</code></pre>
+<pre class="highlightjs highlight"><code>NAME                                READY     STATUS    RESTARTS   AGE
+pod/redis-master-585798d8ff-tkslt   1/1       Running   0          1m
+
+NAME                                            DESIRED   CURRENT   READY     AGE
+replicaset.extensions/redis-master-585798d8ff   1         1         1         1m
+
+NAME                                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/redis-master   1         1         1            1           1m</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You have 3 nodes and a single service running in Kubernetes.
-This <code>service/kubernetes</code> resource is a service exposing the REST API of your Kubernetes cluster to the Pods, allowing them to execute <code>kubectl</code> commands if they want to (very few applications do that).</p>
+<p>Kubernetes <em>Deployment</em> is running. It created a <em>ReplicaSet</em> which at its turn created a <em>Pod</em> in which our Redis master container is running.</p>
 </div>
 </div>
 </div>

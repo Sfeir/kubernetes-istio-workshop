@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Getting started with Kubernetes :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/01_setup.html">
+    <title>Monitoring and Health Checks :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/03_monitoring-and-health-checks.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -74,13 +74,13 @@
     <button class="nav-toggle"></button>
     <span class="nav-text"><strong>Part 1 : Kubernetes</strong></span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="01_setup.html">1. Create cluster</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="02_creating-and-managing-pods.html">2. Pods</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="03_monitoring-and-health-checks.html">3. Monitoring apps</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -257,7 +257,13 @@
     <a class="nav-link" href="../istio/10_mTLS.html">8. Mutual TLS</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/10_mTLS.html#preparation">Preparation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/10_mTLS.html#enablingtls">Enabling TLS</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/10_mTLS.html#restore">Restore Environment</a>
   </li>
 </ul>
   </li>
@@ -340,114 +346,212 @@
   <ul>
     <li class="crumb"><a href="../index.html">Kubernetes and Istio Workshop</a></li>
     <li class="crumb"><strong>Part 1 : Kubernetes</strong></li>
-    <li class="crumb"><a href="01_setup.html">1. Create cluster</a></li>
+    <li class="crumb"><a href="03_monitoring-and-health-checks.html">3. Monitoring apps</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/kubernetes/pages/01_setup.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/kubernetes/pages/03_monitoring-and-health-checks.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1>Getting started with Kubernetes</h1>
+<h1>Monitoring and Health Checks</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Kubernetes supports monitoring applications in the form of readiness and liveness probes. Health checks can be performed on each container in a Pod. Readiness probes indicate when a Pod is "ready" to serve traffic. Liveness probes indicate a container is "alive". If a liveness probe fails multiple times the container will be restarted. Liveness probes that continue to fail will cause a Pod to enter a crash loop. If a readiness check fails the container will be marked as not ready and will be removed from any load balancers.</p>
+</div>
+<div class="paragraph">
+<p>In this chapter you will deploy a new Pod named <code>healthy-monolith</code>, which is largely based on the <code>monolith</code> Pod with the addition of readiness and liveness probes.</p>
+</div>
+<div class="paragraph">
+<p>In this chapter you will learn how to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create Pods with readiness and liveness probes</p>
+</li>
+<li>
+<p>Troubleshoot failing readiness and liveness probes</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tutorial_creating_pods_with_liveness_and_readiness_probes"><a class="anchor" href="#_tutorial_creating_pods_with_liveness_and_readiness_probes"></a>Tutorial: Creating Pods with Liveness and Readiness Probes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Explore the <code>healthy-monolith</code> pod configuration file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>cat manifests/app/pods/healthy-monolith.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create the <code>healthy-monolith</code> pod using kubectl:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>kubectl create -f manifests/app/pods/healthy-monolith.yaml</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_view_pod_details"><a class="anchor" href="#_exercise_view_pod_details"></a>Exercise: View Pod details</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pods will not be marked ready until the readiness probe returns an HTTP 200 response. Use the <code>kubectl describe</code> to view details for the <code>healthy-monolith</code> Pod.</p>
+</div>
+<div class="sect2">
+<h3 id="_hints"><a class="anchor" href="#_hints"></a>Hints</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>kubectl describe pods &lt;pod-name&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_quiz"><a class="anchor" href="#_quiz"></a>Quiz</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>How is the readiness of the <code>healthy-monolith</code> Pod determined?</p>
+</li>
+<li>
+<p>How is the liveness of the <code>healthy-monolith</code> Pod determined?</p>
+</li>
+<li>
+<p>How often is the readiness probe checked?</p>
+</li>
+<li>
+<p>How often is the liveness probe checked?</p>
+</li>
+</ul>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>The <code>healthy-monolith</code> Pod logs each health check. Use the <code>kubectl logs</code> command to view them.</p>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tutorial_experiment_with_readiness_probes"><a class="anchor" href="#_tutorial_experiment_with_readiness_probes"></a>Tutorial: Experiment with Readiness Probes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this tutorial you will observe how Kubernetes responds to failed readiness probes. The <code>monolith</code> container supports the ability to force failures of it&#8217;s readiness and liveness probes. This will enable us to simulate failures for the <code>healthy-monolith</code> Pod.</p>
+</div>
+<div class="paragraph">
+<p>Use the <code>kubectl port-forward</code> command to forward a local port to the health port of the <code>healthy-monolith</code> Pod.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>kubectl port-forward healthy-monolith 10081:81</code></pre>
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>You know have access to the /healthz and /readiness HTTP endpoints exposed by the monolith container.</p>
+</div>
+</blockquote>
+</div>
+<div class="sect2">
+<h3 id="_experiment_with_readiness_probes"><a class="anchor" href="#_experiment_with_readiness_probes"></a>Experiment with Readiness Probes</h3>
+<div class="paragraph">
+<p>Force the <code>monolith</code> container readiness probe to fail. Use the <code>curl</code> command to toggle the readiness probe status:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>curl http://127.0.0.1:10081/readiness/status</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait about 45 seconds and get the status of the <code>healthy-monolith</code> Pod using the <code>kubectl get pods</code> command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>kubectl get pods healthy-monolith</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use the <code>kubectl describe</code> command to get more details about the failing readiness probe:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>kubectl describe pods healthy-monolith</code></pre>
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Notice the events for the <code>healthy-monolith</code> Pod report details about failing readiness probe.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Force the <code>monolith</code> container readiness probe to pass. Use the <code>curl</code> command to toggle the readiness probe status:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>curl http://127.0.0.1:10081/readiness/status</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait about 15 seconds and get the status of the <code>healthy-monolith</code> Pod using the <code>kubectl get pods</code> command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>kubectl get pods healthy-monolith</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_experiment_with_liveness_probes"><a class="anchor" href="#_exercise_experiment_with_liveness_probes"></a>Exercise: Experiment with Liveness Probes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Building on what you learned in the previous tutorial use the <code>kubectl port-forward</code> and <code>curl</code> commands to force the <code>monolith</code> container liveness probe to fail. Observe how Kubernetes responds to failing liveness probes.</p>
+</div>
+<div class="sect2">
+<h3 id="_hints_2"><a class="anchor" href="#_hints_2"></a>Hints</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>kubectl port-forward healthy-monolith 10081:81</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>curl http://127.0.0.1:10081/healthz/status</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_quiz_2"><a class="anchor" href="#_quiz_2"></a>Quiz</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>What happened when the liveness probe failed?</p>
+</li>
+<li>
+<p>What events where created when the liveness probe failed?</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_summary"><a class="anchor" href="#_summary"></a>Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Kubernetes is all about applications and in this section you will utilize the Kubernetes API to deploy, manage, and upgrade applications. In this part of the workshop you will use an example application called "app" to complete the chapters.</p>
-</div>
-<div class="paragraph">
-<p>App is hosted on GitHub and provides an example 12 Facter application. During this workshop you will be working with the following Docker images:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://hub.docker.com/r/kelseyhightower/monolith">kelseyhightower/monolith</a> - Monolith includes auth and hello services.</p>
-</li>
-<li>
-<p><a href="https://hub.docker.com/r/kelseyhightower/auth">kelseyhightower/auth</a> - Auth microservice. Generates JWT tokens for authenticated users.</p>
-</li>
-<li>
-<p><a href="https://hub.docker.com/r/kelseyhightower/monolith">kelseyhightower/hello</a> - Hello microservice. Greets authenticated users.</p>
-</li>
-<li>
-<p><a href="https://hub.docker.com/_/nginx">nginx</a> - Frontend to the auth and hello services.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="start-gke"><a class="anchor" href="#start-gke"></a>Create Kubernetes cluster on GKE</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>You&#8217;ll create a Kubernetes cluster using Google Kubernetes Engine web UI.</p>
-</div>
-<div class="paragraph">
-<p>Click the 3 bar menu - aka. the <em>Burger</em> - on the upper-right corner of the GCP Console.</p>
-</div>
-<div class="paragraph">
-<p>When you mouse over the menu item <em>Kubernetes Engine</em>, a pin appear on the right. Click it to pin <em>Kubernetes Engine</em> on top of the menu. You can do the same with <em>Compute Engine</em> and <em>Container Registry</em>.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/gke-on-burger-menu.png" alt="Burger menu opened on Kubernetes Engine"></span></p>
-</div>
-<div class="paragraph">
-<p>Then click on <em>Kubernetes Engine</em> to open the list of GKE clusters.</p>
-</div>
-<div class="paragraph">
-<p>You don&#8217;t have any cluster now. Click the <em>Create cluster</em> button to open the cluster creation wizard. Choose a "Standard cluster".</p>
-</div>
-<div class="paragraph">
-<p>On the right part of the wizard:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Give your cluster the name <strong>kube-cluster</strong></p>
-</li>
-<li>
-<p>Choose <code>europe-west1-b</code> as Zone for this cluster (to have it closer to the user)</p>
-</li>
-<li>
-<p>Click the <em>Create</em> button to create the cluster</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>⏳ Wait until the cluster is fully started. It should takes 2-3 minutes.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_configure_kubernetes_command_line_client"><a class="anchor" href="#_configure_kubernetes_command_line_client"></a>Configure Kubernetes command-line client</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>List Kubernetes clusters from Cloud Shell</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">gcloud container clusters list</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><code>kubectl</code> is the command-line client for Kubernetes. It&#8217;s a user interface to Kubernetes REST API&#8217;s.
-Next command will generate a kube configuration for you (in <code>~/.kube/config</code>) to securely connect to your cluster with kubectl</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">gcloud container clusters get-credentials kube-cluster --zone=europe-west1-b</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can now list the nodes composing your cluster what is running inside it</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl get nodes
-kubectl get all</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You have 3 nodes and a single service running in Kubernetes.
-This <code>service/kubernetes</code> resource is a service exposing the REST API of your Kubernetes cluster to the Pods, allowing them to execute <code>kubectl</code> commands if they want to (very few applications do that).</p>
+<p>In this chapter you learned that Kubernetes supports application monitoring using
+liveness and readiness probes. You also learned how to add readiness and liveness probes to Pods and what happens when probes fail.</p>
 </div>
 </div>
 </div>
