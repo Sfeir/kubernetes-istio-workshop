@@ -1,0 +1,9 @@
+= Cleanup
+include::_attributes.adoc[]
+
+Let's delete the cluster :
+
+* Go to the GCP Console.
+* Click on __Kubernetes Engine__ from the __burger menu__.
+* Locate your cluster and delete it with the trash icon.
+* You're done !

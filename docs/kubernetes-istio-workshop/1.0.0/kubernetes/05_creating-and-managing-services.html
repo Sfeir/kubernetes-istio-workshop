@@ -397,8 +397,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>gcloud compute firewall-rules create allow-monolith-nodeport \
-  --allow=tcp:31000</code></pre>
+<pre class="highlightjs highlight"><code>gcloud compute firewall-rules create allow-monolith-nodeport --allow=tcp:31000</code></pre>
 </div>
 </div>
 </div>
@@ -408,10 +407,27 @@
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_hints"><a class="anchor" href="#_hints"></a>Hints</h3>
+<div class="paragraph">
+<p>List the GCP VMs which compose the GKE cluster</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code>gcloud compute instances list</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>NAME                                           ZONE            MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP     STATUS
+gke-istio-workshop-default-pool-e37360ba-369z  europe-west1-b  n1-standard-1               10.132.0.3   35.205.92.225   RUNNING
+gke-istio-workshop-default-pool-e37360ba-3hz4  europe-west1-b  n1-standard-1               10.132.0.2   35.240.127.238  RUNNING
+gke-istio-workshop-default-pool-e37360ba-8345  europe-west1-b  n1-standard-1               10.132.0.4   35.233.127.229  RUNNING</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then use any of the <code>External IP</code> to connect to the NodePort</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -424,7 +440,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Why are you unable to get a response from the <code>monolith</code> service?</p>
+<p>Why are you unable to get a response from the <code>monolith</code> service? <em>(answer below)</em></p>
 </li>
 </ul>
 </div>

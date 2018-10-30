@@ -5,7 +5,7 @@ include::_attributes.adoc[]
 
 Kubernetes is all about applications and in this section you will utilize the Kubernetes API to deploy, manage, and upgrade applications. In this part of the workshop you will use an example application called "app" to complete the chapters.
 
-App is hosted on GitHub and provides an example 12 Facter application. During this workshop you will be working with the following Docker images:
+https://github.com/kelseyhightower/app[App] is hosted on GitHub and provides an example 12 Facter application. During this workshop you will be working with the following Docker images:
 
 * https://hub.docker.com/r/kelseyhightower/monolith[kelseyhightower/monolith] - Monolith includes auth and hello services.
 * https://hub.docker.com/r/kelseyhightower/auth[kelseyhightower/auth] - Auth microservice. Generates JWT tokens for authenticated users.
@@ -31,6 +31,7 @@ On the right part of the wizard:
 
 * Give your cluster the name *kube-cluster*
 * Choose `europe-west1-b` as Zone for this cluster (to have it closer to the user)
+* In the default-pool, choose `2 CPU` for the machine type. Keep 3 nodes.
 * Click the __Create__ button to create the cluster
 
 ⏳ Wait until the cluster is fully started. It should takes 2-3 minutes.
@@ -56,3 +57,18 @@ kubectl get all
 
 You have 3 nodes and a single service running in Kubernetes.
 This `service/kubernetes` resource is a service exposing the REST API of your Kubernetes cluster to the Pods, allowing them to execute `kubectl` commands if they want to (very few applications do that).
+
+You can also load kubeclt auto-competion for current bash
+```shell
+source <(kubectl completion bash)
+```
+You have to do it on each new shell or add it on your bash profile.
+
+That way, you'll be able to list kubectl commands with :
+```shell
+kubectl <Tab><Tab>
+```
+or
+```shell
+kubectl get p<Tab><Tab>
+```

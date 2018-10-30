@@ -13,10 +13,10 @@ Kubernetes makes it easy to rollout updates to your applications using the built
 kubectl rollout history deployment auth
 ```
 
-Modify the auth deployment image:
+Modify the auth deployment image to 2.0.0:
 
 ```
-vim dmanifests/app/eployments/auth.yaml
+vim manifests/app/deployments/auth.yaml
 ```
 
 ```

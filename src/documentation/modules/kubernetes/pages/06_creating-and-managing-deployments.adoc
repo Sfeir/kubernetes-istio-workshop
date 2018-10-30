@@ -40,7 +40,7 @@ kubectl describe deployments hello
 ```
 
 ```
-kubectl create -f services/hello.yaml
+kubectl create -f manifests/app/services/hello.yaml
 ```
 
 === Create and Expose the Frontend Deployment

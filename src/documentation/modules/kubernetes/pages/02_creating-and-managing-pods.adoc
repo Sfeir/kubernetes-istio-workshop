@@ -94,3 +94,8 @@ Use the `kubectl exec` command to run an interactive shell inside the `monolith`
 ```shell
 kubectl exec monolith --stdin --tty -c monolith /bin/sh
 ```
+
+List all process running inside this pod:
+```shell
+ps aux
+```

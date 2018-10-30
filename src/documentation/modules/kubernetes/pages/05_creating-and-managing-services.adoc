@@ -25,25 +25,34 @@ kubectl create -f manifests/app/services/monolith.yaml
 Use the `gcloud compute firewall-rules` command to allow traffic to the `monolith` service:
 
 ```
-gcloud compute firewall-rules create allow-monolith-nodeport \
-  --allow=tcp:31000
+gcloud compute firewall-rules create allow-monolith-nodeport --allow=tcp:31000
 ```
 
 == Exercise: Interact with the Monolith Service Remotely
 
 === Hints
 
+List the GCP VMs which compose the GKE cluster
 ```
 gcloud compute instances list
 ```
 
+Output
+```
+NAME                                           ZONE            MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP     STATUS
+gke-istio-workshop-default-pool-e37360ba-369z  europe-west1-b  n1-standard-1               10.132.0.3   35.205.92.225   RUNNING
+gke-istio-workshop-default-pool-e37360ba-3hz4  europe-west1-b  n1-standard-1               10.132.0.2   35.240.127.238  RUNNING
+gke-istio-workshop-default-pool-e37360ba-8345  europe-west1-b  n1-standard-1               10.132.0.4   35.233.127.229  RUNNING
+```
+
+Then use any of the `External IP` to connect to the NodePort
 ```
 curl -k https://<EXTERNAL_IP>:31000
 ```
 
 === Quiz
 
-* Why are you unable to get a response from the `monolith` service?
+* Why are you unable to get a response from the `monolith` service? __(answer below)__
 
 == Exercise: Explore the monolith Service
 
