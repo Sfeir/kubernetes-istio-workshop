@@ -392,10 +392,21 @@ spec:
 </div>
 </div>
 <div class="paragraph">
-<p>and test with a Safari (or even Chrome on Mac since it includes Safari in the string). Safari only sees v2 responses from recommendation</p>
+<p>Create default destination rules to send traffic to versions <code>v1</code> and <code>v2</code> of recommandation service.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>and test with a Firefox browser, it should only see v1 responses from recommendation.</p>
+<p>Wait a few seconds for the destination rules to propagate.</p>
+</div>
+<div class="paragraph">
+<p>Test with a Safari (or even Chrome on Mac since it includes Safari in the string). Safari only sees v2 responses from recommendation</p>
+</div>
+<div class="paragraph">
+<p>Test with a Firefox browser, it should only see v1 responses from recommendation.</p>
 </div>
 <div class="paragraph">
 <p>Alternatively, you can also attempt to use the curl -A command to test with different user-agent strings.</p>
