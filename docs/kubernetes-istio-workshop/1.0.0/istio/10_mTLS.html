@@ -245,13 +245,7 @@
     <a class="nav-link" href="10_mTLS.html">8. Mutual TLS</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#preparation">Preparation</a>
-  </li>
-  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="#enablingtls">Enabling TLS</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#restore">Restore Environment</a>
   </li>
 </ul>
   </li>
@@ -345,25 +339,50 @@
 <h2 id="enablingtls"><a class="anchor" href="#enablingtls"></a>Enabling mTLS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Now that Istio gateway is in place, you can enable <em>mTLS</em> by applying next Istio resources:</p>
+<p>Now it&#8217;s time to enable <em>mTLS</em> by applying next Istio resources:</p>
+</div>
+<div class="paragraph">
+<p>1 - Enables mTLS into <code>workshop</code> namespace</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/mutual-tls/authentication-enable-tls.yml <i class="conum" data-value="1"></i><b>(1)</b>
-kubectl apply -f manifests/istio/mutual-tls/destination-rule-tls.yml <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/mutual-tls/authentication-enable-tls.yml <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Enables mTLS into <code>workshop</code> namespace</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Makes that services withn <code>workshop</code> namespace communicates with <em>mTLS</em></td>
-</tr>
-</table>
+<div class="paragraph">
+<p>This policy specifies that all workloads in the namespace <code>workshop</code> will only accept encrypted requests using TLS. The name of the policy must be default.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: "Policy"
+metadata:
+  name: "default"
+  namespace: "workshop"
+spec:
+  peers:
+  - mtls: {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2 - At this point, only the receiving side is configured to use mutual TLS. To configure the client side, you need to set destination rules to use mutual TLS. It’s possible to use multiple destination rules, one for each applicable service (or namespace). However, it’s more convenient to use a rule with the * wildcard to match all services in the namesapce.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/mutual-tls/destination-rule-tls.yml</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: "DestinationRule"
+metadata:
+  name: "default"
+  namespace: "workshop"
+spec:
+  host: "*.workshop.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>Then you can run:</p>
@@ -375,23 +394,29 @@ customer =&gt; preference =&gt; recommendation v1 from 'b87789c58-mfrhr': 2</cod
 </div>
 </div>
 <div class="paragraph">
-<p>And you&#8217;ll see exactly the same but now the communication between the services has been secured.
-How can you check that?</p>
+<p>And you&#8217;ll see exactly the same but now the communication between the services has been secured.</p>
 </div>
 <div class="paragraph">
-<p><strong>First</strong> running next command:</p>
+<p>How can you check that?</p>
+</div>
+<div class="paragraph">
+<p>Istio automatically installs necessary keys and certificates for mutual TLS authentication in all sidecar containers. Run command below to confirm key and certificate files exist under <code>/etc/certs</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl auth tls-check | grep workshop
-
-customer.workshop.svc.cluster.local:8080                         OK         mTLS       mTLS       default/workshop                             default/workshop
-preference.workshop.svc.cluster.local:8080                       OK         mTLS       mTLS       default/workshop                             default/workshop
-recommendation.workshop.svc.cluster.local:8080                   OK         mTLS       mTLS       default/workshop                             default/workshop</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec $(kubectl get pod -l app=recommendation -o jsonpath={.items..metadata.name}) -c istio-proxy -- ls /etc/certs</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Output.</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cert-chain.pem
+key.pem
+root-cert.pem</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Second</strong>, by <em>sniffing</em> traffic between services, which is a bit more tedious, open a new terminal tab and run next command:</p>
+<p>You can alson <em>sniff</em> the traffic between services, which is a bit more tedious, open a new terminal tab and run next command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -499,6 +524,58 @@ x-b3-sampled: 1</code></pre>
 </div>
 <div class="paragraph">
 <p>Now, you can see that since there is no <em>TLS</em> enabled, the information is not shadowed but in clear.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">A last thing about mutual TLS</div>
+<div class="paragraph">
+<p>If mutual TLS is enabled, http and tcp health checks from the kubelet will not work since the kubelet does not have Istio-issued certificates. In our workshop, we used the port <code>8080</code> for the regular service and also for healthcheck (see below).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: Service
+metadata:
+  name: recommendation
+spec:
+  ports:
+  - name: http
+    port: 8080
+---
+kind: Deployment
+metadata:
+  labels:
+    app: recommendation
+    version: v1
+  name: recommendation-v1
+spec:
+...
+    spec:
+      containers:
+      - env:
+        ...
+        livenessProbe:
+          httpGet:
+                path: /health
+                port: 8080</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So before enabling mTLS, you should be aware of this subtlety.</p>
+</div>
+<div class="paragraph">
+<p>On the other hand, Istio supports the <code>PERMISSIVE</code> mode so the services can accept both http and mutual TLS traffic when this mode is turned on. This can solve the health checking issue.</p>
+</div>
+<div class="paragraph">
+<p>As best practice, use a separate port for health check and enable mutual TLS only on the regular service port.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

@@ -46,9 +46,7 @@
 *** xref:07_circuit-breaker.adoc#circuitbreakerandpoolejection[Circuit Breaker + Pool Ejection]
 
 ** xref:10_mTLS.adoc[8. Mutual TLS]
-*** xref:10_mTLS.adoc#preparation[Preparation]
 *** xref:10_mTLS.adoc#enablingtls[Enabling TLS]
-*** xref:10_mTLS.adoc#restore[Restore Environment]
 
 * **Bonus**
 ** xref:08_egress.adoc[B1. Egress]

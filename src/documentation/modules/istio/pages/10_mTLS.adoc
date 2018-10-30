@@ -5,15 +5,47 @@ include::_attributes.adoc[]
 [#enablingtls]
 == Enabling mTLS
 
-Now that Istio gateway is in place, you can enable _mTLS_ by applying next Istio resources:
+Now it's time to enable _mTLS_ by applying next Istio resources:
+
+1 - Enables mTLS into `workshop` namespace
 
 [source, bash]
 ----
 kubectl apply -f manifests/istio/mutual-tls/authentication-enable-tls.yml # <1>
-kubectl apply -f manifests/istio/mutual-tls/destination-rule-tls.yml # <2>
 ----
-<1> Enables mTLS into `workshop` namespace
-<2> Makes that services withn `workshop` namespace communicates with _mTLS_
+
+This policy specifies that all workloads in the namespace ``workshop`` will only accept encrypted requests using TLS. The name of the policy must be default.
+
+[source, yaml]
+----
+kind: "Policy"
+metadata:
+  name: "default"
+  namespace: "workshop"
+spec:
+  peers:
+  - mtls: {}
+----
+
+2 - At this point, only the receiving side is configured to use mutual TLS. To configure the client side, you need to set destination rules to use mutual TLS. It’s possible to use multiple destination rules, one for each applicable service (or namespace). However, it’s more convenient to use a rule with the * wildcard to match all services in the namesapce.
+
+[source, bash]
+----
+kubectl apply -f manifests/istio/mutual-tls/destination-rule-tls.yml
+----
+
+[source, yaml]
+----
+kind: "DestinationRule"
+metadata:
+  name: "default"
+  namespace: "workshop"
+spec:
+  host: "*.workshop.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+----
 
 Then you can run:
 
@@ -24,20 +56,25 @@ customer => preference => recommendation v1 from 'b87789c58-mfrhr': 2
 ----
 
 And you'll see exactly the same but now the communication between the services has been secured.
+
 How can you check that?
 
-*First* running next command:
+Istio automatically installs necessary keys and certificates for mutual TLS authentication in all sidecar containers. Run command below to confirm key and certificate files exist under ``/etc/certs``:
 
 [source, bash]
 ----
-kubectl auth tls-check | grep workshop
-
-customer.workshop.svc.cluster.local:8080                         OK         mTLS       mTLS       default/workshop                             default/workshop
-preference.workshop.svc.cluster.local:8080                       OK         mTLS       mTLS       default/workshop                             default/workshop
-recommendation.workshop.svc.cluster.local:8080                   OK         mTLS       mTLS       default/workshop                             default/workshop
+kubectl exec $(kubectl get pod -l app=recommendation -o jsonpath={.items..metadata.name}) -c istio-proxy -- ls /etc/certs
 ----
 
-*Second*, by _sniffing_ traffic between services, which is a bit more tedious, open a new terminal tab and run next command:
+.Output.
+[source, bash]
+----
+cert-chain.pem
+key.pem
+root-cert.pem
+----
+
+You can alson _sniff_ the traffic between services, which is a bit more tedious, open a new terminal tab and run next command:
 
 [source, bash]
 ----
@@ -121,3 +158,43 @@ x-b3-sampled: 1
 ----
 
 Now, you can see that since there is no _TLS_ enabled, the information is not shadowed but in clear.
+
+[IMPORTANT]
+.A last thing about mutual TLS
+====
+If mutual TLS is enabled, http and tcp health checks from the kubelet will not work since the kubelet does not have Istio-issued certificates. In our workshop, we used the port ``8080`` for the regular service and also for healthcheck (see below).
+
+[source, yaml]
+----
+kind: Service
+metadata:
+  name: recommendation
+spec:
+  ports:
+  - name: http
+    port: 8080
+---
+kind: Deployment
+metadata:
+  labels:
+    app: recommendation
+    version: v1
+  name: recommendation-v1
+spec:
+...
+    spec:
+      containers:
+      - env:
+        ...
+        livenessProbe:
+          httpGet:
+                path: /health
+                port: 8080
+----
+
+So before enabling mTLS, you should be aware of this subtlety.
+
+On the other hand, Istio supports the ``PERMISSIVE`` mode so the services can accept both http and mutual TLS traffic when this mode is turned on. This can solve the health checking issue.
+
+As best practice, use a separate port for health check and enable mutual TLS only on the regular service port.
+====
