@@ -4,7 +4,28 @@ include::_attributes.adoc[]
 [#failfast]
 == Fail Fast with Max Connections and Max Pending Requests
 
-For this scenario, we will equally split the traffic between recommendation v1 and v2 :
+For this scenario, we will equally split the traffic between recommendation ``v1`` and the *slow version* of ``v2`` :
+
+Deploy the slow version of ``recommendation:v2`` making it a slow performer with a 3 second delay.
+
+[source,bash]
+----
+kubectl apply -f manifests/kubernetes/recommendation-v2_slow.yml
+----
+
+Create the ``v1`` and ``v2`` subsets.
+
+[source,bash]
+----
+kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
+----
+
+Create the virtual service that splits traffic equally between ``v1`` and ``V2``
+
+[source,bash]
+----
+kubectl apply -f manifests/istio/circuit-breaker/fail-fast/recommendation-virtual-service-v1_and_v2_50_50.yml
+----
 
 .Virtual Service
 [source,yaml]
@@ -27,15 +48,8 @@ spec:
       weight: 50
 ----
 
-[source,bash]
-----
-kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
-
-kubectl apply -f manifests/istio/circuit-breaker/fail-fast/recommendation-virtual-service-v1_and_v2_50_50.yml
-----
-
 [#nocircuitbreaker]
-=== Load test without circuit breaker
+=== Test 1: Load test without circuit breaker
 
 Let's perform a load test in our system with `siege`. We'll have 20 clients sending 2 concurrent requests each:
 
@@ -51,7 +65,7 @@ image:siege_ok.png[siege output with all successful requests]
 CAUTION: All of the requests to our system were successful, *but it took some time to run the test, as the `v2` instance was a slow performer*.
 
 [#circuitbreaker]
-=== Load test with circuit breaker
+=== Test 2: Load test with circuit breaker
 
 Suppose that in a production system this 3s delay was caused by too many concurrent requests to the same instance. We don't want multiple requests getting queued or making the instance even slower. So we'll add a circuit breaker that will *open* whenever we have more than 1 request being handled by any instance.
 
@@ -81,14 +95,7 @@ spec:
             maxRequestsPerConnection: 1
           tcp:
             maxConnections: 1
-        outlierDetection:
-          baseEjectionTime: 120.000s
-          consecutiveErrors: 1
-          interval: 1.000s
-          maxEjectionPercent: 100
 ----
-
-More information on the fields for the simple https://istio.io/docs/reference/config/istio.routing.v1alpha1.html#CircuitBreaker.SimpleCircuitBreakerPolicy[circuit-breaker]
 
 Now let's see what is the behavior of the system running `siege` again:
 
@@ -102,21 +109,26 @@ image:siege_cb_503.png[siege output with some 503 requests due to open circuit b
 
 You can run siege multiple times, but in all of the executions you should see some `503` errors being displayed in the results. That's the circuit breaker being opened whenever Istio detects more than 1 pending request being handled by the instance.
 
-Clean up
+==== Clean up
 
 [source,bash]
 ----
-kubectl delete -f manifests/istio/circuit-breaker/fail-fast/recommendation-destination-rule-cb_policy_version.yml
+# Replace the slow version by the standard one
+kubectl apply -f manifests/kubernetes/recommendation-v2.yml
 
-kubectl delete -f manifests/istio/circuit-breaker/fail-fast/recommendation-virtual-service-v1_and_v2_50_50.yml
+kubectl delete DestinationRule recommendation
+
+kubectl delete VirtualService recommendation
 ----
 
 [#poolejection]
 == Pool Ejection
 
-Pool ejection or _outlier detection_ is a resilience strategy that takes place whenever we have a pool of instances/pods to serve a client request. If the request is forwarded to a certain instance and it fails (e.g. returns a 50x error code), then Istio will eject this instance from the pool for a certain _sleep window_. In our example the sleep window is configured to be 15s. This increases the overall availability by making sure that only healthy pods participate in the pool of instances.
+Pool ejection or _outlier detection_ is a resilience strategy that takes place whenever we have a pool of instances/pods to serve a client request. If the request is forwarded to a certain instance and it fails (e.g. returns a ``50x`` error code), then Istio will eject this instance from the pool for a certain _sleep window_. In our example the sleep window is configured to be 15s. This increases the overall availability by making sure that only healthy pods participate in the pool of instances.
 
 First, you need to insure you have a `destinationrule` and `virtualservice` in place to send traffic to the services. Let's use a 50/50 split of traffic:
+
+image:k8s-istio-7.pool-ejection.png[]
 
 [source,bash]
 ----
@@ -135,7 +147,7 @@ kubectl scale deployment recommendation-v2 --replicas=2
 Wait for all the pods to be in the ready state.
 
 [#nofailinginstances]
-=== Test behavior without failing instances
+=== Test 1: Load test without failing instances
 
 Throw some requests at the customer endpoint:
 
@@ -171,7 +183,7 @@ customer => preference => recommendation v2 from '2036617847-hdjv2': 220
 ----
 
 [#failinginstancesnopoolejection]
-=== Test behavior with failing instance and without pool ejection
+=== Test 2: Load test with failing instance
 
 Let's get the name of the pods from recommendation `v2`:
 
@@ -199,6 +211,10 @@ Output:  Following requests to '/' will return a 503
 ----
 
 This is a special endpoint that will make our application return only ``503``s.
+
+The error rate is 25 %. Because 1/2 of ``v2`` is in error, ``v2`` is 50% of traffic, hence 1/2 of 50% is in error which is equal to 25%.
+
+image:k8s-istio-7.pool-ejection-2.png[]
 
 Throw some requests at the customer endpoint:
 
@@ -230,9 +246,14 @@ customer => 503 preference => 503 recommendation misbehavior from '2036617847-sp
 ----
 
 [#failinginstancespoolejection]
-=== Test behavior with failing instance and with pool ejection
+=== Test 3: Load test with failing instance and with pool ejection
 
 Now let's add the pool ejection behavior:
+
+[source,bash]
+----
+kubectl apply -f manifests/istio/circuit-breaker/pool-ejection/recommendation-destination-rule-cb_policy_pool_ejection.yml
+----
 
 [source,yaml]
 ----
@@ -258,11 +279,6 @@ spec:
         maxEjectionPercent: 100
 ----
 
-[source,bash]
-----
-kubectl apply -f manifests/istio/circuit-breaker/pool-ejection/recommendation-destination-rule-cb_policy_pool_ejection.yml
-----
-
 Throw some requests at the customer endpoint:
 
 [source,bash]
@@ -271,6 +287,8 @@ while true; do curl $CUSTOMER_URL; sleep .5; done
 ----
 
 You will see that whenever you get a failing request with `503` from the pod `recommendation-v2-2036617847-spdrb`, it gets ejected from the pool, and it doesn't receive any more requests until the sleep window expires - which takes at least 15s.
+
+The number of errors dropped significantly but we still have erros.
 
 [source,bash]
 ----
@@ -316,18 +334,45 @@ customer => preference => recommendation v2 from '2036617847-hdjv2': 270
 ----
 
 [#circuitbreakerandpoolejection]
-== Ultimate resilience with retries, circuit breaker, and pool ejection
+== Test 4: Ultimate resilience with retries, circuit breaker, and pool ejection
 
 Even with pool ejection your application doesn't _look_ that resilient. That's probably because we're still letting some errors to be propagated to our clients. But we can improve this. If we have enough instances and/or versions of a specific service running into our system, we can combine multiple Istio capabilities to achieve the ultimate backend resilience:
+
 - *Circuit Breaker* to avoid multiple concurrent requests to an instance;
+
 - *Pool Ejection* to remove failing instances from the pool of responding instances;
+
 - *Retries* to forward the request to another instance just in case we get an open circuit breaker and/or pool ejection;
 
 By simply adding a *retry* configuration to our current `virtualservice`, we'll be able to get rid completely of our ``503``s requests. This means that whenever we receive a failed request from an ejected instance, Istio will forward the request to another supposably healthy instance.
 
+image:k8s-istio-7.pool-ejection-retry.png[]
+
 [source,bash]
 ----
 kubectl apply -f manifests/istio/fault-injection/retry/recommendation-virtual-service-v2_retry.yml
+----
+
+[source,yaml]
+----
+kind: VirtualService
+...
+spec:
+  hosts:
+  - recommendation
+  http:
+  - retries:
+      attempts: 3
+      perTryTimeout: 4.000s
+    route:
+    - destination:
+        host: recommendation
+        subset: version-v1
+      weight: 50
+    - destination:
+        host: recommendation
+        subset: version-v2
+      weight: 50
 ----
 
 Throw some requests at the customer endpoint:
@@ -376,7 +421,7 @@ customer => preference => recommendation v1 from '2039379827-jmm6x': 554
 
 Our misbehaving pod `recommendation-v2-2036617847-spdrb` never shows up in the console, thanks to pool ejection and retry.
 
-Clean up
+=== Clean up
 
 [source,bash]
 ----

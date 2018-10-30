@@ -345,7 +345,31 @@
 <h2 id="failfast"><a class="anchor" href="#failfast"></a>Fail Fast with Max Connections and Max Pending Requests</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For this scenario, we will equally split the traffic between recommendation v1 and v2 :</p>
+<p>For this scenario, we will equally split the traffic between recommendation <code>v1</code> and the <strong>slow version</strong> of <code>v2</code> :</p>
+</div>
+<div class="paragraph">
+<p>Deploy the slow version of <code>recommendation:v2</code> making it a slow performer with a 3 second delay.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/recommendation-v2_slow.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create the <code>v1</code> and <code>v2</code> subsets.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create the virtual service that splits traffic equally between <code>v1</code> and <code>V2</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/circuit-breaker/fail-fast/recommendation-virtual-service-v1_and_v2_50_50.yml</code></pre>
+</div>
 </div>
 <div class="listingblock">
 <div class="title">Virtual Service</div>
@@ -368,15 +392,8 @@ spec:
       weight: 50</code></pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
-
-kubectl apply -f manifests/istio/circuit-breaker/fail-fast/recommendation-virtual-service-v1_and_v2_50_50.yml</code></pre>
-</div>
-</div>
 <div class="sect2">
-<h3 id="nocircuitbreaker"><a class="anchor" href="#nocircuitbreaker"></a>Load test without circuit breaker</h3>
+<h3 id="nocircuitbreaker"><a class="anchor" href="#nocircuitbreaker"></a>Test 1: Load test without circuit breaker</h3>
 <div class="paragraph">
 <p>Let&#8217;s perform a load test in our system with <code>siege</code>. We&#8217;ll have 20 clients sending 2 concurrent requests each:</p>
 </div>
@@ -405,7 +422,7 @@ All of the requests to our system were successful, <strong>but it took some time
 </div>
 </div>
 <div class="sect2">
-<h3 id="circuitbreaker"><a class="anchor" href="#circuitbreaker"></a>Load test with circuit breaker</h3>
+<h3 id="circuitbreaker"><a class="anchor" href="#circuitbreaker"></a>Test 2: Load test with circuit breaker</h3>
 <div class="paragraph">
 <p>Suppose that in a production system this 3s delay was caused by too many concurrent requests to the same instance. We don&#8217;t want multiple requests getting queued or making the instance even slower. So we&#8217;ll add a circuit breaker that will <strong>open</strong> whenever we have more than 1 request being handled by any instance.</p>
 </div>
@@ -434,16 +451,8 @@ spec:
             http1MaxPendingRequests: 1
             maxRequestsPerConnection: 1
           tcp:
-            maxConnections: 1
-        outlierDetection:
-          baseEjectionTime: 120.000s
-          consecutiveErrors: 1
-          interval: 1.000s
-          maxEjectionPercent: 100</code></pre>
+            maxConnections: 1</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>More information on the fields for the simple <a href="https://istio.io/docs/reference/config/istio.routing.v1alpha1.html#CircuitBreaker.SimpleCircuitBreakerPolicy">circuit-breaker</a></p>
 </div>
 <div class="paragraph">
 <p>Now let&#8217;s see what is the behavior of the system running <code>siege</code> again:</p>
@@ -460,14 +469,17 @@ spec:
 <div class="paragraph">
 <p>You can run siege multiple times, but in all of the executions you should see some <code>503</code> errors being displayed in the results. That&#8217;s the circuit breaker being opened whenever Istio detects more than 1 pending request being handled by the instance.</p>
 </div>
-<div class="paragraph">
-<p>Clean up</p>
-</div>
+<div class="sect3">
+<h4 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/circuit-breaker/fail-fast/recommendation-destination-rule-cb_policy_version.yml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Replace the slow version by the standard one
+kubectl apply -f manifests/kubernetes/recommendation-v2.yml
 
-kubectl delete -f manifests/istio/circuit-breaker/fail-fast/recommendation-virtual-service-v1_and_v2_50_50.yml</code></pre>
+kubectl delete DestinationRule recommendation
+
+kubectl delete VirtualService recommendation</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -477,10 +489,13 @@ kubectl delete -f manifests/istio/circuit-breaker/fail-fast/recommendation-virtu
 <h2 id="poolejection"><a class="anchor" href="#poolejection"></a>Pool Ejection</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Pool ejection or <em>outlier detection</em> is a resilience strategy that takes place whenever we have a pool of instances/pods to serve a client request. If the request is forwarded to a certain instance and it fails (e.g. returns a 50x error code), then Istio will eject this instance from the pool for a certain <em>sleep window</em>. In our example the sleep window is configured to be 15s. This increases the overall availability by making sure that only healthy pods participate in the pool of instances.</p>
+<p>Pool ejection or <em>outlier detection</em> is a resilience strategy that takes place whenever we have a pool of instances/pods to serve a client request. If the request is forwarded to a certain instance and it fails (e.g. returns a <code>50x</code> error code), then Istio will eject this instance from the pool for a certain <em>sleep window</em>. In our example the sleep window is configured to be 15s. This increases the overall availability by making sure that only healthy pods participate in the pool of instances.</p>
 </div>
 <div class="paragraph">
 <p>First, you need to insure you have a <code>destinationrule</code> and <code>virtualservice</code> in place to send traffic to the services. Let&#8217;s use a 50/50 split of traffic:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-7.pool-ejection.png" alt="k8s istio 7.pool ejection"></span></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -501,7 +516,7 @@ kubectl apply -f manifests/istio/circuit-breaker/fail-fast/recommendation-virtua
 <p>Wait for all the pods to be in the ready state.</p>
 </div>
 <div class="sect2">
-<h3 id="nofailinginstances"><a class="anchor" href="#nofailinginstances"></a>Test behavior without failing instances</h3>
+<h3 id="nofailinginstances"><a class="anchor" href="#nofailinginstances"></a>Test 1: Load test without failing instances</h3>
 <div class="paragraph">
 <p>Throw some requests at the customer endpoint:</p>
 </div>
@@ -539,7 +554,7 @@ customer =&gt; preference =&gt; recommendation v2 from '2036617847-hdjv2': 220</
 </div>
 </div>
 <div class="sect2">
-<h3 id="failinginstancesnopoolejection"><a class="anchor" href="#failinginstancesnopoolejection"></a>Test behavior with failing instance and without pool ejection</h3>
+<h3 id="failinginstancesnopoolejection"><a class="anchor" href="#failinginstancesnopoolejection"></a>Test 2: Load test with failing instance</h3>
 <div class="paragraph">
 <p>Let&#8217;s get the name of the pods from recommendation <code>v2</code>:</p>
 </div>
@@ -570,6 +585,12 @@ Output:  Following requests to '/' will return a 503</code></pre>
 </div>
 <div class="paragraph">
 <p>This is a special endpoint that will make our application return only <code>503</code>s.</p>
+</div>
+<div class="paragraph">
+<p>The error rate is 25 %. Because 1/2 of <code>v2</code> is in error, <code>v2</code> is 50% of traffic, hence 1/2 of 50% is in error which is equal to 25%.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-7.pool-ejection-2.png" alt="k8s istio 7.pool ejection 2"></span></p>
 </div>
 <div class="paragraph">
 <p>Throw some requests at the customer endpoint:</p>
@@ -604,9 +625,14 @@ customer =&gt; 503 preference =&gt; 503 recommendation misbehavior from '2036617
 </div>
 </div>
 <div class="sect2">
-<h3 id="failinginstancespoolejection"><a class="anchor" href="#failinginstancespoolejection"></a>Test behavior with failing instance and with pool ejection</h3>
+<h3 id="failinginstancespoolejection"><a class="anchor" href="#failinginstancespoolejection"></a>Test 3: Load test with failing instance and with pool ejection</h3>
 <div class="paragraph">
 <p>Now let&#8217;s add the pool ejection behavior:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/circuit-breaker/pool-ejection/recommendation-destination-rule-cb_policy_pool_ejection.yml</code></pre>
+</div>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -632,11 +658,6 @@ spec:
         maxEjectionPercent: 100</code></pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/circuit-breaker/pool-ejection/recommendation-destination-rule-cb_policy_pool_ejection.yml</code></pre>
-</div>
-</div>
 <div class="paragraph">
 <p>Throw some requests at the customer endpoint:</p>
 </div>
@@ -647,6 +668,9 @@ spec:
 </div>
 <div class="paragraph">
 <p>You will see that whenever you get a failing request with <code>503</code> from the pod <code>recommendation-v2-2036617847-spdrb</code>, it gets ejected from the pool, and it doesn&#8217;t receive any more requests until the sleep window expires - which takes at least 15s.</p>
+</div>
+<div class="paragraph">
+<p>The number of errors dropped significantly but we still have erros.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -695,20 +719,55 @@ customer =&gt; preference =&gt; recommendation v2 from '2036617847-hdjv2': 270</
 </div>
 </div>
 <div class="sect1">
-<h2 id="circuitbreakerandpoolejection"><a class="anchor" href="#circuitbreakerandpoolejection"></a>Ultimate resilience with retries, circuit breaker, and pool ejection</h2>
+<h2 id="circuitbreakerandpoolejection"><a class="anchor" href="#circuitbreakerandpoolejection"></a>Test 4: Ultimate resilience with retries, circuit breaker, and pool ejection</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Even with pool ejection your application doesn&#8217;t <em>look</em> that resilient. That&#8217;s probably because we&#8217;re still letting some errors to be propagated to our clients. But we can improve this. If we have enough instances and/or versions of a specific service running into our system, we can combine multiple Istio capabilities to achieve the ultimate backend resilience:
-- <strong>Circuit Breaker</strong> to avoid multiple concurrent requests to an instance;
-- <strong>Pool Ejection</strong> to remove failing instances from the pool of responding instances;
-- <strong>Retries</strong> to forward the request to another instance just in case we get an open circuit breaker and/or pool ejection;</p>
+<p>Even with pool ejection your application doesn&#8217;t <em>look</em> that resilient. That&#8217;s probably because we&#8217;re still letting some errors to be propagated to our clients. But we can improve this. If we have enough instances and/or versions of a specific service running into our system, we can combine multiple Istio capabilities to achieve the ultimate backend resilience:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Circuit Breaker</strong> to avoid multiple concurrent requests to an instance;</p>
+</li>
+<li>
+<p><strong>Pool Ejection</strong> to remove failing instances from the pool of responding instances;</p>
+</li>
+<li>
+<p><strong>Retries</strong> to forward the request to another instance just in case we get an open circuit breaker and/or pool ejection;</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>By simply adding a <strong>retry</strong> configuration to our current <code>virtualservice</code>, we&#8217;ll be able to get rid completely of our <code>503</code>s requests. This means that whenever we receive a failed request from an ejected instance, Istio will forward the request to another supposably healthy instance.</p>
 </div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/k8s-istio-7.pool-ejection-retry.png" alt="k8s istio 7.pool ejection retry"></span></p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/fault-injection/retry/recommendation-virtual-service-v2_retry.yml</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: VirtualService
+...
+spec:
+  hosts:
+  - recommendation
+  http:
+  - retries:
+      attempts: 3
+      perTryTimeout: 4.000s
+    route:
+    - destination:
+        host: recommendation
+        subset: version-v1
+      weight: 50
+    - destination:
+        host: recommendation
+        subset: version-v2
+      weight: 50</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -760,9 +819,8 @@ customer =&gt; preference =&gt; recommendation v1 from '2039379827-jmm6x': 554</
 <div class="paragraph">
 <p>Our misbehaving pod <code>recommendation-v2-2036617847-spdrb</code> never shows up in the console, thanks to pool ejection and retry.</p>
 </div>
-<div class="paragraph">
-<p>Clean up</p>
-</div>
+<div class="sect2">
+<h3 id="_clean_up_2"><a class="anchor" href="#_clean_up_2"></a>Clean up</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment recommendation-v2 --replicas=1
@@ -770,6 +828,7 @@ kubectl delete pod -l app=recommendation,version=v2
 
 kubectl delete virtualservice recommendation
 kubectl delete destinationrule recommendation</code></pre>
+</div>
 </div>
 </div>
 </div>

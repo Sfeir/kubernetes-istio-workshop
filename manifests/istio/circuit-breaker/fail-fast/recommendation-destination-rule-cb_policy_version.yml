@@ -18,8 +18,8 @@ spec:
             maxRequestsPerConnection: 1
           tcp:
             maxConnections: 1
-        outlierDetection:
-          baseEjectionTime: 120.000s
-          consecutiveErrors: 1
-          interval: 1.000s
-          maxEjectionPercent: 100
+        # outlierDetection:
+        #   baseEjectionTime: 120.000s
+        #   consecutiveErrors: 1
+        #   interval: 1.000s
+        #   maxEjectionPercent: 100
