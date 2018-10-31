@@ -343,7 +343,7 @@
     <li class="crumb"><a href="01_setup.html">1. Setup</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/01_setup.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/01_setup.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Setup Istio</h1>
@@ -382,39 +382,6 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>You will install Istio with <a href="https://cloud.google.com/deployment-manager/docs/">Google Cloud Deployment Manager</a> an automation tool for deploying cloud resources.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Ensure that the Kubernetes Engine API is enabled :</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud services enable container.googleapis.com</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>To make the installation succeed, you must grant your <strong>default compute service account</strong> the following role: <code>role/container.admin</code> (Kubernetes Engine Admin)</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Make sure that the environment variable is not null
-echo $PROJECT_ID
-
-# Extract the project number
-PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='value(projectNumber)')
-
-# Grant the roles/container.admin role to the service account
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-     --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
-     --role=roles/container.admin</code></pre>
-</div>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -455,7 +422,9 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud deployment-manager deployments create istio-cluster --config=src/infrastructure/istio/gcp/deployment_manager/istio-cluster.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud services enable runtimeconfig.googleapis.com
+
+gcloud deployment-manager deployments create istio-cluster --config=src/infrastructure/istio/gcp/deployment_manager/istio-cluster.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -509,7 +478,7 @@ istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud container clusters get-credentials istio-cluster</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud container clusters get-credentials istio-cluster --region europe-west1-b</code></pre>
 </div>
 </div>
 </div>
