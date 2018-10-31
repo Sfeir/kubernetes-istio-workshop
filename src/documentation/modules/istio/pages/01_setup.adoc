@@ -19,13 +19,6 @@ In this lab, you will learn how to install and configure Istio, on _Google Kuber
 
 You will install Istio with https://cloud.google.com/deployment-manager/docs/[Google Cloud Deployment Manager] an automation tool for deploying cloud resources.
 
-- Ensure that the Kubernetes Engine API is enabled :
-
-[source, bash]
-----
-gcloud services enable container.googleapis.com
-----
-
 - To make the installation succeed, you must grant your *default compute service account* the following role: `role/container.admin` (Kubernetes Engine Admin)
 
 [source, bash]
@@ -100,7 +93,7 @@ istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9
 
 [source, bash]
 ----
-gcloud container clusters get-credentials istio-cluster
+gcloud container clusters get-credentials istio-cluster --region europe-west1-b
 ----
 
 [#verify-installation]
