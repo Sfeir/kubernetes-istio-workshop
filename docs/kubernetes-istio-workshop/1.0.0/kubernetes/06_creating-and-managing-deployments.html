@@ -257,13 +257,7 @@
     <a class="nav-link" href="../istio/10_mTLS.html">8. Mutual TLS</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../istio/10_mTLS.html#preparation">Preparation</a>
-  </li>
-  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/10_mTLS.html#enablingtls">Enabling TLS</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../istio/10_mTLS.html#restore">Restore Environment</a>
   </li>
 </ul>
   </li>
@@ -387,55 +381,47 @@
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_create_and_expose_the_auth_deployment"><a class="anchor" href="#_create_and_expose_the_auth_deployment"></a>Create and Expose the Auth Deployment</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>kubectl create -f manifests/app/deployments/auth.yaml</code></pre>
-</div>
+<div class="paragraph">
+<p>Create and explore the Deployment for service <code>auth</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl describe deployments auth</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl create -f manifests/app/deployments/auth.yaml
+kubectl describe deployments auth</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Now create the corresponding service:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl create -f manifests/app/services/auth.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl create -f manifests/app/services/auth.yaml</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_create_and_expose_the_hello_deployment"><a class="anchor" href="#_create_and_expose_the_hello_deployment"></a>Create and Expose the Hello Deployment</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>kubectl create -f manifests/app/deployments/hello.yaml</code></pre>
-</div>
+<div class="paragraph">
+<p>Do the same for the <code>hello</code> deployment and services:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl describe deployments hello</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>kubectl create -f manifests/app/services/hello.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl create -f manifests/app/deployments/hello.yaml
+kubectl describe deployments hello
+kubectl create -f manifests/app/services/hello.yaml</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_create_and_expose_the_frontend_deployment"><a class="anchor" href="#_create_and_expose_the_frontend_deployment"></a>Create and Expose the Frontend Deployment</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>kubectl create configmap nginx-frontend-conf --from-file=manifests/app/nginx/frontend.conf</code></pre>
-</div>
+<div class="paragraph">
+<p>And at least for the frontend:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl create -f manifests/app/deployments/frontend.yaml</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>kubectl create -f manifests/app/services/frontend.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl create configmap nginx-frontend-conf --from-file=manifests/app/nginx/frontend.conf
+kubectl create -f manifests/app/deployments/frontend.yaml
+kubectl create -f manifests/app/services/frontend.yaml</code></pre>
 </div>
 </div>
 </div>
@@ -457,22 +443,10 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl scale deployments hello --replicas=3</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>kubectl describe deployments hello</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>kubectl get pods</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>kubectl get replicasets</code></pre>
+<pre class="highlightjs highlight"><code>kubectl scale deployments hello --replicas=3
+kubectl describe deployments hello
+kubectl get pods
+kubectl get replicasets</code></pre>
 </div>
 </div>
 </div>
@@ -481,7 +455,7 @@
 <h2 id="_exercise_scaling_deployments"><a class="anchor" href="#_exercise_scaling_deployments"></a>Exercise: Scaling Deployments</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this exercise you will scale the <code>frontend</code> deployment using an existing deployment configuration file.</p>
+<p>In this exercise you will scale the <code>frontend</code> deployment using an existing deployment configuration file. You&#8217;ll have to change the <code>replicas:</code> property to 3.</p>
 </div>
 <div class="sect2">
 <h3 id="_hints"><a class="anchor" href="#_hints"></a>Hints</h3>

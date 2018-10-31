@@ -257,13 +257,7 @@
     <a class="nav-link" href="../istio/10_mTLS.html">8. Mutual TLS</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../istio/10_mTLS.html#preparation">Preparation</a>
-  </li>
-  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/10_mTLS.html#enablingtls">Enabling TLS</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../istio/10_mTLS.html#restore">Restore Environment</a>
   </li>
 </ul>
   </li>
@@ -376,81 +370,105 @@
 <div class="sect1">
 <h2 id="_tutorial_rollout_a_new_version_of_the_auth_service"><a class="anchor" href="#_tutorial_rollout_a_new_version_of_the_auth_service"></a>Tutorial: Rollout a new version of the Auth service</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>First look at the current history of the <em>Deployment</em> resource for the <code>auth</code> service:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl rollout history deployment auth</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl rollout history deployment auth</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Modify the auth deployment image to 2.0.0:</p>
+<p>Then modify the auth deployment to replace the pod&#8217;s container image version. Edit the yaml file.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>vim manifests/app/deployments/auth.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">vim manifests/app/deployments/auth.yaml</code></pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>image: "kelseyhightower/auth:2.0.0"</code></pre>
-</div>
+<div class="paragraph">
+<p>Look for following line and upgrade version 1.0.0 to 2.0.0:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl apply -f manifests/app/deployments/auth.yaml --record</code></pre>
+<pre class="highlightjs highlight"><code>image: "kelseyhightower/auth:1.0.0"</code></pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>kubectl describe deployments auth</code></pre>
-</div>
+<div class="paragraph">
+<p>With <code>kubectl apply</code>, you can live-update a deployment. <code>--record</code> option let you keep a trace of the commands related to each deployment change:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl get replicasets</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f manifests/app/deployments/auth.yaml --record
+kubectl describe deployments auth</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>If you list <em>ReplicaSets</em>, you&#8217;ll see one for the original version and the other for the new version.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl rollout history deployment auth</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl get replicasets</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Now list <em>Deployment</em> history again to see your change history.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl rollout history deployment auth</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In fact, <em>Deployment</em> history is backed by the <em>ReplicaSet</em></p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_tutorial_pause_and_resume_an_active_rollout"><a class="anchor" href="#_tutorial_pause_and_resume_an_active_rollout"></a>Tutorial: Pause and Resume an Active Rollout</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s try to see a deployment in progress.</p>
+</div>
+<div class="paragraph">
+<p>First scale the hello Deployment to 6 pods:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl rollout history deployment hello</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl scale deployments hello --replicas=6</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Modify the hello deployment image:</p>
+<p>Look at your <em>Deployment</em> history.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>vim manifests/app/deployments/hello.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl rollout history deployment hello</code></pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>image: "kelseyhightower/hello:2.0.0"</code></pre>
-</div>
+<div class="paragraph">
+<p>Now modify the hello deployment image to update <code>hello</code> docker image`s version:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl apply -f manifests/app/deployments/hello.yaml --record</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">sed -i .bak 's/hello:1.0.0/hello:2.0.0/' manifests/app/deployments/hello.yaml</code></pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>kubectl describe deployments hello</code></pre>
-</div>
+<div class="paragraph">
+<p>Now, run following commands all together:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl rollout pause deployment hello</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f manifests/app/deployments/hello.yaml --record
+kubectl describe deployments hello
+kubectl rollout pause deployment hello</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll see the <em>Deployment</em> rolling-upgrade stopped in the middle.</p>
+</div>
+<div class="paragraph">
+<p>Resume the rollout to terminates the rolling-upgrade.</p>
 </div>
 <div class="listingblock">
 <div class="content">

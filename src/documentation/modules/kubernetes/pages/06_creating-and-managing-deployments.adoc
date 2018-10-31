@@ -17,44 +17,30 @@ You will also define internal services for the `auth` and `hello` deployments an
 
 === Create and Expose the Auth Deployment
 
-```
+Create and explore the Deployment for service `auth`:
+```shell
 kubectl create -f manifests/app/deployments/auth.yaml
-```
-
-```
 kubectl describe deployments auth
 ```
 
-```
+Now create the corresponding service:
+```shell
 kubectl create -f manifests/app/services/auth.yaml
 ```
 
 === Create and Expose the Hello Deployment
-
-```
+Do the same for the `hello` deployment and services:
+```shell
 kubectl create -f manifests/app/deployments/hello.yaml
-```
-
-```
 kubectl describe deployments hello
-```
-
-```
 kubectl create -f manifests/app/services/hello.yaml
 ```
 
 === Create and Expose the Frontend Deployment
-
-
-```
+And at least for the frontend:
+```shell
 kubectl create configmap nginx-frontend-conf --from-file=manifests/app/nginx/frontend.conf
-```
-
-```
 kubectl create -f manifests/app/deployments/frontend.yaml
-```
-
-```
 kubectl create -f manifests/app/services/frontend.yaml
 ```
 
@@ -70,23 +56,14 @@ ReplicaSets are scaled through the Deployment for each service and can be scaled
 
 ```
 kubectl scale deployments hello --replicas=3
-```
-
-```
 kubectl describe deployments hello
-```
-
-```
 kubectl get pods
-```
-
-```
 kubectl get replicasets
 ```
 
 == Exercise: Scaling Deployments
 
-In this exercise you will scale the `frontend` deployment using an existing deployment configuration file.
+In this exercise you will scale the `frontend` deployment using an existing deployment configuration file. You'll have to change the `replicas:` property to 3.
 
 === Hints
 

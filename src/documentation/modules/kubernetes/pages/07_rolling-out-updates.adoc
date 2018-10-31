@@ -9,64 +9,66 @@ Kubernetes makes it easy to rollout updates to your applications using the built
 
 == Tutorial: Rollout a new version of the Auth service
 
-```
+First look at the current history of the __Deployment__ resource for the `auth` service:
+```shell
 kubectl rollout history deployment auth
 ```
 
-Modify the auth deployment image to 2.0.0:
-
-```
+Then modify the auth deployment to replace the pod's container image version. Edit the yaml file.
+```shell
 vim manifests/app/deployments/auth.yaml
 ```
 
+Look for following line and upgrade version 1.0.0 to 2.0.0:
 ```
-image: "kelseyhightower/auth:2.0.0"
+image: "kelseyhightower/auth:1.0.0"
 ```
 
-```
+With `kubectl apply`, you can live-update a deployment. `--record` option let you keep a trace of the commands related to each deployment change:
+```shell
 kubectl apply -f manifests/app/deployments/auth.yaml --record
-```
-
-```
 kubectl describe deployments auth
 ```
 
-```
+If you list __ReplicaSets__, you'll see one for the original version and the other for the new version.
+```shell
 kubectl get replicasets
 ```
 
-```
+Now list __Deployment__ history again to see your change history.
+```shell
 kubectl rollout history deployment auth
 ```
+In fact, __Deployment__ history is backed by the __ReplicaSet__
 
 == Tutorial: Pause and Resume an Active Rollout
 
+Let's try to see a deployment in progress.
+
+First scale the hello Deployment to 6 pods:
+```shell
+kubectl scale deployments hello --replicas=6
 ```
+
+Look at your __Deployment__ history.
+```shell
 kubectl rollout history deployment hello
 ```
 
-Modify the hello deployment image:
-
+Now modify the hello deployment image to update `hello` docker image`s version:
+```shell
+sed -i .bak 's/hello:1.0.0/hello:2.0.0/' manifests/app/deployments/hello.yaml
 ```
-vim manifests/app/deployments/hello.yaml
-```
-
-```
-image: "kelseyhightower/hello:2.0.0"
-```
-
-```
+Now, run following commands all together:
+```shell
 kubectl apply -f manifests/app/deployments/hello.yaml --record
-```
-
-```
 kubectl describe deployments hello
-```
-
-```
 kubectl rollout pause deployment hello
 ```
 
+You'll see the __Deployment__ rolling-upgrade stopped in the middle.
+
+Resume the rollout to terminates the rolling-upgrade.
 ```
 kubectl rollout resume deployment hello
 ```
