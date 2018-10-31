@@ -6,7 +6,7 @@ Apply some chaos engineering by throwing in some HTTP errors or network delays. 
 [#503error]
 == HTTP Error 503
 
-By default, recommendation v1 and v2 are being randomly load-balanced as that is the default behavior in Kubernetes.
+By default, recommendation v1 and v2 are being round-robin load-balanced as that is the default behavior in Kubernetes.
 
 [source,bash]
 ----

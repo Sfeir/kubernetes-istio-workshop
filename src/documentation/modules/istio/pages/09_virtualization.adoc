@@ -140,7 +140,7 @@ Let's avoid this by just sending traffic that comes from preference v2 service t
 ----
 kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1.yml
 kubectl apply -f manifests/istio/service-virtualization/recommendation-virtualized-virtual-service.yml
- ----
+----
 
 Then do again some requests and you'll get something like:
 

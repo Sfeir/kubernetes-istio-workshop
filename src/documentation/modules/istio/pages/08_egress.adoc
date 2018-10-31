@@ -65,7 +65,7 @@ Let's redirect all traffic to reccomendation:v3.
 
 [source, bash]
 ----
-kubectl apply -f manifests/istio/egress/recommendation-destination-rule--v1-v2-v3.yml
+kubectl apply -f manifests/istio/egress/recommendation-destination-rule-v1-v2-v3.yml
 kubectl apply -f manifests/istio/egress/recommendation-v3-virtual-service.yml
 ----
 
