@@ -3,18 +3,14 @@ include::_attributes.adoc[]
 
 == Summary
 
-The first part of this workshop demonstrates how to build a simple multi-tiers application using Kubernetes Engine. The tutorial application is a guestbook that allows visitors to enter text in a log and to see the last few logged entries.
+Kubernetes is all about applications and in this section you will utilize the Kubernetes API to deploy, manage, and upgrade applications. In this part of the workshop you will use an example application called "app" to complete the chapters.
 
-The tutorial shows how to set up the guestbook web service on an external IP with a load balancer and how to run a Redis cluster with a single master and multiple workers.
+https://github.com/kelseyhightower/app[App] is hosted on GitHub and provides an example 12 Facter application. During this workshop you will be working with the following Docker images:
 
-To deploy and run the guestbook application on Kubernetes Engine, you must:
-
-* Create a GKE cluster
-* Set up a Redis master
-* Set up Redis workers
-* Set up the guestbook web frontend
-* Visit the guestbook website
-* Scale up the guestbook web frontend
+* https://hub.docker.com/r/kelseyhightower/monolith[kelseyhightower/monolith] - Monolith includes auth and hello services.
+* https://hub.docker.com/r/kelseyhightower/auth[kelseyhightower/auth] - Auth microservice. Generates JWT tokens for authenticated users.
+* https://hub.docker.com/r/kelseyhightower/monolith[kelseyhightower/hello] - Hello microservice. Greets authenticated users.
+* https://hub.docker.com/_/nginx[nginx] - Frontend to the auth and hello services.
 
 [#start-gke]
 == Create Kubernetes cluster on GKE
@@ -35,6 +31,7 @@ On the right part of the wizard:
 
 * Give your cluster the name *kube-cluster*
 * Choose `europe-west1-b` as Zone for this cluster (to have it closer to the user)
+* In the default-pool, choose `2 CPU` for the machine type. Keep 3 nodes.
 * Click the __Create__ button to create the cluster
 
 ⏳ Wait until the cluster is fully started. It should takes 2-3 minutes.
@@ -60,3 +57,18 @@ kubectl get all
 
 You have 3 nodes and a single service running in Kubernetes.
 This `service/kubernetes` resource is a service exposing the REST API of your Kubernetes cluster to the Pods, allowing them to execute `kubectl` commands if they want to (very few applications do that).
+
+You can also load kubeclt auto-competion for current bash
+```shell
+source <(kubectl completion bash)
+```
+You have to do it on each new shell or add it on your bash profile.
+
+That way, you'll be able to list kubectl commands with :
+```shell
+kubectl <Tab><Tab>
+```
+or
+```shell
+kubectl get p<Tab><Tab>
+```

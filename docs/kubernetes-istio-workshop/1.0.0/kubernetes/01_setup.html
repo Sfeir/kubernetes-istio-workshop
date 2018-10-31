@@ -78,13 +78,25 @@
     <a class="nav-link" href="01_setup.html">1. Create cluster</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="02_yaml.html">2. Orchestration as Code</a>
+    <a class="nav-link" href="02_creating-and-managing-pods.html">2. Pods</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="03_deploy_redis.html">3. Setup Redis master</a>
+    <a class="nav-link" href="03_monitoring-and-health-checks.html">3. Monitoring apps</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="04_expose_redis.html">4. Expose Redis master</a>
+    <a class="nav-link" href="04_managing-application-configurations-and-secrets.html">4. ConfigMaps &amp; Secrets</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05_creating-and-managing-services.html">5. Services</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06_creating-and-managing-deployments.html">6. Deployments</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="07_rolling-out-updates.html">7. Rolling-upgrade</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="08_cleanup.html">8. Cleanup</a>
   </li>
 </ul>
   </li>
@@ -339,33 +351,24 @@
 <h2 id="_summary"><a class="anchor" href="#_summary"></a>Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The first part of this workshop demonstrates how to build a simple multi-tiers application using Kubernetes Engine. The tutorial application is a guestbook that allows visitors to enter text in a log and to see the last few logged entries.</p>
+<p>Kubernetes is all about applications and in this section you will utilize the Kubernetes API to deploy, manage, and upgrade applications. In this part of the workshop you will use an example application called "app" to complete the chapters.</p>
 </div>
 <div class="paragraph">
-<p>The tutorial shows how to set up the guestbook web service on an external IP with a load balancer and how to run a Redis cluster with a single master and multiple workers.</p>
-</div>
-<div class="paragraph">
-<p>To deploy and run the guestbook application on Kubernetes Engine, you must:</p>
+<p><a href="https://github.com/kelseyhightower/app">App</a> is hosted on GitHub and provides an example 12 Facter application. During this workshop you will be working with the following Docker images:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Create a GKE cluster</p>
+<p><a href="https://hub.docker.com/r/kelseyhightower/monolith">kelseyhightower/monolith</a> - Monolith includes auth and hello services.</p>
 </li>
 <li>
-<p>Set up a Redis master</p>
+<p><a href="https://hub.docker.com/r/kelseyhightower/auth">kelseyhightower/auth</a> - Auth microservice. Generates JWT tokens for authenticated users.</p>
 </li>
 <li>
-<p>Set up Redis workers</p>
+<p><a href="https://hub.docker.com/r/kelseyhightower/monolith">kelseyhightower/hello</a> - Hello microservice. Greets authenticated users.</p>
 </li>
 <li>
-<p>Set up the guestbook web frontend</p>
-</li>
-<li>
-<p>Visit the guestbook website</p>
-</li>
-<li>
-<p>Scale up the guestbook web frontend</p>
+<p><a href="https://hub.docker.com/_/nginx">nginx</a> - Frontend to the auth and hello services.</p>
 </li>
 </ul>
 </div>
@@ -402,6 +405,9 @@
 </li>
 <li>
 <p>Choose <code>europe-west1-b</code> as Zone for this cluster (to have it closer to the user)</p>
+</li>
+<li>
+<p>In the default-pool, choose <code>2 CPU</code> for the machine type. Keep 3 nodes.</p>
 </li>
 <li>
 <p>Click the <em>Create</em> button to create the cluster</p>
@@ -445,6 +451,33 @@ kubectl get all</code></pre>
 <div class="paragraph">
 <p>You have 3 nodes and a single service running in Kubernetes.
 This <code>service/kubernetes</code> resource is a service exposing the REST API of your Kubernetes cluster to the Pods, allowing them to execute <code>kubectl</code> commands if they want to (very few applications do that).</p>
+</div>
+<div class="paragraph">
+<p>You can also load kubeclt auto-competion for current bash</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">source &lt;(kubectl completion bash)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You have to do it on each new shell or add it on your bash profile.</p>
+</div>
+<div class="paragraph">
+<p>That way, you&#8217;ll be able to list kubectl commands with :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl &lt;Tab&gt;&lt;Tab&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl get p&lt;Tab&gt;&lt;Tab&gt;</code></pre>
+</div>
 </div>
 </div>
 </div>

@@ -17,10 +17,8 @@ Set ``recommendation:v1`` and ``recommendation:v2`` as subsets.
 
 [source,bash]
 ----
-kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml
+kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml
 ----
-
-[#safaritov2]
 
 Set Safari users to v2.
 
@@ -55,9 +53,9 @@ spec:
         subset: version-v1
 ----
 
-and test with a Safari (or even Chrome on Mac since it includes Safari in the string). Safari only sees v2 responses from recommendation
+Test with a Safari (or even Chrome on Mac since it includes Safari in the string). Safari only sees v2 responses from recommendation
 
-and test with a Firefox browser, it should only see v1 responses from recommendation.
+Test with a Firefox browser, it should only see v1 responses from recommendation.
 
 Alternatively, you can also attempt to use the curl -A command to test with different user-agent strings.
 

@@ -86,6 +86,12 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="04_expose_redis.html">4. Expose Redis master</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="05_deploy_redis_slaves.html">5. Deploy Redis slaves</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="06_deploy_webapp.html">6. Deploy Guestbook web frontend</a>
+  </li>
 </ul>
   </li>
 </ul>
@@ -176,7 +182,28 @@
     <a class="nav-link" href="../istio/05_advanced-routerules.html">5. Advanced Routing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <button class="nav-toggle"></button>
     <a class="nav-link" href="../istio/05_advanced-routerules.html#traffic-steering">Traffic Steering</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/05_advanced-routerules.html#alltorecommendationv1">All Users To Recommendation V1</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/05_advanced-routerules.html#safaritov2">All Safari Users To Recommendation V2</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-toggle"></button>
+    <a class="nav-link" href="../istio/05_advanced-routerules.html#accesscontrol">Access Control</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/05_advanced-routerules.html#whitelist">White List</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/05_advanced-routerules.html#blacklist">Black List</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/05_advanced-routerules.html#loadbalancer">Load Balancer</a>
@@ -245,7 +272,13 @@
     <a class="nav-link" href="../istio/10_mTLS.html">8. Mutual TLS</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/10_mTLS.html#preparation">Preparation</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/10_mTLS.html#enablingtls">Enabling TLS</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/10_mTLS.html#restore">Restore Environment</a>
   </li>
 </ul>
   </li>
@@ -279,18 +312,6 @@
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/09_virtualization.html#mirroring-traffic">Mirroring Traffic</a>
-  </li>
-</ul>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <button class="nav-toggle"></button>
-    <a class="nav-link" href="../istio/11_access-control.html#accesscontrol">B3. Access Control</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../istio/11_access-control.html#whitelist">White List</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="../istio/11_access-control.html#blacklist">Black List</a>
   </li>
 </ul>
   </li>
@@ -331,7 +352,7 @@
     <li class="crumb"><a href="03_deploy_redis.html">3. Setup Redis master</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/Sfeir/kubernetes-istio-workshop/src/documentation/modules/kubernetes/pages/03_deploy_redis.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="https://github.com/Sfeir/kubernetes-istio-workshop/edit/master/src/documentation/modules/kubernetes/pages/03_deploy_redis.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Set up Redis master</h1>
