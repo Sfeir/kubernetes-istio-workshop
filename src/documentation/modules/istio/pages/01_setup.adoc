@@ -19,21 +19,6 @@ In this lab, you will learn how to install and configure Istio, on _Google Kuber
 
 You will install Istio with https://cloud.google.com/deployment-manager/docs/[Google Cloud Deployment Manager] an automation tool for deploying cloud resources.
 
-- To make the installation succeed, you must grant your *default compute service account* the following role: `role/container.admin` (Kubernetes Engine Admin)
-
-[source, bash]
-----
-# Make sure that the environment variable is not null
-echo $PROJECT_ID
-
-# Extract the project number
-PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='value(projectNumber)')
-
-# Grant the roles/container.admin role to the service account
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-     --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
-     --role=roles/container.admin
-----
 [IMPORTANT]
 .to avoid loosing your settings after closing your cloudshell console you can store your different settings and variables into the ~.bashrc file which is loaded for each cloudshell session.
 ====
