@@ -35,6 +35,8 @@ You will install Istio with https://cloud.google.com/deployment-manager/docs/[Go
 
 [source, bash]
 ----
+gcloud services enable runtimeconfig.googleapis.com
+
 gcloud deployment-manager deployments create istio-cluster --config=src/infrastructure/istio/gcp/deployment_manager/istio-cluster.yaml
 ----
 
