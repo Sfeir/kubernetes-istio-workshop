@@ -9,6 +9,7 @@ spec:
     # default rate limit is 5000qps
     maxAmount: 5000
     validDuration: 1s
+    rateLimitAlgorithm: ROLLING_WINDOW
     # The first matching override is applied.
     # A requestcount instance is checked against override dimensions.
     overrides:
