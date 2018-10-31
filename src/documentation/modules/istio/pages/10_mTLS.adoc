@@ -11,7 +11,7 @@ Now it's time to enable _mTLS_ by applying next Istio resources:
 
 [source, bash]
 ----
-kubectl apply -f manifests/istio/mutual-tls/authentication-enable-tls.yml # <1>
+kubectl apply -f manifests/istio/mutual-tls/authentication-enable-tls-permissive.yml
 ----
 
 This policy specifies that all workloads in the namespace ``workshop`` will only accept encrypted requests using TLS. The name of the policy must be default.
