@@ -9,7 +9,6 @@ spec:
     maxAmount: 500
     validDuration: 1s
     bucketDuration: 500ms
-    rateLimitAlgorithm: ROLLING_WINDOW
     # The first matching override is applied.
     # A requestcount instance is checked against override dimensions.
     overrides:
