@@ -365,10 +365,10 @@ baggage propagation all intermediate services must to be instrumented with OpenT
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml</code></pre>
 </div>
 </div>
-<div id="safaritov2" class="paragraph">
+<div class="paragraph">
 <p>Set Safari users to v2.</p>
 </div>
 <div class="paragraph">
@@ -404,10 +404,10 @@ spec:
 </div>
 </div>
 <div class="paragraph">
-<p>and test with a Safari (or even Chrome on Mac since it includes Safari in the string). Safari only sees v2 responses from recommendation</p>
+<p>Test with a Safari (or even Chrome on Mac since it includes Safari in the string). Safari only sees v2 responses from recommendation</p>
 </div>
 <div class="paragraph">
-<p>and test with a Firefox browser, it should only see v1 responses from recommendation.</p>
+<p>Test with a Firefox browser, it should only see v1 responses from recommendation.</p>
 </div>
 <div class="paragraph">
 <p>Alternatively, you can also attempt to use the curl -A command to test with different user-agent strings.</p>
