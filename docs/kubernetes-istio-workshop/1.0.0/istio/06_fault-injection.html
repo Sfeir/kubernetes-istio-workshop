@@ -343,7 +343,7 @@
     <li class="crumb"><a href="06_fault-injection.html">6. Fault Injection</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/06_fault-injection.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/06_fault-injection.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Fault Injection</h1>
@@ -358,7 +358,7 @@
 <h2 id="503error"><a class="anchor" href="#503error"></a>HTTP Error 503</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>By default, recommendation v1 and v2 are being randomly load-balanced as that is the default behavior in Kubernetes.</p>
+<p>By default, recommendation v1 and v2 are being round-robin load-balanced as that is the default behavior in Kubernetes.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -411,7 +411,7 @@ customer =&gt; preference =&gt; recommendation v2 from '2819441432-qsp25': 51</c
 <h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/fault-injection/inject-error/recommendation-virtual-service-503.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/fault-injection/inject-error/recommendation-virtual-service-503.yml</code></pre>
 </div>
 </div>
 </div>
@@ -660,7 +660,7 @@ spec:
         host: recommendation
     timeout: 1.000s</code></pre>
 </div>
-</div>/
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/fault-injection/timeout/recommendation-virtual-service-timeout.yml</code></pre>

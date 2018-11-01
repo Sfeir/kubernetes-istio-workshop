@@ -343,7 +343,7 @@
     <li class="crumb"><a href="09_virtualization.html">B2. Traffic Mirroring</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/09_virtualization.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///f/repo/external/github.com/sfeir/kubernetes-istio-workshop/src/documentation/modules/istio/pages/09_virtualization.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
 <h1>Traffic Mirroring and Service Virtualization</h1>
@@ -511,35 +511,34 @@ Let&#8217;s avoid this by just sending traffic that comes from preference v2 ser
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1.yml
-kubectl apply -f manifests/istio/service-virtualization/recommendation-virtualized-virtual-service.yml
- ----
-
-Then do again some requests and you'll get something like:</code></pre>
+kubectl apply -f manifests/istio/service-virtualization/recommendation-virtualized-virtual-service.yml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>customer &#8658; preference &#8658; recommendation v1 from '2409176097-kcjsr': 5
-customer &#8658; PREFERENCE &#8658; recommendation v1 from 'virtualized': 2
-customer &#8658; preference &#8658; recommendation v2 from '1275713543-2bs5k': 6
-customer &#8658; PREFERENCE &#8658; recommendation v2 from 'virtualized': 2</p>
+<p>Then do again some requests and you&#8217;ll get something like:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>We're almost done. We will again make preference:v2 a mirror for v1.
-
-[source,bash]</pre>
+<pre>customer =&gt; preference =&gt; recommendation v1 from '2409176097-kcjsr': 5
+customer =&gt; PREFERENCE =&gt; recommendation v1 from 'virtualized': 2
+customer =&gt; preference =&gt; recommendation v2 from '1275713543-2bs5k': 6
+customer =&gt; PREFERENCE =&gt; recommendation v2 from 'virtualized': 2</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml</p>
+<p>We&#8217;re almost done. We will again make preference:v2 a mirror for v1.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Read the output of the curl command and the log of preference:v2, what do you observe ?
-
-Now all requests that are from preference v2 are redirected to virtualized recommendation service.
-In this way when you deploy a new service, you can mirror the traffic without worrying about side-effects on other services, since the requests are redirected to a virtualized instance instead of a production one.</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Read the output of the curl command and the log of preference:v2, what do you observe ?</p>
+</div>
+<div class="paragraph">
+<p>Now all requests that are from preference v2 are redirected to virtualized recommendation service.
+In this way when you deploy a new service, you can mirror the traffic without worrying about side-effects on other services, since the requests are redirected to a virtualized instance instead of a production one.</p>
 </div>
 </div>
 </div>
