@@ -10,3 +10,6 @@
 - A HTML version of this file is published at http://sfeir.github.io/kubernetes-istio-workshop/
 
 - The source code is available at https://github.com/sfeir/kubernetes-istio-workshop/
+
+== Credits
+This workshop is based on this great tutorial from Red Hat https://github.com/redhat-developer-demos/istio-tutorial. We would like to thank all of its https://github.com/redhat-developer-demos/istio-tutorial/graphs/contributors[authors].
