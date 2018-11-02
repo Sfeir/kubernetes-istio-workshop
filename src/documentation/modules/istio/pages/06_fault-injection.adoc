@@ -57,7 +57,7 @@ customer => preference => recommendation v2 from '2819441432-qsp25': 51
 
 [source,bash]
 ----
-kubectl apply -f manifests/istio/fault-injection/inject-error/recommendation-virtual-service-503.yml
+kubectl delete -f manifests/istio/fault-injection/inject-error/recommendation-virtual-service-503.yml
 ----
 
 [#delay]
