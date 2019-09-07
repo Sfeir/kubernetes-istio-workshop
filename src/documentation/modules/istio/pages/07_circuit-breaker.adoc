@@ -334,7 +334,7 @@ customer => preference => recommendation v2 from '2036617847-hdjv2': 270
 ----
 
 [#circuitbreakerandpoolejection]
-== Test 4: Ultimate resilience with retries, circuit breaker, and pool ejection
+=== Test 4: Ultimate resilience with retries, circuit breaker, and pool ejection
 
 Even with pool ejection your application doesn't _look_ that resilient. That's probably because we're still letting some errors to be propagated to our clients. But we can improve this. If we have enough instances and/or versions of a specific service running into our system, we can combine multiple Istio capabilities to achieve the ultimate backend resilience:
 

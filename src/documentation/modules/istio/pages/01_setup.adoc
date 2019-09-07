@@ -9,7 +9,7 @@ In this lab, you will learn how to install and configure Istio, on _Google Kuber
 .Before you begin, make sure that:
 ====
 - You already created a GCP project and the envrionement variable ``$PROJECT_ID`` is set.
-- You already cloned the directory : ``https://github.com/Sfeir/kubernetes-istio-workshop`` and all operations must take place into the root of the ``kubernetes-istio-workshop`` directory.
+- You already cloned the directory : ``https://github.com/Sfeir/kubernetes-istio-workshop`` and make sure that all operations will take place into the root of the ``kubernetes-istio-workshop`` directory.
 ====
 
 

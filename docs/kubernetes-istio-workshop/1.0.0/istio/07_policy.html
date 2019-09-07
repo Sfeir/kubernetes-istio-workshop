@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Simple Route Rules :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/04_simple-routerules.html">
+    <title>Untitled :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/07_policy.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -160,28 +160,28 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">4. Traffic Control</span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="3">
+  <li class="nav-item" data-depth="3">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="04_simple-routerules.html">Simple Routing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="4">
-    <a class="nav-link" href="#deployrecommendationv2">Deploy recommendation v2</a>
+    <a class="nav-link" href="04_simple-routerules.html#deployrecommendationv2">Deploy recommendation v2</a>
   </li>
   <li class="nav-item" data-depth="4">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="#istiorouting">Changing Istio Routings</a>
+    <a class="nav-link" href="04_simple-routerules.html#istiorouting">Changing Istio Routings</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="5">
-    <a class="nav-link" href="#alltorecommendationv2">All Users to recommendation v2</a>
+    <a class="nav-link" href="04_simple-routerules.html#alltorecommendationv2">All Users to recommendation v2</a>
   </li>
   <li class="nav-item" data-depth="5">
-    <a class="nav-link" href="#alltorecommendationv1">Al Users to recommendation v1</a>
+    <a class="nav-link" href="04_simple-routerules.html#alltorecommendationv1">Al Users to recommendation v1</a>
   </li>
   <li class="nav-item" data-depth="5">
-    <a class="nav-link" href="#alltorecommendationv1v2">All Users to recommendation v1 and v2</a>
+    <a class="nav-link" href="04_simple-routerules.html#alltorecommendationv1v2">All Users to recommendation v1 and v2</a>
   </li>
   <li class="nav-item" data-depth="5">
-    <a class="nav-link" href="#canarydeploymentrecommendation">Canary Deployment between v1 And v2</a>
+    <a class="nav-link" href="04_simple-routerules.html#canarydeploymentrecommendation">Canary Deployment between v1 And v2</a>
   </li>
 </ul>
   </li>
@@ -260,7 +260,7 @@
     <span class="nav-text">7. Policy</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="07_policy.html#ratelimiting">Rate Limiting</a>
+    <a class="nav-link" href="#ratelimiting">Rate Limiting</a>
   </li>
 </ul>
   </li>
@@ -328,71 +328,73 @@
   <ul>
     <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
     <li><strong>Part 2 : Istio</strong></li>
-    <li>4. Traffic Control</li>
-    <li><a href="04_simple-routerules.html">Simple Routing</a></li>
+    <li>7. Policy</li>
+    <li><a href="#ratelimiting">Rate Limiting</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/04_simple-routerules.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/07_policy.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1 class="page">Simple Route Rules</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>This section demonstrates how to use various traffic management capabilities of Istio.</p>
-</div>
-<div class="paragraph">
-<p>We will show you how to route requests dynamically to multiple versions of a microservice.</p>
-</div>
-</div>
-</div>
 <div class="sect1">
-<h2 id="_deploy_recommendation_v2"><a class="anchor" href="#_deploy_recommendation_v2"></a>Deploy recommendation:v2</h2>
+<h2 id="ratelimiting"><a class="anchor" href="#ratelimiting"></a>Rate Limiting</h2>
 <div class="sectionbody">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/recommendation-v2.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Wait for those pods to show "2/2", the istio-proxy/envoy sidecar is part of that pod</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                                 READY     STATUS    RESTARTS   AGE
-customer-3600192384-fpljb            2/2       Running   0          17m
-preference-243057078-8c5hz           2/2       Running   0          15m
-recommendation-v1-60483540-9snd9     2/2       Running   0          12m
-recommendation-v2-2815683430-vpx4p   2/2       Running   0          15s</code></pre>
-</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The Rate Limiting rules take some time to be applied and reflected. Be patient here!
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="_images/4-simple-routing-1.png" alt="4 simple routing 1"></span></p>
+<p>Here we will limit the number of concurrent requests into recommendation v2</p>
 </div>
 <div class="paragraph">
-<p>and test the customer endpoint:</p>
+<p>Now apply the rate limit handler</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/policy/rate-limiting/recommendation_rate_limit_handler.yml</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>you would likely see <code>"customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 3"</code>, where '99634814-d2z2t' is the pod running <code>v1</code> and the <code>3</code> is basically the number of times you hit the endpoint.</p>
-</div>
-<div class="paragraph">
-<p>Run again the command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>curl $CUSTOMER_URL</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: "config.istio.io/v1alpha2"
+kind: memquota
+metadata:
+  name: handler
+  namespace: istio-system
+spec:
+  quotas:
+  - name: requestcount.quota.istio-system
+    # default rate limit is 5000qps
+    maxAmount: 5000
+    validDuration: 1s
+    # The first matching override is applied.
+    # A requestcount instance is checked against override dimensions.
+    overrides:
+    - dimensions:
+        destination: recommendation
+        destinationVersion: v2
+        source: preference
+      maxAmount: 1
+      validDuration: 1s</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>you would likely see <code>"customer =&gt; preference =&gt; recommendation v2 from '2819441432-5v22s': 1"</code> as by default you get round-robin load-balancing when there is more than one Pod behind a Service</p>
+<p>Now setup the requestcount quota</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/policy/rate-limiting/rate_limit_rule.yml</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Send several requests to see their responses:</p>
+<p>Throw some requests at customer:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -400,236 +402,35 @@ recommendation-v2-2815683430-vpx4p   2/2       Running   0          15s</code></
 </div>
 </div>
 <div class="paragraph">
-<p>The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service. Add another replica of recommendation-v2 Deployment.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/k8s-istio-k8s-istio-4-simple-scale-v2.png" alt="k8s istio k8s istio 4 simple scale v2"></span></p>
+<p>You should see some 429 errors:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale --replicas=2 deployment/recommendation-v2</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v2 from '2819441432-f4ls5': 108
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1932
+customer =&gt; preference =&gt; recommendation v2 from '2819441432-f4ls5': 109
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1933
+customer =&gt; 503 preference =&gt; 429 RESOURCE_EXHAUSTED:Quota is exhausted for: RequestCount
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1934
+customer =&gt; preference =&gt; recommendation v2 from '2819441432-f4ls5': 110
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1935
+customer =&gt; 503 preference =&gt; 429 RESOURCE_EXHAUSTED:Quota is exhausted for: RequestCount
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1936
+customer =&gt; preference =&gt; recommendation v2 from '2819441432-f4ls5': 111
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1937
+customer =&gt; 503 preference =&gt; 429 RESOURCE_EXHAUSTED:Quota is exhausted for: RequestCount
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1938
+customer =&gt; preference =&gt; recommendation v2 from '2819441432-f4ls5': 112</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now, you will see two requests into the v2 and one for v1.</p>
+<p>Clean up</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v1 from '2819441432-qsp25': 29
-customer =&gt; preference =&gt; recommendation v2 from '99634814-sf4cl': 37
-customer =&gt; preference =&gt; recommendation v2 from '99634814-xq3c5': 38</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Scale back to a single replica of the recommendation-v2 Deployment</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale --replicas=1 deployment/recommendation-v2</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="istiorouting"><a class="anchor" href="#istiorouting"></a>Changing Istio Routings</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Before you can use Istio to control version routing, you need to define the available versions, called <em>subsets</em>, in <a href="https://istio.io/docs/reference/config/istio.networking.v1alpha3/#DestinationRule">DestinationRule</a>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: DestinationRule
-metadata:
-  name: recommendation
-spec:
-  host: recommendation
-  subsets:
-  - name: version-v1
-    labels:
-      version: v1
-  - name: version-v2
-    labels:
-      version: v2</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Run the following command to create default destination rules to send traffic to versions <code>v1</code> and <code>v2</code> of recommandation service.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Wait a few seconds for the destination rules to propagate.</p>
-</div>
-<div class="paragraph">
-<p>You can display the created destination rule with the following command:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get destinationrules recommendation -o yaml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To display all destination rules :</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get destinationrules -o yaml</code></pre>
-</div>
-</div>
-<div class="sect2">
-<h3 id="alltorecommendationv2"><a class="anchor" href="#alltorecommendationv2"></a>Route all the traffic to recommendation:v2</h3>
-<div class="paragraph">
-<p>To route to one version only, you apply virtual services that set the default version for the microservices. In this case, the virtual services will route all traffic to v2 of recommendation microservice.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/k8s-istio-4-simple-routing-all-v2.png" alt="k8s istio 4 simple routing all v2"></span></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: VirtualService
-metadata:
-  name: recommendation
-spec:
-  hosts:
-  - recommendation
-  http:
-  - route:
-    - destination:
-        host: recommendation
-        subset: version-v2
-      weight: 100</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v2.yml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/policy/rate-limiting/rate_limit_rule.yml
 
-curl $CUSTOMER_URL</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>you should only see v2 being returned</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="alltorecommendationv1"><a class="anchor" href="#alltorecommendationv1"></a>Route all the traffic to recommendation:v1</h3>
-<div class="paragraph">
-<p><span class="image"><img src="_images/k8s-istio-4-simple-routing-all-v1.png" alt="k8s istio 4 simple routing all v1"></span></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1.yml</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: recommendation
-spec:
-  hosts:
-  - recommendation
-  http:
-  - route:
-    - destination:
-        host: recommendation
-        subset: version-v1</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="alltorecommendationv1v2"><a class="anchor" href="#alltorecommendationv1v2"></a>Route the traffic to both versions of recommendation: v1 and v2</h3>
-<div class="paragraph">
-<p>By simply removing the virtual service</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete virtualservice recommendation</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and you should see the default behavior of load-balancing between v1 and v2</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="canarydeploymentrecommendation"><a class="anchor" href="#canarydeploymentrecommendation"></a>Canary deployment: Split traffic between v1 and v2</h3>
-<div class="paragraph">
-<p>Canary Deployment scenario: push v2 into the cluster but slowly send end-user traffic to it, if you continue to see success, continue shifting more traffic over time</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/k8s-istio-4-simple-routing-split-90-10.png" alt="k8s istio 4 simple routing split 90 10"></span></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods -l app=recommendation
-
-NAME                                  READY     STATUS    RESTARTS   AGE
-recommendation-v1-3719512284-7mlzw   2/2       Running   6          2h
-recommendation-v2-2815683430-vn77w   2/2       Running   0          1h</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Create the <code>virtualservice</code> that will send 90% of requests to v1 and 10% to v2</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1_and_v2.yml</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: VirtualService
-metadata:
-  name: recommendation
-spec:
-  hosts:
-  - recommendation
-  http:
-  - route:
-    - destination:
-        host: recommendation
-        subset: version-v1
-      weight: 90
-    - destination:
-        host: recommendation
-        subset: version-v2
-      weight: 10</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and send in several requests:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In another terminal, change the mixture to be 75/25</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-virtual-service-v1_and_v2_75_25.yml</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete virtualservice recommendation
-
-kubectl delete destinationrule recommendation</code></pre>
-</div>
+kubectl delete -f manifests/istio/policy/rate-limiting/recommendation_rate_limit_handler.yml</code></pre>
 </div>
 </div>
 </div>
