@@ -45,7 +45,7 @@ Throw some requests at customer:
 
 [source, bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 ----
 
 You should see some 429 errors:

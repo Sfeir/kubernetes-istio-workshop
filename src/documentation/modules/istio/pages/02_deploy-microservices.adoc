@@ -112,9 +112,9 @@ curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/
 
 [source,bash]
 ----
-export CUSTOMER_URL=$GATEWAY_URL/customer
+export customer=$GATEWAY_URL/customer
 
-curl $CUSTOMER_URL
+curl $customer
 ----
 
 You should see the following error because the services `preference` and `recommendation` are not yet deployed.
@@ -157,7 +157,7 @@ Wait until the status is `Running` and there are `2/2` pods in the `Ready` colum
 
 [source,bash]
 ----
-curl $CUSTOMER_URL
+curl $customer
 ----
 
 It will respond with an error since the service `recommendation` is not yet deployed.
@@ -200,7 +200,7 @@ Wait until the status is `Running` and there are `2/2` pods in the `Ready` colum
 
 [source,bash]
 ----
-curl $CUSTOMER_URL
+curl $customer
 ----
 
 it should now return

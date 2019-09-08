@@ -358,7 +358,7 @@ recommendation-v1-798bf87d96-stzqt            2/2       Running   7          6d<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -390,7 +390,7 @@ customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 179</
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/traffic-mirroring/preference-destination-rule-v1-v2.yml
 kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml
-curl $CUSTOMER_URL</code></pre>
+curl $customer</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -465,7 +465,7 @@ recommendation-virtualized-5f9678d7d8-6lhx4   2/2       Running   0          30s
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done</code></pre>
 </div>
 </div>
 <div class="paragraph">

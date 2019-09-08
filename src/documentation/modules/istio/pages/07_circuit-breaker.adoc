@@ -55,7 +55,7 @@ Let's perform a load test in our system with `siege`. We'll have 20 clients send
 
 [source,bash]
 ----
-docker run --rm funkygibbon/siege siege -r 2 -c 20 -v $CUSTOMER_URL
+docker run --rm funkygibbon/siege siege -r 2 -c 20 -v $customer
 ----
 
 You should see an output similar to this:
@@ -101,7 +101,7 @@ Now let's see what is the behavior of the system running `siege` again:
 
 [source,bash]
 ----
-docker run --rm funkygibbon/siege siege -r 2 -c 20 -v $CUSTOMER_URL
+docker run --rm funkygibbon/siege siege -r 2 -c 20 -v $customer
 ----
 
 image:k8s-istio-7.circuit-breaker.png[]
@@ -153,7 +153,7 @@ Throw some requests at the customer endpoint:
 
 [source,bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 ----
 
 You will see the load balancing 50/50 between the two different versions of the `recommendation` service. And within version `v2`, you will also see that some requests are handled by one pod and some requests are handled by the other pod.
@@ -220,7 +220,7 @@ Throw some requests at the customer endpoint:
 
 [source,bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 ----
 
 You'll see that whenever the pod `recommendation-v2-2036617847-spdrb` receives a request, you get a `503` error:
@@ -283,7 +283,7 @@ Throw some requests at the customer endpoint:
 
 [source,bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 ----
 
 You will see that whenever you get a failing request with `503` from the pod `recommendation-v2-2036617847-spdrb`, it gets ejected from the pool, and it doesn't receive any more requests until the sleep window expires - which takes at least 15s.
@@ -379,7 +379,7 @@ Throw some requests at the customer endpoint:
 
 [source,bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 ----
 
 You won't receive `503`s anymore. But the requests from recommendation `v2` are still taking more time to get a response:

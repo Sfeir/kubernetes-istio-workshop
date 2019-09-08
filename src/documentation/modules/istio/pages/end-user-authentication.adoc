@@ -13,7 +13,7 @@ The first thing you need to do is to make a request to ``customer`` and validate
 
 [source, bash, subs="+macros,+attributes"]
 ----
-curl $CUSTOMER_URL
+curl $customer
 
 customer => preference => recommendation v1 from 'b4d67bcb7-7rp88': 4
 ----
@@ -29,7 +29,7 @@ Then let's run the curl again:
 
 [source, bash, subs="+macros,+attributes"]
 ----
-curl $CUSTOMER_URL
+curl $customer
 
 Origin authentication failed.%`
 ----
@@ -49,7 +49,7 @@ Then let's repeat the request but passing the token stored in `token` variable.
 
 [source, bash, subs="+macros,+attributes"]
 ----
-curl -H "Authorization: Bearer $token" $CUSTOMER_URL
+curl -H "Authorization: Bearer $token" $customer
 
 customer => preference => recommendation v1 from 'b4d67bcb7-7rp88': 4
 ----

@@ -61,8 +61,8 @@ Alternatively, you can also attempt to use the curl -A command to test with diff
 
 [source,bash]
 ----
-curl -A Safari $CUSTOMER_URL
-curl -A Firefox $CUSTOMER_URL
+curl -A Safari $customer
+curl -A Firefox $customer
 ----
 
 You can describe the ``virtualservice`` to see its configuration
@@ -96,7 +96,7 @@ Wait a bit and curl the customer endpoint many times
 
 [source,bash]
 ----
-curl $CUSTOMER_URL
+curl $customer
 ----
 
 Add a 3rd v2 pod to the mix
@@ -118,7 +118,7 @@ Wait for those 2/2 (two containers in each pod) and then poll the customer endpo
 
 [source, bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 ----
 
 The results should follow a fairly normal round-robin distribution pattern

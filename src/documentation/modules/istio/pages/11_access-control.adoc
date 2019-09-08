@@ -18,7 +18,7 @@ kubectl apply -f manifests/istio/routing-advanced/access-control/acl-whitelist.y
 
 [source,bash]
 ----
-curl $CUSTOMER_URL
+curl $customer
 customer => 404 NOT_FOUND:preferencewhitelist.listchecker.workshop:customer is not whitelisted
 ----
 
@@ -41,7 +41,7 @@ kubectl apply -f manifests/istio/routing-advanced/access-control/acl-blacklist.y
 
 [source,bash]
 ----
-curl $CUSTOMER_URL
+curl $customer
 customer => 403 PERMISSION_DENIED:denycustomerhandler.denier.workshop:Not allowed
 ----
 

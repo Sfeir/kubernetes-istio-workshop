@@ -28,7 +28,7 @@ Send several requests to the customer endpoint
 
 [source, bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 ----
 
 In a new terminal, check the logs of recommendation-v2
@@ -55,7 +55,7 @@ and see what happens when you run
 ----
 kubectl apply -f manifests/istio/traffic-mirroring/preference-destination-rule-v1-v2.yml
 kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml
-curl $CUSTOMER_URL
+curl $customer
 ----
 
 The customer has stopped calling preference:v2
@@ -117,7 +117,7 @@ Send several requests to see their responses
 
 [source, bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 ----
 
 The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service.

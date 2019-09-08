@@ -97,7 +97,7 @@ select `Execute`, and run several requests through the system:
 
 [source,bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5;  done
+while true; do curl $customer; sleep .5;  done
 ----
 
 Click on the *Graph* to display the graph corresponding to this query.

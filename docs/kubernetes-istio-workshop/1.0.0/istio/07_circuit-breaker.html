@@ -387,7 +387,7 @@ spec:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm funkygibbon/siege siege -r 2 -c 20 -v $CUSTOMER_URL</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm funkygibbon/siege siege -r 2 -c 20 -v $customer</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -447,7 +447,7 @@ spec:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm funkygibbon/siege siege -r 2 -c 20 -v $CUSTOMER_URL</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run --rm funkygibbon/siege siege -r 2 -c 20 -v $customer</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -510,7 +510,7 @@ kubectl apply -f manifests/istio/circuit-breaker/fail-fast/recommendation-virtua
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -585,7 +585,7 @@ Output:  Following requests to '/' will return a 503</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -651,7 +651,7 @@ spec:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -760,7 +760,7 @@ spec:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done</code></pre>
 </div>
 </div>
 <div class="paragraph">

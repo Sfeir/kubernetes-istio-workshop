@@ -455,9 +455,9 @@ export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressga
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export CUSTOMER_URL=$GATEWAY_URL/customer
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export customer=$GATEWAY_URL/customer
 
-curl $CUSTOMER_URL</code></pre>
+curl $customer</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -506,7 +506,7 @@ curl $CUSTOMER_URL</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $customer</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -575,7 +575,7 @@ The tag <code>v1</code> at the end of the image name matters. We will be using a
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $customer</code></pre>
 </div>
 </div>
 <div class="paragraph">

@@ -45,11 +45,11 @@ spec:
 kubectl apply -f manifests/istio/fault-injection/recommendation-destination-rule.yml
 kubectl apply -f manifests/istio/fault-injection/inject-error/recommendation-virtual-service-503.yml
 
-curl $CUSTOMER_URL
+curl $customer
 customer => preference => recommendation v1 from '99634814-sf4cl': 88
-curl $CUSTOMER_URL
+curl $customer
 customer => 503 preference => 503 fault filter abort
-curl $CUSTOMER_URL
+curl $customer
 customer => preference => recommendation v2 from '2819441432-qsp25': 51
 ----
 
@@ -95,7 +95,7 @@ And hit the customer endpoint
 
 [source,bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 ----
 
 You will notice many requests to the customer endpoint now have a delay.
@@ -135,7 +135,7 @@ image:k8s-istio-6.retry.png[]
 
 [source,bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 
 customer => preference => recommendation v1 from 'b87789c58-h9r4s': 864
 customer => 503 preference => 503 recommendation misbehavior from '6f64f9c5b-ltrhl'
@@ -182,7 +182,7 @@ image:k8s-istio-6.retry2.png[]
 
 [source,bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 
 customer => preference => recommendation v1 from '2036617847-m9glz': 196
 customer => preference => recommendation v1 from '2036617847-m9glz': 197
@@ -202,7 +202,7 @@ Now, delete the retry rule and see the old behavior, where v2 throws 503s
 ----
 kubectl delete virtualservice recommendation
 
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 
 customer => preference => recommendation v1 from 'b87789c58-h9r4s': 1118
 customer => preference => recommendation v1 from 'b87789c58-h9r4s': 1119
@@ -234,7 +234,7 @@ The application is back to random load-balancing between v1 and v2
 
 [source,bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 
 customer => preference => recommendation v1 from '2039379827-h58vw': 129
 customer => preference => recommendation v2 from '2036617847-m9glz': 207
@@ -259,7 +259,7 @@ image:k8s-istio-6.timeout.1.png[]
 
 [source,bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 ----
 
 Then add the timeout rule:
@@ -288,14 +288,14 @@ You will see it return v1 OR "upstream request timeout" after waiting about 1 se
 
 [source,bash]
 ----
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 
 customer => 503 preference => 504 upstream request timeout
-curl $CUSTOMER_URL  0.01s user 0.00s system 0% cpu 1.035 total
+curl $customer  0.01s user 0.00s system 0% cpu 1.035 total
 customer => preference => recommendation v1 from '2039379827-h58vw': 210
-curl $CUSTOMER_URL  0.01s user 0.00s system 36% cpu 0.025 total
+curl $customer  0.01s user 0.00s system 36% cpu 0.025 total
 customer => 503 preference => 504 upstream request timeout
-curl $CUSTOMER_URL  0.01s user 0.00s system 0% cpu 1.034 total
+curl $customer  0.01s user 0.00s system 0% cpu 1.034 total
 ----
 
 == Clean up

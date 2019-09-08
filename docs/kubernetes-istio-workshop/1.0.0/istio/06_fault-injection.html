@@ -381,11 +381,11 @@ spec:
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/fault-injection/recommendation-destination-rule.yml
 kubectl apply -f manifests/istio/fault-injection/inject-error/recommendation-virtual-service-503.yml
 
-curl $CUSTOMER_URL
+curl $customer
 customer =&gt; preference =&gt; recommendation v1 from '99634814-sf4cl': 88
-curl $CUSTOMER_URL
+curl $customer
 customer =&gt; 503 preference =&gt; 503 fault filter abort
-curl $CUSTOMER_URL
+curl $customer
 customer =&gt; preference =&gt; recommendation v2 from '2819441432-qsp25': 51</code></pre>
 </div>
 </div>
@@ -437,7 +437,7 @@ spec:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -486,7 +486,7 @@ kubectl delete -f manifests/istio/fault-injection/delay/recommendation-virtual-s
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done
 
 customer =&gt; preference =&gt; recommendation v1 from 'b87789c58-h9r4s': 864
 customer =&gt; 503 preference =&gt; 503 recommendation misbehavior from '6f64f9c5b-ltrhl'
@@ -535,7 +535,7 @@ spec:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done
 
 customer =&gt; preference =&gt; recommendation v1 from '2036617847-m9glz': 196
 customer =&gt; preference =&gt; recommendation v1 from '2036617847-m9glz': 197
@@ -557,7 +557,7 @@ customer =&gt; preference =&gt; recommendation v1 from '2036617847-m9glz': 198</
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete virtualservice recommendation
 
-while true; do curl $CUSTOMER_URL; sleep .5; done
+while true; do curl $customer; sleep .5; done
 
 customer =&gt; preference =&gt; recommendation v1 from 'b87789c58-h9r4s': 1118
 customer =&gt; preference =&gt; recommendation v1 from 'b87789c58-h9r4s': 1119
@@ -591,7 +591,7 @@ customer =&gt; 503 preference =&gt; 503 recommendation misbehavior from '6f64f9c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done
 
 customer =&gt; preference =&gt; recommendation v1 from '2039379827-h58vw': 129
 customer =&gt; preference =&gt; recommendation v2 from '2036617847-m9glz': 207
@@ -622,7 +622,7 @@ customer =&gt; preference =&gt; recommendation v1 from '2039379827-h58vw': 130</
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -653,14 +653,14 @@ spec:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done
 
 customer =&gt; 503 preference =&gt; 504 upstream request timeout
-curl $CUSTOMER_URL  0.01s user 0.00s system 0% cpu 1.035 total
+curl $customer  0.01s user 0.00s system 0% cpu 1.035 total
 customer =&gt; preference =&gt; recommendation v1 from '2039379827-h58vw': 210
-curl $CUSTOMER_URL  0.01s user 0.00s system 36% cpu 0.025 total
+curl $customer  0.01s user 0.00s system 36% cpu 0.025 total
 customer =&gt; 503 preference =&gt; 504 upstream request timeout
-curl $CUSTOMER_URL  0.01s user 0.00s system 0% cpu 1.034 total</code></pre>
+curl $customer  0.01s user 0.00s system 0% cpu 1.034 total</code></pre>
 </div>
 </div>
 </div>

@@ -396,8 +396,8 @@ spec:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -A Safari $CUSTOMER_URL
-curl -A Firefox $CUSTOMER_URL</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -A Safari $customer
+curl -A Firefox $customer</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -438,7 +438,7 @@ kubectl delete virtualservice recommendation</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $customer</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -462,7 +462,7 @@ recommendation-v2-2815683430-tptf2    2/2       Running   0          33m</code><
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done</code></pre>
 </div>
 </div>
 <div class="paragraph">
