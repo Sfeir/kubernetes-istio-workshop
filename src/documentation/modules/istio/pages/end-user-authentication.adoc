@@ -1,0 +1,73 @@
+= End-user authentication with JWT
+include::_attributes.adoc[]
+
+
+In this chapter, we are going to see how to enable authenticating end user with Istio.
+
+[#enablingauthentication]
+== Enabling User-End Authentication
+
+Now it is time to enable end-user authentication.
+
+The first thing you need to do is to make a request to ``customer`` and validate that it is still possible to communicate between all services without authentication.
+
+[source, bash, subs="+macros,+attributes"]
+----
+curl $CUSTOMER_URL
+
+customer => preference => recommendation v1 from 'b4d67bcb7-7rp88': 4
+----
+
+Then run:
+
+[source, bash,subs="+macros,+attributes"]
+----
+kubectl create -f link:{github-repo}/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml[manifests/istio/security/enduser-authentication-jwt.yml]
+----
+
+Then let's run the curl again:
+
+[source, bash, subs="+macros,+attributes"]
+----
+curl $CUSTOMER_URL
+
+Origin authentication failed.%`
+----
+
+And now the communication is not possible because the user has not been identified (provides a valid JWT token).
+
+To get a correct token, just run next `curl` request.
+
+[source, bash]
+----
+token=$(curl https://raw.githubusercontent.com/Sfeir/kubernetes-istio-workshop/master/manifests/istio/security/end-user_authentication/token.jwt -s)
+
+echo $token
+----
+
+Then let's repeat the request but passing the token stored in `token` variable.
+
+[source, bash, subs="+macros,+attributes"]
+----
+curl -H "Authorization: Bearer $token" $CUSTOMER_URL
+
+customer => preference => recommendation v1 from 'b4d67bcb7-7rp88': 4
+----
+
+Now just change some part of the token and send the request again, you'll notice that request is refused.
+
+[IMPORTANT]
+====
+In this chapter you've seen how to enable end-user authentication with JWT.
+
+Obviously, you should also keep enabled mTLS to avoid any attacker could take the token.
+====
+
+[#cleanup]
+== Clean Up
+
+[source, bash, subs="+macros,+attributes"]
+----
+kubectl delete -f link:{github-repo}/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml[manifests/istio/security/enduser-authentication-jwt.yml]
+----
+

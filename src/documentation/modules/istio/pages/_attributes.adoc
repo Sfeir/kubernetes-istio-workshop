@@ -1,2 +1,4 @@
 :moduledir: ..
 include::{moduledir}/_attributes.adoc[]
+:branch: master
+:github-repo: https://github.com/Sfeir/kubernetes-istio-workshop/blob/{branch}

@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Traffic Mirroring and Service Virtualization :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/09_virtualization.html">
+    <title>End-user authentication with JWT :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/end-user-authentication.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -244,7 +244,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="10_mTLS.html">Mutual TLS</a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="end-user-authentication.html">End-user Authentication </a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -321,205 +321,108 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
-    <li><a href="09_virtualization.html">Traffic Mirroring and Service Virtualization</a></li>
+    <li><strong>Part 2 : Istio</strong></li>
+    <li>7. Security</li>
+    <li><a href="end-user-authentication.html">End-user Authentication </a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/09_virtualization.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/end-user-authentication.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1 class="page">Traffic Mirroring and Service Virtualization</h1>
-<div class="sect1">
-<h2 id="deploypreferencev2"><a class="anchor" href="#deploypreferencev2"></a>Deploy Preference v2</h2>
+<h1 class="page">End-user authentication with JWT</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>We&#8217;ll use version 2 of preferences service. The only difference between v1 and V2 is that v2 prints its name in capital letters (PREFERENCE).</p>
+<p>In this chapter, we are going to see how to enable authenticating end user with Istio.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/preference-v2.yml</code></pre>
 </div>
+</div>
+<div class="sect1">
+<h2 id="enablingauthentication"><a class="anchor" href="#enablingauthentication"></a>Enabling User-End Authentication</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now it is time to enable end-user authentication.</p>
 </div>
 <div class="paragraph">
-<p>You should have 2 pods for preference based on the steps above</p>
+<p>The first thing you need to do is to make a request to <code>customer</code> and validate that it is still possible to communicate between all services without authentication.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL
 
-NAME                                          READY     STATUS    RESTARTS   AGE
-customer-755bbbdd44-t2vjq                     2/2       Running   1          6d
-preference-v1-7c8b57fc49-kcsvc                2/2       Running   0          6d
-preference-v2-f74bcc999-lwlbf                 2/2       Running   0          36s
-recommendation-v1-798bf87d96-stzqt            2/2       Running   7          6d</code></pre>
+customer =&gt; preference =&gt; recommendation v1 from 'b4d67bcb7-7rp88': 4</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Send several requests to the customer endpoint</p>
+<p>Then run:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create -f <a href="https://github.com/Sfeir/kubernetes-istio-workshop/blob/master/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml">manifests/istio/security/enduser-authentication-jwt.yml</a></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In a new terminal, check the logs of recommendation-v2</p>
+<p>Then let&#8217;s run the curl again:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs -f `kubectl get pods|grep preference-v2|awk '{ print $1 }'` -c preference</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $CUSTOMER_URL
+
+Origin authentication failed.%`</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service.</p>
+<p>And now the communication is not possible because the user has not been identified (provides a valid JWT token).</p>
 </div>
 <div class="paragraph">
-<p>So after running several times you&#8217;ll get some combinations of:</p>
+<p>To get a correct token, just run next <code>curl</code> request.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 176
-customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 177
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 178
-customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 179</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">token=$(curl https://raw.githubusercontent.com/Sfeir/kubernetes-istio-workshop/master/manifests/istio/security/end-user_authentication/token.jwt -s)
+
+echo $token</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>and see what happens when you run</p>
+<p>Then let&#8217;s repeat the request but passing the token stored in <code>token</code> variable.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/traffic-mirroring/preference-destination-rule-v1-v2.yml
-kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml
-curl $CUSTOMER_URL</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -H "Authorization: Bearer $token" $CUSTOMER_URL
+
+customer =&gt; preference =&gt; recommendation v1 from 'b4d67bcb7-7rp88': 4</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The customer has stopped calling preference:v2</p>
+<p>Now just change some part of the token and send the request again, you&#8217;ll notice that request is refused.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 196
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 198
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 200
-...</code></pre>
-</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In this chapter you&#8217;ve seen how to enable end-user authentication with JWT.</p>
 </div>
 <div class="paragraph">
-<p>But preference:v2 still receiving requests:</p>
+<p>Obviously, you should also keep enabled mTLS to avoid any attacker could take the token.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">preference v2 request from pod: f74bcc999-lwlbf
-preference v2 request from pod: f74bcc999-lwlbf
-preference v2 request from pod: f74bcc999-lwlbf</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Clean up</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/traffic-mirroring/preference-destination-rule-v1-v2.yml
-kubectl delete -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml</code></pre>
-</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="virtualize-dependencies"><a class="anchor" href="#virtualize-dependencies"></a>Virtualizing Mirrored Service Dependencies</h2>
+<h2 id="cleanup"><a class="anchor" href="#cleanup"></a>Clean Up</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>To avoid side-effects from the version 2 of preferences service, instead of communicating with recommendation service, we are going to make the preference:v2 communicate with a virtualized recommendation service.</p>
-</div>
-<div class="paragraph">
-<p>Service virtualization can be understood as something similar as mocking where instead of mocking components (classes), you are mocking remote services.</p>
-</div>
-<div class="paragraph">
-<p>For this concrete case, virtualized recommendation service will return <code>recommendation v2 from 'virtualized': 2</code>.</p>
-</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/recommendation-virtualized.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f <a href="https://github.com/Sfeir/kubernetes-istio-workshop/blob/master/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml">manifests/istio/security/enduser-authentication-jwt.yml</a></code></pre>
 </div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="mirroring-traffic"><a class="anchor" href="#mirroring-traffic"></a>Mirroring Traffic to Preference</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>After this step, you should have three versions of recommendation service (v1, v2 and virtualized).</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>NAME                                          READY     STATUS    RESTARTS   AGE
-customer-755bbbdd44-t2vjq                     2/2       Running   1          6d
-preference-v1-7c8b57fc49-kcsvc                2/2       Running   0          3h
-preference-v2-f74bcc999-lwlbf                 2/2       Running   4          35m
-recommendation-v1-798bf87d96-stzqt            2/2       Running   7          3h
-recommendation-virtualized-5f9678d7d8-6lhx4   2/2       Running   0          30s</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Send several requests to see their responses</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service.</p>
-</div>
-<div class="paragraph">
-<p>So after running several times you&#8217;ll get some combinations of:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 233
-customer =&gt; preference =&gt; recommendation v2 from 'virtualized': 2
-customer =&gt; PREFERENCE =&gt; recommendation v2 from 'virtualized': 2
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 234
-customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 235
-customer =&gt; preference =&gt; recommendation v2 from 'virtualized': 2
-customer =&gt; PREFERENCE =&gt; recommendation v2 from 'virtualized': 2</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Notice that now the <code>v2</code> reaches all recommendation services.
-Let&#8217;s avoid this by just sending traffic that comes from preference v2 service to the virtualized recommendation service.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1.yml
-kubectl apply -f manifests/istio/service-virtualization/recommendation-virtualized-virtual-service.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then do again some requests and you&#8217;ll get something like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>customer =&gt; preference =&gt; recommendation v1 from '2409176097-kcjsr': 5
-customer =&gt; PREFERENCE =&gt; recommendation v1 from 'virtualized': 2
-customer =&gt; preference =&gt; recommendation v2 from '1275713543-2bs5k': 6
-customer =&gt; PREFERENCE =&gt; recommendation v2 from 'virtualized': 2</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>We&#8217;re almost done. We will again make preference:v2 a mirror for v1.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Read the output of the curl command and the log of preference:v2, what do you observe ?</p>
-</div>
-<div class="paragraph">
-<p>Now all requests that are from preference v2 are redirected to virtualized recommendation service.
-In this way when you deploy a new service, you can mirror the traffic without worrying about side-effects on other services, since the requests are redirected to a virtualized instance instead of a production one.</p>
 </div>
 </div>
 </div>

@@ -1,0 +1,14 @@
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "customerjwt"
+spec:
+  targets:
+    - name: customer
+    - name: preference
+    - name: recommendation
+  origins:
+    - jwt:
+        issuer: "testing@secure.istio.io"
+        jwksUri: "https://raw.githubusercontent.com/Sfeir/kubernetes-istio-workshop/master/manifests/istio/security/end-user_authentication/jwks.json"
+  principalBinding: USE_ORIGIN

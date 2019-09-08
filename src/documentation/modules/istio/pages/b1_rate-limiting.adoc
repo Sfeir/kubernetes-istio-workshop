@@ -1,11 +1,9 @@
 [#ratelimiting]
 == Rate Limiting
 
-IMPORTANT: The Rate Limiting rules take some time to be applied and reflected. Be patient here!
-
 Here we will limit the number of concurrent requests into recommendation v2
 
-Now apply the rate limit handler
+Apply the rate limit handler.
 
 [source,bash]
 ----
@@ -36,7 +34,7 @@ spec:
       validDuration: 1s
 ----
 
-Now setup the requestcount quota
+Now setup the requestcount quota.
 
 [source,bash]
 ----

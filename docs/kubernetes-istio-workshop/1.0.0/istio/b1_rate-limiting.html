@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Traffic Mirroring and Service Virtualization :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/09_virtualization.html">
+    <title>Untitled :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/b1_rate-limiting.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -259,7 +259,7 @@
     <span class="nav-text">Bonus</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="b1_rate-limiting.html#ratelimiting">Rate Limiting</a>
+    <a class="nav-link" href="#ratelimiting">Rate Limiting</a>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
@@ -321,40 +321,61 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
-    <li><a href="09_virtualization.html">Traffic Mirroring and Service Virtualization</a></li>
+    <li>Bonus</li>
+    <li><a href="#ratelimiting">Rate Limiting</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/09_virtualization.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/b1_rate-limiting.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1 class="page">Traffic Mirroring and Service Virtualization</h1>
 <div class="sect1">
-<h2 id="deploypreferencev2"><a class="anchor" href="#deploypreferencev2"></a>Deploy Preference v2</h2>
+<h2 id="ratelimiting"><a class="anchor" href="#ratelimiting"></a>Rate Limiting</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>We&#8217;ll use version 2 of preferences service. The only difference between v1 and V2 is that v2 prints its name in capital letters (PREFERENCE).</p>
+<p>Here we will limit the number of concurrent requests into recommendation v2</p>
+</div>
+<div class="paragraph">
+<p>Apply the rate limit handler.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/preference-v2.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/policy/rate-limiting/recommendation_rate_limit_handler.yml</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>You should have 2 pods for preference based on the steps above</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get pods
-
-NAME                                          READY     STATUS    RESTARTS   AGE
-customer-755bbbdd44-t2vjq                     2/2       Running   1          6d
-preference-v1-7c8b57fc49-kcsvc                2/2       Running   0          6d
-preference-v2-f74bcc999-lwlbf                 2/2       Running   0          36s
-recommendation-v1-798bf87d96-stzqt            2/2       Running   7          6d</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: "config.istio.io/v1alpha2"
+kind: memquota
+metadata:
+  name: handler
+  namespace: istio-system
+spec:
+  quotas:
+  - name: requestcount.quota.istio-system
+    # default rate limit is 5000qps
+    maxAmount: 5000
+    validDuration: 1s
+    # The first matching override is applied.
+    # A requestcount instance is checked against override dimensions.
+    overrides:
+    - dimensions:
+        destination: recommendation
+        destinationVersion: v2
+        source: preference
+      maxAmount: 1
+      validDuration: 1s</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Send several requests to the customer endpoint</p>
+<p>Now setup the requestcount quota.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/policy/rate-limiting/rate_limit_rule.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Throw some requests at customer:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -362,56 +383,25 @@ recommendation-v1-798bf87d96-stzqt            2/2       Running   7          6d<
 </div>
 </div>
 <div class="paragraph">
-<p>In a new terminal, check the logs of recommendation-v2</p>
+<p>You should see some 429 errors:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl logs -f `kubectl get pods|grep preference-v2|awk '{ print $1 }'` -c preference</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service.</p>
-</div>
-<div class="paragraph">
-<p>So after running several times you&#8217;ll get some combinations of:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 176
-customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 177
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 178
-customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 179</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and see what happens when you run</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/traffic-mirroring/preference-destination-rule-v1-v2.yml
-kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml
-curl $CUSTOMER_URL</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The customer has stopped calling preference:v2</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 196
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 198
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 200
-...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>But preference:v2 still receiving requests:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">preference v2 request from pod: f74bcc999-lwlbf
-preference v2 request from pod: f74bcc999-lwlbf
-preference v2 request from pod: f74bcc999-lwlbf</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v2 from '2819441432-f4ls5': 108
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1932
+customer =&gt; preference =&gt; recommendation v2 from '2819441432-f4ls5': 109
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1933
+customer =&gt; 503 preference =&gt; 429 RESOURCE_EXHAUSTED:Quota is exhausted for: RequestCount
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1934
+customer =&gt; preference =&gt; recommendation v2 from '2819441432-f4ls5': 110
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1935
+customer =&gt; 503 preference =&gt; 429 RESOURCE_EXHAUSTED:Quota is exhausted for: RequestCount
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1936
+customer =&gt; preference =&gt; recommendation v2 from '2819441432-f4ls5': 111
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1937
+customer =&gt; 503 preference =&gt; 429 RESOURCE_EXHAUSTED:Quota is exhausted for: RequestCount
+customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1938
+customer =&gt; preference =&gt; recommendation v2 from '2819441432-f4ls5': 112</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -419,107 +409,10 @@ preference v2 request from pod: f74bcc999-lwlbf</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/traffic-mirroring/preference-destination-rule-v1-v2.yml
-kubectl delete -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/policy/rate-limiting/rate_limit_rule.yml
+
+kubectl delete -f manifests/istio/policy/rate-limiting/recommendation_rate_limit_handler.yml</code></pre>
 </div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="virtualize-dependencies"><a class="anchor" href="#virtualize-dependencies"></a>Virtualizing Mirrored Service Dependencies</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>To avoid side-effects from the version 2 of preferences service, instead of communicating with recommendation service, we are going to make the preference:v2 communicate with a virtualized recommendation service.</p>
-</div>
-<div class="paragraph">
-<p>Service virtualization can be understood as something similar as mocking where instead of mocking components (classes), you are mocking remote services.</p>
-</div>
-<div class="paragraph">
-<p>For this concrete case, virtualized recommendation service will return <code>recommendation v2 from 'virtualized': 2</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/recommendation-virtualized.yml</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="mirroring-traffic"><a class="anchor" href="#mirroring-traffic"></a>Mirroring Traffic to Preference</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>After this step, you should have three versions of recommendation service (v1, v2 and virtualized).</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>NAME                                          READY     STATUS    RESTARTS   AGE
-customer-755bbbdd44-t2vjq                     2/2       Running   1          6d
-preference-v1-7c8b57fc49-kcsvc                2/2       Running   0          3h
-preference-v2-f74bcc999-lwlbf                 2/2       Running   4          35m
-recommendation-v1-798bf87d96-stzqt            2/2       Running   7          3h
-recommendation-virtualized-5f9678d7d8-6lhx4   2/2       Running   0          30s</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Send several requests to see their responses</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $CUSTOMER_URL; sleep .5; done</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The default Kubernetes behavior is to round-robin load-balance across all available pods behind a single Service.</p>
-</div>
-<div class="paragraph">
-<p>So after running several times you&#8217;ll get some combinations of:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 233
-customer =&gt; preference =&gt; recommendation v2 from 'virtualized': 2
-customer =&gt; PREFERENCE =&gt; recommendation v2 from 'virtualized': 2
-customer =&gt; preference =&gt; recommendation v1 from '798bf87d96-stzqt': 234
-customer =&gt; PREFERENCE =&gt; recommendation v1 from '798bf87d96-stzqt': 235
-customer =&gt; preference =&gt; recommendation v2 from 'virtualized': 2
-customer =&gt; PREFERENCE =&gt; recommendation v2 from 'virtualized': 2</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Notice that now the <code>v2</code> reaches all recommendation services.
-Let&#8217;s avoid this by just sending traffic that comes from preference v2 service to the virtualized recommendation service.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1.yml
-kubectl apply -f manifests/istio/service-virtualization/recommendation-virtualized-virtual-service.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then do again some requests and you&#8217;ll get something like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>customer =&gt; preference =&gt; recommendation v1 from '2409176097-kcjsr': 5
-customer =&gt; PREFERENCE =&gt; recommendation v1 from 'virtualized': 2
-customer =&gt; preference =&gt; recommendation v2 from '1275713543-2bs5k': 6
-customer =&gt; PREFERENCE =&gt; recommendation v2 from 'virtualized': 2</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>We&#8217;re almost done. We will again make preference:v2 a mirror for v1.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/traffic-mirroring/preference-v1-mirror-v2-virtual-service.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Read the output of the curl command and the log of preference:v2, what do you observe ?</p>
-</div>
-<div class="paragraph">
-<p>Now all requests that are from preference v2 are redirected to virtualized recommendation service.
-In this way when you deploy a new service, you can mirror the traffic without worrying about side-effects on other services, since the requests are redirected to a virtualized instance instead of a production one.</p>
 </div>
 </div>
 </div>

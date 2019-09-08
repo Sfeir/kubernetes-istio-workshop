@@ -112,7 +112,7 @@ curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/
 
 [source,bash]
 ----
-export CUSTOMER_URL=$GATEWAY_URL
+export CUSTOMER_URL=$GATEWAY_URL/customer
 
 curl $CUSTOMER_URL
 ----

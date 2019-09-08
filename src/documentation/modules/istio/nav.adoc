@@ -17,20 +17,18 @@
 *** xref:03_monitoring-tracing.adoc#tracing[Tracing]
 
 ** 4. Traffic Control
-*** xref:04_simple-routerules.adoc[Simple Routing]
-**** xref:04_simple-routerules.adoc#deployrecommendationv2[Deploy recommendation v2]
-**** xref:04_simple-routerules.adoc#istiorouting[Changing Istio Routings]
-***** xref:04_simple-routerules.adoc#alltorecommendationv2[All Users to recommendation v2]
-***** xref:04_simple-routerules.adoc#alltorecommendationv1[Al Users to recommendation v1]
-***** xref:04_simple-routerules.adoc#alltorecommendationv1v2[All Users to recommendation v1 and v2]
-***** xref:04_simple-routerules.adoc#canarydeploymentrecommendation[Canary Deployment between v1 And v2]
+*** xref:04_simple-routerules.adoc#deployrecommendationv2[Deploy recommendation v2]
+*** xref:04_simple-routerules.adoc#istiorouting[Changing Istio Routings]
+**** xref:04_simple-routerules.adoc#alltorecommendationv2[All Users to recommendation v2]
+**** xref:04_simple-routerules.adoc#alltorecommendationv1[Al Users to recommendation v1]
+**** xref:04_simple-routerules.adoc#alltorecommendationv1v2[All Users to recommendation v1 and v2]
+**** xref:04_simple-routerules.adoc#canarydeploymentrecommendation[Canary Deployment between v1 And v2]
 
-*** xref:05_advanced-routerules.adoc[Advanced Routing]
-**** xref:05_advanced-routerules.adoc#traffic-steering[Traffic Steering]
-**** xref:05_advanced-routerules.adoc#loadbalancer[Load Balancer]
+** xref:06_fault-injection.adoc[5. Fault injection]
+*** xref:06_fault-injection.adoc#503error[HTTP 503 Error]
+*** xref:06_fault-injection.adoc#delay[Delay]
 
-
-** xref:07_circuit-breaker.adoc[5. Service Resiliency]
+** xref:07_circuit-breaker.adoc[6. Service Resiliency]
 *** xref:06_fault-injection.adoc#retry[Retry]
 *** xref:06_fault-injection.adoc#timeout[Timeout]
 *** xref:07_circuit-breaker.adoc#failfast[Fail Fast]
@@ -42,26 +40,26 @@
 **** xref:07_circuit-breaker.adoc#failinginstancespoolejection[Failing Instance Pool Ejection]
 **** xref:07_circuit-breaker.adoc#circuitbreakerandpoolejection[Circuit Breaker + Pool Ejection]
 
-** xref:06_fault-injection.adoc[6. Chaos Testing]
-*** xref:06_fault-injection.adoc#503error[HTTP 503 Error]
-*** xref:06_fault-injection.adoc#delay[Delay]
 
-** 7. Policy
-*** xref:07_policy.adoc#ratelimiting[Rate Limiting]
 
-** 8. Security
-*** xref:08_egress.adoc[Egress]
-// **** xref:08_egress.adoc#createrecommendationv3[Create Recommendation V3]
-// **** xref:08_egress.adoc#istioegress[Istio-ize Egress]
+** 7. Security
 *** xref:10_mTLS.adoc[Mutual TLS]
 // **** xref:10_mTLS.adoc#enablingtls[Enabling TLS]
-*** xref:11_access-control.adoc#accesscontrol[Access Control]
-**** xref:11_access-control.adoc#whitelist[White List]
-**** xref:11_access-control.adoc#blacklist[Black List]
-*** xref:11_access-control.adoc#blacklist[End-user Authentication ]
+*** xref:end-user-authentication.adoc[End-user Authentication ]
 *** xref:11_access-control.adoc#blacklist[RBAC]
 
-// * Bonus
+* Bonus
+** xref:b1_rate-limiting#ratelimiting[Rate Limiting]
+** xref:05_advanced-routerules.adoc[Advanced Routing]
+*** xref:05_advanced-routerules.adoc#traffic-steering[Traffic Steering]
+*** xref:05_advanced-routerules.adoc#loadbalancer[Load Balancer]
+** xref:11_access-control.adoc#accesscontrol[Access Control]
+*** xref:11_access-control.adoc#whitelist[White List]
+*** xref:11_access-control.adoc#blacklist[Black List]
+** xref:08_egress.adoc[Egress]
+// **** xref:08_egress.adoc#createrecommendationv3[Create Recommendation V3]
+// **** xref:08_egress.adoc#istioegress[Istio-ize Egress]
+
 // ** xref:09_virtualization.adoc[B1. Traffic Mirroring]
 // *** xref:09_virtualization.adoc#deploypreferencev2[Deploy Preference V2]
 // *** xref:09_virtualization.adoc#virtualize-dependencies[Virtualizing Dependencies]
