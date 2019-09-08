@@ -46,7 +46,7 @@
 *** xref:10_mTLS.adoc[Mutual TLS]
 // **** xref:10_mTLS.adoc#enablingtls[Enabling TLS]
 *** xref:end-user-authentication.adoc[End-user Authentication ]
-*** xref:11_access-control.adoc#blacklist[RBAC]
+*** xref:rbac.adoc[RBAC]
 
 * Bonus
 ** xref:b1_rate-limiting#ratelimiting[Rate Limiting]

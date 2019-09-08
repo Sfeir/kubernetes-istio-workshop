@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Egress :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/08_egress.html">
+    <title>Istio Role Based Access Control (RBAC) :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/rbac.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -247,7 +247,7 @@
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="end-user-authentication.html">End-user Authentication </a>
   </li>
-  <li class="nav-item" data-depth="3">
+  <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="rbac.html">RBAC</a>
   </li>
 </ul>
@@ -285,7 +285,7 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="08_egress.html">Egress</a>
   </li>
 </ul>
@@ -321,108 +321,142 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
-    <li>Bonus</li>
-    <li><a href="08_egress.html">Egress</a></li>
+    <li><strong>Part 2 : Istio</strong></li>
+    <li>7. Security</li>
+    <li><a href="rbac.html">RBAC</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/08_egress.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/rbac.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1 class="page">Egress</h1>
+<h1 class="page">Istio Role Based Access Control (RBAC)</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Let&#8217;s see an example of using egress route by deploying a <code>recommendation:v3</code> version. <a href="https://istio.io/docs/reference/config/networking/v1alpha3/service-entry/">Service Entries</a> allow you to apply rules to allow internal services interact with external services.</p>
-</div>
-<div class="paragraph">
-<p>In this case, we are going to configure Istio to access <a href="http://worldclockapi.com/api/json/cet/now" class="bare">http://worldclockapi.com/api/json/cet/now</a> from the internal service (recommendation:v3).</p>
+<p>In this chapter, we are going to see how to use Istio&#8217;s authorization feature to provide access control for services in an Istio Mesh.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_change_to_the_blocking_by_default_policy"><a class="anchor" href="#_change_to_the_blocking_by_default_policy"></a>Change to the blocking-by-default policy</h2>
+<h2 id="enabling-rbac"><a class="anchor" href="#enabling-rbac"></a>Enabling RBAC</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>By default, Istio configures the Envoy proxy to passthrough requests for unknown external services. Although this provides a convenient way to get started with Istio, configuring stricter control is usually preferable.</p>
-</div>
-<div class="paragraph">
-<p>Run the following command to change the <code>global.outboundTrafficPolicy.mode</code> option from <code>ALLOW_ANY</code>to <code>REGISTRY_ONLY</code>:</p>
+<p>The first thing to do is enable Istio Authorization by using <code>ClusterRbacConfig</code> object.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get configmap istio -n istio-system -o yaml | sed 's/mode: ALLOW_ANY/mode: REGISTRY_ONLY/g' | kubectl replace -n istio-system -f -</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create -f <a href="https://github.com/Sfeir/kubernetes-istio-workshop/blob/master/manifests/istio/security/rbac/authorization-enable-rbac.yml">manifests/istio/security/rbac/authorization-enable-rbac.yml</a></code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Now RBAC is enabled on your mesh.
+Run next command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $customer
+
+RBAC: access denied</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, Istio uses a <em>deny by default</em> strategy, meaning that nothing is permitted until you explicitly define access control policy to grant access to any service.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="deployrecommendation"><a class="anchor" href="#deployrecommendation"></a>Deploy recommendation v3 and Redirect all Users to it</h2>
+<h2 id="authorization-jwt"><a class="anchor" href="#authorization-jwt"></a>Authorization and JWT</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>In this section, you&#8217;ll learn how to use a JWT claim to manage the access to the services.</p>
+</div>
+<div class="paragraph">
+<p>The first thing you need to do is applying all the steps described at <a href="end-user-authentication.html" class="page">End-user authentication with JWT</a> section so you enable JWT authentication logic inside the mesh.</p>
+</div>
+<div class="paragraph">
+<p>After that, you are ready to use JWT in the authorization phase as well.</p>
+</div>
+<div class="paragraph">
+<p>Now apply next Istio resource which makes that only tokens that contain a field named <code>role</code> with value <code>customer</code>.</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/kubernetes/recommendation-v3.yml
-kubectl apply -f manifests/istio/egress/recommendation-destination-rule-v1-v2-v3.yml
-kubectl apply -f manifests/istio/egress/recommendation-v3-virtual-service.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create -f <a href="https://github.com/Sfeir/kubernetes-istio-workshop/blob/master/manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml">manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml</a></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Then access to the service:</p>
+<p>and then you can do a new call with the new token containing the <code>role</code> claim with value <code>customer`</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $GATEWAY_IP/customer</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">token=$(curl <a href="https://raw.githubusercontent.com/Sfeir/kubernetes-istio-workshop/master/manifests/istio/security/rbac/token.role.jwt" class="bare">https://raw.githubusercontent.com/Sfeir/kubernetes-istio-workshop/master/manifests/istio/security/rbac/token.role.jwt</a> -s)
+
+curl -H "Authorization: Bearer $token" $customer
+
+customer =&gt; preference =&gt; recommendation v1 from 'b4d67bcb7-7rp88': 4</code></pre>
 </div>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-Since no Egress service entry has been registered to access an external site, the service will return a 500 error.
-</td>
-</tr>
-</table>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s fix it by registering a service entry to allow access to <code>worldclockapi</code>.</p>
+<p>Notice that now only valid JWT tokens containing the claim <code>role</code> set to <code>customer</code> will suceed, the rest you&#8217;ll get an access denied.</p>
+</div>
+<div class="paragraph">
+<p>To validate that this is working correctly, do next thing:</p>
+</div>
+<div class="paragraph">
+<p>Open <code>istiofiles/namespace-rbac-policy-jwt.yml</code> and change the <code>role</code> with value <code>xxx</code> and save the file.</p>
+</div>
+<div class="listingblock">
+<div class="title">istiofiles/namespace-rbac-policy-jwt.yml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">spec:
+  subjects:
+  - user: "*"
+    properties:
+      request.auth.claims[role]: "xxx"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And then replace it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl replace -f <a href="https://github.com/Sfeir/kubernetes-istio-workshop/blob/master/manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml">manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml</a></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After that, repeat the same request as before:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -H "Authorization: Bearer $token" $customer
+
+RBAC: access denied</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>But notice that now the access is denied because the <code>role</code> field value in the token is <code>customer</code> instead of <code>xxx</code>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="istioegress"><a class="anchor" href="#istioegress"></a>Allow Access an external HTTP service</h2>
+<h2 id="final-notes"><a class="anchor" href="#final-notes"></a>Final Notes</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Create a ServiceEntry to allow access to an external HTTP service <code>worldclockapi.com</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/egress/service-entry-egress-worldclockapi.yml
-
-kubectl get serviceentry
-
-curl $customer
-
-customer =&gt; preference =&gt; Mon, 16 Jul 2018 12:03:38 GMT recommendation v3 from '7b445dd469-j6rkg': 1</code></pre>
+<p>In this chapter you&#8217;ve seen how to RBAC.
+Obviously, you should also enable mTLS to authenticate also your requests.</p>
 </div>
 </div>
+</div>
+<div class="sect1">
+<h2 id="cleanup"><a class="anchor" href="#cleanup"></a>Clean Up</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>or shell into the pod and run <code>curl</code> command:</p>
+<p>Follow <a href="end-user-authentication.html#cleanup" class="page">End-user authentication with JWT Clean Up</a> steps there to clean all JWT stuff and then call:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec -it $(kubectl get pods -o jsonpath="{.items[*].metadata.name}" -l app=recommendation,version=v3) -c recommendation -- curl  http://worldclockapi.com/api/json/cet/now</code></pre>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete ServiceEntry worldclockapi-egress-rule
-kubectl delete DestinationRule recommendation
-kubectl delete VirtualService recommendation</code></pre>
-</div>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml
+kubectl create -f manifests/istio/security/rbac/authorization-enable-rbac.yml</code></pre>
 </div>
 </div>
 </div>

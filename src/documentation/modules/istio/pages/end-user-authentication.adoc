@@ -22,7 +22,7 @@ Then run:
 
 [source, bash,subs="+macros,+attributes"]
 ----
-kubectl create -f link:{github-repo}/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml[manifests/istio/security/enduser-authentication-jwt.yml]
+kubectl create -f link:{github-repo}/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml[manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml]
 ----
 
 Then let's run the curl again:
@@ -68,6 +68,6 @@ Obviously, you should also keep enabled mTLS to avoid any attacker could take th
 
 [source, bash, subs="+macros,+attributes"]
 ----
-kubectl delete -f link:{github-repo}/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml[manifests/istio/security/enduser-authentication-jwt.yml]
+kubectl delete -f link:{github-repo}/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml[manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml]
 ----
 

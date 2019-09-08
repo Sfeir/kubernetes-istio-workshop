@@ -1,0 +1,104 @@
+= Istio Role Based Access Control (RBAC)
+include::_attributes.adoc[]
+
+In this chapter, we are going to see how to use Istio's authorization feature to provide access control for services in an Istio Mesh.
+
+[#enabling-rbac]
+== Enabling RBAC
+
+The first thing to do is enable Istio Authorization by using `ClusterRbacConfig` object.
+
+[source, bash,subs="+macros,+attributes"]
+----
+kubectl create -f link:{github-repo}/manifests/istio/security/rbac/authorization-enable-rbac.yml[manifests/istio/security/rbac/authorization-enable-rbac.yml] 
+----
+
+Now RBAC is enabled on your mesh.
+Run next command:
+
+[source, bash ,subs="+macros,+attributes" ]
+----
+curl $customer
+
+RBAC: access denied
+----
+
+By default, Istio uses a _deny by default_ strategy, meaning that nothing is permitted until you explicitly define access control policy to grant access to any service.
+
+[#authorization-jwt]
+== Authorization and JWT
+
+In this section, you'll learn how to use a JWT claim to manage the access to the services.
+
+The first thing you need to do is applying all the steps described at xref:end-user-authentication.adoc[End-user authentication with JWT] section so you enable JWT authentication logic inside the mesh.
+
+After that, you are ready to use JWT in the authorization phase as well.
+
+Now apply next Istio resource which makes that only tokens that contain a field named `role` with value `customer`.
+
+[source, bash,subs="+macros,+attributes"]
+----
+kubectl create -f link:{github-repo}/manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml[manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml]
+----
+
+and then you can do a new call with the new token containing the `role` claim with value `customer``:
+
+[source, bash, subs="+macros,+attributes"]
+----
+token=$(curl https://raw.githubusercontent.com/Sfeir/kubernetes-istio-workshop/master/manifests/istio/security/rbac/token.role.jwt -s)
+
+curl -H "Authorization: Bearer $token" $customer
+
+customer => preference => recommendation v1 from 'b4d67bcb7-7rp88': 4
+----
+
+Notice that now only valid JWT tokens containing the claim `role` set to `customer` will suceed, the rest you'll get an access denied.
+
+To validate that this is working correctly, do next thing:
+
+Open `istiofiles/namespace-rbac-policy-jwt.yml` and change the `role` with value `xxx` and save the file.
+
+[source, yaml]
+.istiofiles/namespace-rbac-policy-jwt.yml
+----
+spec:
+  subjects:
+  - user: "*"
+    properties:
+      request.auth.claims[role]: "xxx"
+----
+
+And then replace it:
+
+[source, bash, subs="+macros,+attributes"]
+----
+kubectl replace -f link:{github-repo}/manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml[manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml]
+----
+
+After that, repeat the same request as before:
+
+[source, bash, subs="+macros,+attributes"]
+----
+curl -H "Authorization: Bearer $token" $customer
+
+RBAC: access denied
+----
+
+But notice that now the access is denied because the `role` field value in the token is `customer` instead of `xxx`.
+
+[#final-notes]
+== Final Notes
+
+In this chapter you've seen how to RBAC.
+Obviously, you should also enable mTLS to authenticate also your requests.
+
+[#cleanup]
+== Clean Up
+
+Follow xref:end-user-authentication#cleanup[End-user authentication with JWT Clean Up] steps there to clean all JWT stuff and then call:
+
+[source, bash]
+----
+kubectl delete -f manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml
+kubectl create -f manifests/istio/security/rbac/authorization-enable-rbac.yml
+----
