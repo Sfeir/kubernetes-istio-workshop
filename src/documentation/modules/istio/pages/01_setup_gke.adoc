@@ -60,7 +60,10 @@ istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9
 
 [source, bash]
 ----
-gcloud container clusters get-credentials istio-cluster
+$ gcloud container clusters get-credentials istio-workshop
+
+Fetching cluster endpoint and auth data.
+kubeconfig entry generated for istio-workshop.
 ----
 
 3- Check the connexion with the cluster:
