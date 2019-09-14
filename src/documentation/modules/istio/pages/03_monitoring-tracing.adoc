@@ -1,6 +1,16 @@
 = Monitoring and Tracing
 include::_attributes.adoc[]
 
+In addition to the core components, Istio installation includes a collection of optional monitoring and tracing services, these tools are:
+
+- **Prometheus**: for collecting and querying monitoring and metrics data.
+- **Grafana**: for visualizing metrics and monitoring mesh traffic.
+- **Kiali**: for visualizing different aspects of your mesh, this includes viewing service graph and traffic flow and your Istio configuration files.
+- **Jaeger**: for distributed tracing to track every request through mesh allowing a deeper understanding about request latency, serialization and parallelism via visualization.
+
+[#monitoring]
+== Monitoring
+
 [IMPORTANT]
 .Before Start
 ====
@@ -8,9 +18,6 @@ The various dashboards that we will see in this lab are not accessible outside t
 
 To display services running on localhost on Cloud Shell, it provides a feature called *Web Preview*. We will show you how to use it a little further in the document.
 ====
-
-[#monitoring]
-== Monitoring
 
 First examine the Istio running services, and notice the presence of the following services : ``grafana``, ``prometheus``, ``jaeger-query`` and ``servicegraph``.
 

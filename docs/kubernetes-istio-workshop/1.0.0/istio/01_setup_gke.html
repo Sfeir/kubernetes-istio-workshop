@@ -327,7 +327,7 @@
 <h2 id="summary"><a class="anchor" href="#summary"></a>Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this lab, you will create a new Kubernetes Cluster, which we&#8217;ll use for the rest of the lab.</p>
+<p>In this lab, you will create a new Kubernetes cluster, which we&#8217;ll use for the rest of the lab.</p>
 </div>
 </div>
 </div>
@@ -419,7 +419,10 @@ istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud container clusters get-credentials istio-cluster</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ gcloud container clusters get-credentials istio-workshop
+
+Fetching cluster endpoint and auth data.
+kubeconfig entry generated for istio-workshop.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -437,6 +440,9 @@ Metrics-server is running at https://35.184.85.239/api/v1/namespaces/kube-system
 
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Now you are ready to install Istio!</p>
 </div>
 </div>
 </div>

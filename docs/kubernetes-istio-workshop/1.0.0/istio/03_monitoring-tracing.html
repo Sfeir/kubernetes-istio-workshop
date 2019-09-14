@@ -325,6 +325,30 @@
 <h1 class="page">Monitoring and Tracing</h1>
 <div id="preamble">
 <div class="sectionbody">
+<div class="paragraph">
+<p>In addition to the core components, Istio installation includes a collection of optional monitoring and tracing services, these tools are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Prometheus</strong>: for collecting and querying monitoring and metrics data.</p>
+</li>
+<li>
+<p><strong>Grafana</strong>: for visualizing metrics and monitoring mesh traffic.</p>
+</li>
+<li>
+<p><strong>Kiali</strong>: for visualizing different aspects of your mesh, this includes viewing service graph and traffic flow and your Istio configuration files.</p>
+</li>
+<li>
+<p><strong>Jaeger</strong>: for distributed tracing to track every request through mesh allowing a deeper understanding about request latency, serialization and parallelism via visualization.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="monitoring"><a class="anchor" href="#monitoring"></a>Monitoring</h2>
+<div class="sectionbody">
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -343,11 +367,6 @@
 </tr>
 </table>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="monitoring"><a class="anchor" href="#monitoring"></a>Monitoring</h2>
-<div class="sectionbody">
 <div class="paragraph">
 <p>First examine the Istio running services, and notice the presence of the following services : <code>grafana</code>, <code>prometheus</code>, <code>jaeger-query</code> and <code>servicegraph</code>.</p>
 </div>

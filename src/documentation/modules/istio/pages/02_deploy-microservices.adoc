@@ -1,37 +1,105 @@
 = Deploy Microservices
 include::_attributes.adoc[]
 
+We will deploy our microservice in a dedicated namespace called ``workshop``.
+
+So you will first create the namespace, then you'll enable automatic Istio sidecar injection. Finally, you will deploy the 3 microservices.
+
+
 [#create-namespace]
 == Create Namespace
 
-Create a namespace called ``workshop`` and enable Istio sidecar injection by adding to it this label (``istio-injection=enabled``).
-
+Create the namespace
 [source,bash]
 ----
-# Create the namespace
-kubectl create namespace workshop
+$ kubectl create namespace workshop
 
-# Enable sidecar injection
-kubectl label namespace workshop istio-injection=enabled
-
-# Set this namespace as the default one
-kubectl config set-context $(kubectl config current-context) --namespace=workshop
+namespace/workshop created
 ----
 
-[#deploycustomer]
-== Deploy Customer
-Start deploying the microservice projects, starting with Customer.
+Enable sidecar injection
+[source,bash]
+----
+$ kubectl label namespace workshop istio-injection=enabled
+
+namespace/workshop labeled
+----
+
+Set this namespace as the default one, it will saves you typing the namespace every ``kubectl`` command.
+[source,bash]
+----
+$ kubectl config set-context $(kubectl config current-context) --namespace=workshop
+
+Context "gke_$PROJECT_ID_europe-west1-b_istio-workshop" modified.
+----
+
+[#deploy-microservices]
+== Deploy Microservice
+
+Start deploying the microservices.
 
 [source,bash]
 ----
 kubectl apply -f manifests/kubernetes/customer.yml
+kubectl apply -f manifests/kubernetes/preference-v1.yml
+kubectl apply -f manifests/kubernetes/recommendation-v1.yml
+----
+
+Wait until the status is ``Running`` and there are ``2/2`` pods in the ``READY`` column.
+
+[source,bash]
+----
+$ kubectl get pod
+
+NAME                                READY   STATUS    RESTARTS   AGE
+customer-7986477758-frtkq           2/2     Running   0          8m5s
+preference-v1-7479c8cc65-9mc42      2/2     Running   0          78s
+recommendation-v1-54ccbb466-8pprm   2/2     Running   0          76s
+----
+
+Notice the ``2/2``. It indicates that there is 2 containers into the pod. As you might have guessed, the first container is our microservice (customer, preference or recommendation), the second container is the injected one by Istio which is ``istio-proxy`` (in fact it's Envoy). From now on, the proxy will capture and control all the traffic from/to the container.
+
+Let's see the logs for ``customer``:
+
+[source,bash]
+----
+
+$ kubectl logs -l app=customer -c customer
+
+...
+2019-09-14 17:20:06.571  INFO 1 --- [           main] c.r.d.d.customer.CustomerApplication     : Started CustomerApplication in 22.571 seconds (JVM running for 24.331)
+2019-09-14 17:20:15.213  INFO 1 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2019-09-14 17:20:15.215  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2019-09-14 17:20:15.331  INFO 1 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 116 ms
+----
+
+You can also see the logs of the proxy if wish:
+
+[source,bash]
+----
+
+$ kubectl logs -l app=customer -c istio-proxy
+
+2019-09-14T17:19:42.663151Z     info    watching /etc/certs for changes
+2019-09-14T17:19:42.663158Z     info    Received new config, resetting budget
+2019-09-14T17:19:42.663161Z     info    Reconciling retry (budget 10)
+2019-09-14T17:19:42.663168Z     info    Epoch 0 starting
+2019-09-14T17:19:42.683283Z     info    Envoy command: [-c /etc/istio/proxy/envoy-rev0.json --restart-epoch 0 --drain-time-s 45 --parent-shutdown-time-s 60 --service-cluster customer.workshop --service-node sidecar~10.16.0.12~customer-7986477758-frtkq.workshop~workshop.svc.cluster.local --max-obj-name-len 189 --local-address-ip-version v4 --allow-unknown-fields -l warning --component-log-level misc:error --concurrency 2]
+[2019-09-14 17:19:42.726][12][warning][config] [bazel-out/k8-opt/bin/external/envoy/source/common/config/_virtual_includes/grpc_stream_lib/common/config/grpc_stream.h:86] gRPC config stream closed: 14, no healthy upstream
+[2019-09-14 17:19:42.726][12][warning][config] [bazel-out/k8-opt/bin/external/envoy/source/common/config/_virtual_includes/grpc_stream_lib/common/config/grpc_stream.h:49] Unable to establish new stream
+[2019-09-14 17:19:44.257][12][warning][filter] [src/envoy/http/authn/http_filter_factory.cc:102] mTLS PERMISSIVE mode is used, connection can be either plaintext or TLS, and client cert can be omitted. Please consider to upgrade to mTLS STRICT mode for more secure configuration that only allows TLS connection with client cert. See https://istio.io/docs/tasks/security/mtls-migration/
+[2019-09-14 17:19:44.259][12][warning][filter] [src/envoy/http/authn/http_filter_factory.cc:102] mTLS PERMISSIVE mode is used, connection can be either plaintext or TLS, and client cert can be omitted. Please consider to upgrade to mTLS STRICT mode for more secure configuration that only allows TLS connection with client cert. See https://istio.io/docs/tasks/security/mtls-migration/
+2019-09-14T17:19:44.897925Z     info    Envoy proxy is ready
 ----
 
 [#expose-customer]
 == Expose customer
 
-Since the `customer` service is the one our users will interact with, you need to make it accessible from outside of your Kubernetes cluster. With Istio we use a https://istio.io/docs/concepts/traffic-management/#gateways[Gateway] for this purpose.
+Now it's time to make some calls to our microservices. The frontend service (the service the users will interact with), is the `customer`.
 
+To call this service externally, you need to make it accessible from outside of your Kubernetes cluster. With Istio we use a https://istio.io/docs/concepts/traffic-management/#gateways[Gateway] for this purpose.
+
+So let's get started
 
 1- Define the ingress gateway for the application:
 [source,bash]
@@ -105,109 +173,16 @@ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 
 [source,bash]
 ----
-export customer=$GATEWAY_URL/customer
+export customer=$GATEWAY_URL
 
-curl -o /dev/null -s -w "%{http_code}\n" $customer
-----
-
-You should see the following error because the services `preference` and `recommendation` are not yet deployed.
-
-[source,bash]
-----
-customer => I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference
-----
-
-Also review the logs
-
-[source,bash]
-----
-kubectl logs -l app=customer -c customer
-----
-
-You should see a stacktrace containing this cause:
-
-[source,bash]
-----
-org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference
-----
-
-[#deploypreference]
-== Deploy preference
-
-[source,bash]
-----
-kubectl apply -f manifests/kubernetes/preference-v1.yml
-----
-
-=== Wait preference to be deployed
-
-[source, bash]
-----
-kubectl get pods -w
-----
-
-Wait until the status is `Running` and there are `2/2` pods in the `Ready` column. To exit, press `Ctrl+C`
-
-[source,bash]
-----
 curl $customer
 ----
 
-It will respond with an error since the service `recommendation` is not yet deployed.
-
-NOTE: We could make this a bit more resilient in a future iteration of this workshop
-
-[source,bash]
-----
-customer => 503 preference => I/O error on GET request for "http://recommendation:8080": recommendation; nested exception is java.net.UnknownHostException: recommendation
-----
-
-and check out the logs
-
-[source,bash]
-----
-kubectl logs -l app=preference -c preference
-----
-
-You should see a stacktrace containing this cause:
-
-[source,bash]
-----
-org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://recommendation:8080": recommendation; nested exception is java.net.UnknownHostException: recommendation
-----
-
-[#deployrecommendation]
-== Deploy recommendation
-
-IMPORTANT: The tag `v1` at the end of the image name matters. We will be using a `v2` version of `recommendation` later in this workshop. Having both a `v1` and `v2` version of the `recommendation` code will allow us to exercise some interesting aspects of Istio's capabilities.
-
-
-[source,bash]
-----
-kubectl apply -f manifests/kubernetes/recommendation-v1.yml
-----
-
-=== Wait recommendation to be deployed
-
-Wait until the status is `Running` and there are `2/2` pods in the `Ready` column. To exit, press `Ctrl+C`
-
-[source,bash]
-----
-curl $customer
-----
-
-it should now return
+You should see the following message
 
 [source,bash]
 ----
 customer => preference => recommendation v1 from '99634814-sf4cl': 1
-----
-
-and you can monitor the `recommendation` logs with
-
-[source,bash]
-----
-kubectl logs -l app=recommendation -c recommendation
 ----
 
 - Congratulations, you finished the lab !

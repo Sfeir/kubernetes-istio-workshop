@@ -348,7 +348,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f src/install/1.2.5/istio-crds.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ kubectl apply -f src/install/1.2.5/istio-crds.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -356,7 +356,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get crds | grep 'istio.io' | wc -l</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ kubectl get crds | grep 'istio.io' | wc -l</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -383,15 +383,9 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployments -n istio-system</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Output.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ kubectl get deployments -n istio-system
+
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 grafana                  1         1         1            1           1h
 istio-citadel            1         1         1            1           1h
 istio-egressgateway      1         1         1            1           1h
@@ -404,6 +398,33 @@ istio-telemetry          1         1         1            1           1h
 istio-tracing            1         1         1            1           1h
 kiali                    1         1         1            1           1h
 prometheus               1         1         1            1           1h</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Make sure that the pods doesn&#8217;t have the error status.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ kubectl get pods -n istio-system
+
+grafana-97fb6966d-tld9r                   1/1     Running     0          93s
+istio-citadel-76f9586b8b-d7vxx            1/1     Running     0          92s
+istio-cleanup-secrets-1.2.5-hshgx         0/1     Completed   0          96s
+istio-egressgateway-68684cbbb-hrw7d       1/1     Running     0          93s
+istio-galley-78f65c8469-vktc7             1/1     Running     0          93s
+istio-grafana-post-install-1.2.5-rkj9w    0/1     Completed   0          96s
+istio-ingressgateway-6b59d4c98d-tsglm     1/1     Running     0          93s
+istio-init-crd-10-wgfvc                   0/1     Completed   0          4m38s
+istio-init-crd-11-nzcf6                   0/1     Completed   0          4m38s
+istio-init-crd-12-jljxf                   0/1     Completed   0          4m38s
+istio-pilot-58745655fd-zxhhg              2/2     Running     0          93s
+istio-policy-65bc95f478-46zbq             2/2     Running     1          93s
+istio-security-post-install-1.2.5-qx7cf   0/1     Completed   0          96s
+istio-sidecar-injector-76f487845d-x5gqr   1/1     Running     0          92s
+istio-telemetry-64dd494f8f-dhp7q          2/2     Running     2          93s
+istio-tracing-595796cf54-hd6kp            1/1     Running     0          92s
+kiali-55fcfc86cc-86blp                    1/1     Running     0          93s
+prometheus-5679cb4dcd-jcdhc               1/1     Running     0          92s</code></pre>
 </div>
 </div>
 <div class="ulist">
