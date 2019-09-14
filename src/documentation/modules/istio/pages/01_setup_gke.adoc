@@ -1,0 +1,81 @@
+= Setup Kubernetes Cluster
+include::_attributes.adoc[]
+
+[#summary]
+== Summary
+In this lab, you will create a new Kubernetes cluster, which we'll use for the rest of the lab.
+
+[#prerequisites]
+== Prerequisites
+- Use either **Google Cloud Shell** or your terminal with Google Cloud SDK installed (the SDK comes with ``kubectl``, so you do not need to install it manually)
+- You already created a GCP project and set the ``$PROJECT_ID`` envrionement variable.
+- You already cloned the directory : ``https://github.com/Sfeir/kubernetes-istio-workshop``.
+
+Run the following commands to configure ``gcloud``, this will save you from typing the parameters ``$PROJECT_ID``, ``zone`` or ``region`` in every ``gcloud`` command.
+
+[source, bash]
+----
+gcloud config set compute/zone europe-west1-b
+gcloud config set compute/region europe-west1
+gcloud config set project $PROJECT_ID
+----
+
+[IMPORTANT]
+====
+- All the commands must be run in the ``kubernetes-istio-workshop`` directory.
+====
+
+
+[#create-cluster]
+== Create the cluster
+
+Create a cluster:
+
+[source, bash]
+----
+$ gcloud beta container clusters create "istio-workshop"
+
+kubeconfig entry generated for istio-workshop.
+NAME            LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION  NUM_NODES  STATUS
+istio-workshop  europe-west1-b  1.13.7-gke.8    35.240.33.159  n1-standard-1  1.13.7-gke.8  3          RUNNING
+----
+
+⏳ Wait until the cluster is created. It may takes up to 5 minues.
+
+[#connect-cluster]
+== Connect to the cluster
+Let's check the connexion to our newly created cluster:
+
+1- Review the cluster's informations:
+
+[source, bash]
+----
+$ gcloud container clusters list
+
+NAME           LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION  NUM_NODES  STATUS
+istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9.7-gke.6   3          RUNNING
+----
+
+2- Download the cluster's credentials, they will be written to ``kubectl``'s configuration file (``~/.kube/config```).
+
+[source, bash]
+----
+gcloud container clusters get-credentials istio-cluster
+----
+
+3- Check the connexion with the cluster:
+
+[source, bash]
+----
+$ kubectl cluster-info
+
+Kubernetes master is running at https://35.184.85.239
+GLBCDefaultBackend is running at https://35.184.85.239/api/v1/namespaces/kube-system/services/default-http-backend:http/proxy
+Heapster is running at https://35.184.85.239/api/v1/namespaces/kube-system/services/heapster/proxy
+KubeDNS is running at https://35.184.85.239/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+Metrics-server is running at https://35.184.85.239/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+----
+
+Now you are ready to install Istio!

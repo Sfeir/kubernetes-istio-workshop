@@ -110,19 +110,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="01_setup.html">1. Setup</a>
+    <a class="nav-link" href="01_setup_gke.html">1. Setup</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="01_setup.html#prerequisites">Prerequisites</a>
+    <a class="nav-link" href="01_setup_gke.html#create-cluster">Setup Kubernetes Cluster</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="01_setup.html#deploy-istio">Deploy Istio</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="01_setup.html#connect-cluster">Connect to the cluster</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="01_setup.html#verify-installation">Verify installation</a>
+    <a class="nav-link" href="01_setup_istio.html#deploy-istio">Deploy Istio</a>
   </li>
 </ul>
   </li>
@@ -443,21 +437,13 @@ export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressga
 </div>
 </div>
 <div class="paragraph">
-<p>5- Proceed to confirm the app is running, below.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>6- Then test the customer endpoint. Because of the route defined in the <code>VirtualService</code> (that we will see later), the URL of the customer service is mapped to the root URL of the gateway.</p>
+<p>5- Then test the customer endpoint. Because of the route defined in the <code>VirtualService</code> (that we will see later), the URL of the customer service is mapped to the root URL of the gateway.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export customer=$GATEWAY_URL/customer
 
-curl $customer</code></pre>
+curl -o /dev/null -s -w "%{http_code}\n" $customer</code></pre>
 </div>
 </div>
 <div class="paragraph">

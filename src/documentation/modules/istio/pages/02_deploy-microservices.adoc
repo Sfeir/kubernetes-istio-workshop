@@ -101,20 +101,13 @@ export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressga
 export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 ----
 
-5- Proceed to confirm the app is running, below.
-
-[source,bash]
-----
-curl -o /dev/null -s -w "%{http_code}\n" http://${GATEWAY_URL}/
-----
-
-6- Then test the customer endpoint. Because of the route defined in the ``VirtualService`` (that we will see later), the URL of the customer service is mapped to the root URL of the gateway.
+5- Then test the customer endpoint. Because of the route defined in the ``VirtualService`` (that we will see later), the URL of the customer service is mapped to the root URL of the gateway.
 
 [source,bash]
 ----
 export customer=$GATEWAY_URL/customer
 
-curl $customer
+curl -o /dev/null -s -w "%{http_code}\n" $customer
 ----
 
 You should see the following error because the services `preference` and `recommendation` are not yet deployed.

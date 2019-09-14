@@ -1,0 +1,68 @@
+= Setup Istio
+include::_attributes.adoc[]
+
+[#summary]
+== Summary
+In this lab, you will install Istio on the cluster we previously created.
+
+[#deploy-istio]
+== Deploy Istio
+
+1- Create a namespace for the istio-system components:
+[source, bash]
+----
+kubectl create namespace istio-system
+----
+
+2- Install all the Istio Custom Resource Definitions (CRDs), and wait a few seconds for the CRDs to be committed:
+[source, bash]
+----
+kubectl apply -f src/install/1.2.5/istio-crds.yaml
+----
+
+3- Verify that all 23 Istio CRDs were committed to the Kubernetes api-server:
+[source, bash]
+----
+kubectl get crds | grep 'istio.io' | wc -l
+----
+
+4- Install Istio:
+[source, bash]
+----
+kubectl apply -f src/install/1.2.5/istio.yaml
+----
+
+⏳ Wait until Istio is fully deployed. Note that the Istio installation can take up to five minutes.
+
+
+[#verify-installation]
+== Verify installation
+
+Let's get the deployments (you can also get pods, services, etc.)
+
+⚠️ Do not forget to specify the Istio's namespace (``-n istio-system``).
+
+[source, bash]
+----
+kubectl get deployments -n istio-system
+----
+
+Output.
+[source, bash]
+----
+NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+grafana                  1         1         1            1           1h
+istio-citadel            1         1         1            1           1h
+istio-egressgateway      1         1         1            1           1h
+istio-galley             1         1         1            1           1h
+istio-ingressgateway     1         1         1            1           1h
+istio-pilot              1         1         1            1           1h
+istio-policy             1         1         1            1           1h
+istio-sidecar-injector   1         1         1            1           1h
+istio-telemetry          1         1         1            1           1h
+istio-tracing            1         1         1            1           1h
+kiali                    1         1         1            1           1h
+prometheus               1         1         1            1           1h
+----
+
+- Congratulations, you finished the setup !

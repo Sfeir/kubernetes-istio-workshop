@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Advanced Route Rules :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/05_advanced-routerules.html">
+    <title>Setup Kubernetes Cluster :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/01_setup_gke.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -108,12 +108,12 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text"><strong>Part 2 : Istio</strong></span>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="01_setup_gke.html">1. Setup</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="01_setup_gke.html#create-cluster">Setup Kubernetes Cluster</a>
+    <a class="nav-link" href="#create-cluster">Setup Kubernetes Cluster</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="01_setup_istio.html#deploy-istio">Deploy Istio</a>
@@ -255,15 +255,15 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="b1_rate-limiting.html#ratelimiting">Rate Limiting</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="05_advanced-routerules.html">Advanced Routing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#traffic-steering">Traffic Steering</a>
+    <a class="nav-link" href="05_advanced-routerules.html#traffic-steering">Traffic Steering</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#loadbalancer">Load Balancer</a>
+    <a class="nav-link" href="05_advanced-routerules.html#loadbalancer">Load Balancer</a>
   </li>
 </ul>
   </li>
@@ -315,214 +315,127 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
-    <li>Bonus</li>
-    <li><a href="05_advanced-routerules.html">Advanced Routing</a></li>
+    <li><strong>Part 2 : Istio</strong></li>
+    <li><a href="01_setup_gke.html">1. Setup</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/05_advanced-routerules.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/01_setup_gke.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1 class="page">Advanced Route Rules</h1>
+<h1 class="page">Setup Kubernetes Cluster</h1>
 <div class="sect1">
-<h2 id="traffic-steering"><a class="anchor" href="#traffic-steering"></a>Traffic Steering</h2>
+<h2 id="summary"><a class="anchor" href="#summary"></a>Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://opentracing.io/docs/overview/">OpenTracing</a>, the tracing tool that Istio uses, adds the <code>user-agent</code> header to its <em>baggage</em> in the Customer service. A baggage is a set of <code>key:value</code> pairs that cross service-boundaries to carry some data that will be available throughout the trace.</p>
-</div>
-<div class="paragraph">
-<p>From Customer, the baggage is automatically propagated to all downstream services. To enable automatic
-baggage propagation all intermediate services must to be instrumented with OpenTracing.</p>
-</div>
-<div class="paragraph">
-<p>The baggage header for user agent has following form <code>baggage-user-agent: &lt;value&gt;</code>.</p>
-</div>
-<div id="alltorecommendationv1" class="paragraph">
-<p>Set <code>recommendation:v1</code> and <code>recommendation:v2</code> as subsets.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Set Safari users to v2.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/k8s-istio-5-traffic-steering.png" alt="k8s istio 5 traffic steering"></span></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-safari-virtual-service.yml</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: recommendation
-spec:
-  hosts:
-  - recommendation
-  http:
-  - route:
-    match:
-    - headers:
-        baggage-user-agent:
-          regex: .*Safari.*
-    - destination:
-        host: recommendation
-        subset: version-v2
-  - route:
-    - destination:
-        host: recommendation
-        subset: version-v1</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Test with a Safari (or even Chrome on Mac since it includes Safari in the string). Safari only sees v2 responses from recommendation</p>
-</div>
-<div class="paragraph">
-<p>Test with a Firefox browser, it should only see v1 responses from recommendation.</p>
-</div>
-<div class="paragraph">
-<p>Alternatively, you can also attempt to use the curl -A command to test with different user-agent strings.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -A Safari $customer
-curl -A Firefox $customer</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can describe the <code>virtualservice</code> to see its configuration</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get virtualservice -o yaml</code></pre>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete destinationrule recommendation
-kubectl delete virtualservice recommendation</code></pre>
-</div>
-</div>
+<p>In this lab, you will create a new Kubernetes Cluster, which we&#8217;ll use for the rest of the lab.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="loadbalancer"><a class="anchor" href="#loadbalancer"></a>Load Balancer</h2>
+<h2 id="prerequisites"><a class="anchor" href="#prerequisites"></a>Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Use either <strong>Google Cloud Shell</strong> or your terminal with Google Cloud SDK installed (the SDK comes with <code>kubectl</code>, so you do not need to install it manually)</p>
+</li>
+<li>
+<p>You already created a GCP project and set the <code>$PROJECT_ID</code> envrionement variable.</p>
+</li>
+<li>
+<p>You already cloned the directory : <code><a href="https://github.com/Sfeir/kubernetes-istio-workshop" class="bare">https://github.com/Sfeir/kubernetes-istio-workshop</a></code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Run the following commands to configure <code>gcloud</code>, this will save you from typing the parameters <code>$PROJECT_ID</code>, <code>zone</code> or <code>region</code> in every <code>gcloud</code> command.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud config set compute/zone europe-west1-b
+gcloud config set compute/region europe-west1
+gcloud config set project $PROJECT_ID</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>All the commands must be run in the <code>kubernetes-istio-workshop</code> directory.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="create-cluster"><a class="anchor" href="#create-cluster"></a>Create the cluster</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>By default, you will see "round-robin" style load-balancing, but you can change it up, with the RANDOM option being fairly visible to the naked eye.</p>
-</div>
-<div class="paragraph">
-<p>Add another v2 pod to the mix</p>
+<p>Create a cluster:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment recommendation-v2 --replicas=2</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Wait a bit and curl the customer endpoint many times</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $customer</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Add a 3rd v2 pod to the mix</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment recommendation-v2 --replicas=3
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ gcloud beta container clusters create "istio-workshop"
 
-NAME                                  READY     STATUS    RESTARTS   AGE
-customer-1755156816-cjd2z             2/2       Running   0          1h
-preference-3336288630-2cc6f           2/2       Running   0          1h
-recommendation-v1-3719512284-bn42p    2/2       Running   0          59m
-recommendation-v2-2815683430-97nnf    2/2       Running   0          43m
-recommendation-v2-2815683430-d49n6    2/2       Running   0          51m
-recommendation-v2-2815683430-tptf2    2/2       Running   0          33m</code></pre>
+kubeconfig entry generated for istio-workshop.
+NAME            LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION  NUM_NODES  STATUS
+istio-workshop  europe-west1-b  1.13.7-gke.8    35.240.33.159  n1-standard-1  1.13.7-gke.8  3          RUNNING</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Wait for those 2/2 (two containers in each pod) and then poll the customer endpoint:</p>
+<p>⏳ Wait until the cluster is created. It may takes up to 5 minues.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done</code></pre>
 </div>
+</div>
+<div class="sect1">
+<h2 id="connect-cluster"><a class="anchor" href="#connect-cluster"></a>Connect to the cluster</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s check the connexion to our newly created cluster:</p>
 </div>
 <div class="paragraph">
-<p>The results should follow a fairly normal round-robin distribution pattern</p>
+<p>1- Review the cluster&#8217;s informations:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1145
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-525lh': 1
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 2
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-bs5ck': 181
-customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1146
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 3
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 4
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-bs5ck': 182</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Now, add the Random LB DestinationPolicy</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-advanced/load-balancer/recommendation-destination-rule-lb_policy_random.yml</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: DestinationRule
-metadata:
-  name: recommendation
-spec:
-  host: recommendation
-  trafficPolicy:
-    loadBalancer:
-      simple: RANDOM</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>And you should see a different pattern of which pod is being selected</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/k8s-istio-5-randome-lb.png" alt="k8s istio 5 randome lb"></span></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 10
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-525lh': 3
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 11
-customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1153
-customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1154
-customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1155
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 12
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-525lh': 4
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-525lh': 5
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 13
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 14</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Clean up</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/routing-advanced/load-balancer/recommendation-destination-rule-lb_policy_random.yml
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ gcloud container clusters list
 
-kubectl scale deployment recommendation-v2 --replicas=1</code></pre>
+NAME           LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION  NUM_NODES  STATUS
+istio-cluster  europe-west1-b  1.9.7-gke.6     35.195.237.45  n1-standard-1  1.9.7-gke.6   3          RUNNING</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2- Download the cluster&#8217;s credentials, they will be written to <code>kubectl</code>'s configuration file (<code>~/.kube/config</code>`).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">gcloud container clusters get-credentials istio-cluster</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3- Check the connexion with the cluster:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ kubectl cluster-info
+
+Kubernetes master is running at https://35.184.85.239
+GLBCDefaultBackend is running at https://35.184.85.239/api/v1/namespaces/kube-system/services/default-http-backend:http/proxy
+Heapster is running at https://35.184.85.239/api/v1/namespaces/kube-system/services/heapster/proxy
+KubeDNS is running at https://35.184.85.239/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+Metrics-server is running at https://35.184.85.239/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.</code></pre>
 </div>
 </div>
 </div>

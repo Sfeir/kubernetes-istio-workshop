@@ -1,10 +1,8 @@
 * **Part 2 : Istio**
 
-** xref:01_setup.adoc[1. Setup]
-*** xref:01_setup.adoc#prerequisites[Prerequisites]
-*** xref:01_setup.adoc#deploy-istio[Deploy Istio]
-*** xref:01_setup.adoc#connect-cluster[Connect to the cluster]
-*** xref:01_setup.adoc#verify-installation[Verify installation]
+** xref:01_setup_gke.adoc[1. Setup]
+*** xref:01_setup_gke.adoc#create-cluster[Setup Kubernetes Cluster]
+*** xref:01_setup_istio.adoc#deploy-istio[Deploy Istio]
 
 ** xref:02_deploy-microservices.adoc[2. Deploy Microservices]
 *** xref:02_deploy-microservices.adoc#deploycustomer[Deploy Customer]

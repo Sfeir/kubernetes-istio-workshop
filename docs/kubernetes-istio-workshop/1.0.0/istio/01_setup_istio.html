@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Advanced Route Rules :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/05_advanced-routerules.html">
+    <title>Setup Istio :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/01_setup_istio.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -116,7 +116,7 @@
     <a class="nav-link" href="01_setup_gke.html#create-cluster">Setup Kubernetes Cluster</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="01_setup_istio.html#deploy-istio">Deploy Istio</a>
+    <a class="nav-link" href="#deploy-istio">Deploy Istio</a>
   </li>
 </ul>
   </li>
@@ -255,15 +255,15 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="b1_rate-limiting.html#ratelimiting">Rate Limiting</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="05_advanced-routerules.html">Advanced Routing</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#traffic-steering">Traffic Steering</a>
+    <a class="nav-link" href="05_advanced-routerules.html#traffic-steering">Traffic Steering</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#loadbalancer">Load Balancer</a>
+    <a class="nav-link" href="05_advanced-routerules.html#loadbalancer">Load Balancer</a>
   </li>
 </ul>
   </li>
@@ -315,215 +315,103 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
-    <li>Bonus</li>
-    <li><a href="05_advanced-routerules.html">Advanced Routing</a></li>
+    <li><strong>Part 2 : Istio</strong></li>
+    <li><a href="01_setup_gke.html">1. Setup</a></li>
+    <li><a href="#deploy-istio">Deploy Istio</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/05_advanced-routerules.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/01_setup_istio.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1 class="page">Advanced Route Rules</h1>
+<h1 class="page">Setup Istio</h1>
 <div class="sect1">
-<h2 id="traffic-steering"><a class="anchor" href="#traffic-steering"></a>Traffic Steering</h2>
+<h2 id="summary"><a class="anchor" href="#summary"></a>Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://opentracing.io/docs/overview/">OpenTracing</a>, the tracing tool that Istio uses, adds the <code>user-agent</code> header to its <em>baggage</em> in the Customer service. A baggage is a set of <code>key:value</code> pairs that cross service-boundaries to carry some data that will be available throughout the trace.</p>
-</div>
-<div class="paragraph">
-<p>From Customer, the baggage is automatically propagated to all downstream services. To enable automatic
-baggage propagation all intermediate services must to be instrumented with OpenTracing.</p>
-</div>
-<div class="paragraph">
-<p>The baggage header for user agent has following form <code>baggage-user-agent: &lt;value&gt;</code>.</p>
-</div>
-<div id="alltorecommendationv1" class="paragraph">
-<p>Set <code>recommendation:v1</code> and <code>recommendation:v2</code> as subsets.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-simple/recommendation-destination-rule-v1-v2.yml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Set Safari users to v2.</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/k8s-istio-5-traffic-steering.png" alt="k8s istio 5 traffic steering"></span></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-advanced/canary-deployment/recommendation-v2-safari-virtual-service.yml</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: recommendation
-spec:
-  hosts:
-  - recommendation
-  http:
-  - route:
-    match:
-    - headers:
-        baggage-user-agent:
-          regex: .*Safari.*
-    - destination:
-        host: recommendation
-        subset: version-v2
-  - route:
-    - destination:
-        host: recommendation
-        subset: version-v1</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Test with a Safari (or even Chrome on Mac since it includes Safari in the string). Safari only sees v2 responses from recommendation</p>
-</div>
-<div class="paragraph">
-<p>Test with a Firefox browser, it should only see v1 responses from recommendation.</p>
-</div>
-<div class="paragraph">
-<p>Alternatively, you can also attempt to use the curl -A command to test with different user-agent strings.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -A Safari $customer
-curl -A Firefox $customer</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can describe the <code>virtualservice</code> to see its configuration</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get virtualservice -o yaml</code></pre>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_clean_up"><a class="anchor" href="#_clean_up"></a>Clean up</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete destinationrule recommendation
-kubectl delete virtualservice recommendation</code></pre>
-</div>
-</div>
+<p>In this lab, you will install Istio on the cluster we previously created.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="loadbalancer"><a class="anchor" href="#loadbalancer"></a>Load Balancer</h2>
+<h2 id="deploy-istio"><a class="anchor" href="#deploy-istio"></a>Deploy Istio</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>By default, you will see "round-robin" style load-balancing, but you can change it up, with the RANDOM option being fairly visible to the naked eye.</p>
-</div>
-<div class="paragraph">
-<p>Add another v2 pod to the mix</p>
+<p>1- Create a namespace for the istio-system components:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment recommendation-v2 --replicas=2</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create namespace istio-system</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Wait a bit and curl the customer endpoint many times</p>
+<p>2- Install all the Istio Custom Resource Definitions (CRDs), and wait a few seconds for the CRDs to be committed:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $customer</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f src/install/1.2.5/istio-crds.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Add a 3rd v2 pod to the mix</p>
+<p>3- Verify that all 23 Istio CRDs were committed to the Kubernetes api-server:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl scale deployment recommendation-v2 --replicas=3
-
-NAME                                  READY     STATUS    RESTARTS   AGE
-customer-1755156816-cjd2z             2/2       Running   0          1h
-preference-3336288630-2cc6f           2/2       Running   0          1h
-recommendation-v1-3719512284-bn42p    2/2       Running   0          59m
-recommendation-v2-2815683430-97nnf    2/2       Running   0          43m
-recommendation-v2-2815683430-d49n6    2/2       Running   0          51m
-recommendation-v2-2815683430-tptf2    2/2       Running   0          33m</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get crds | grep 'istio.io' | wc -l</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Wait for those 2/2 (two containers in each pod) and then poll the customer endpoint:</p>
+<p>4- Install Istio:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5; done</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f src/install/1.2.5/istio.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The results should follow a fairly normal round-robin distribution pattern</p>
+<p>⏳ Wait until Istio is fully deployed. Note that the Istio installation can take up to five minutes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="verify-installation"><a class="anchor" href="#verify-installation"></a>Verify installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s get the deployments (you can also get pods, services, etc.)</p>
+</div>
+<div class="paragraph">
+<p>⚠️ Do not forget to specify the Istio&#8217;s namespace (<code>-n istio-system</code>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1145
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-525lh': 1
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 2
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-bs5ck': 181
-customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1146
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 3
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 4
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-bs5ck': 182</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get deployments -n istio-system</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now, add the Random LB DestinationPolicy</p>
+<p>Output.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f manifests/istio/routing-advanced/load-balancer/recommendation-destination-rule-lb_policy_random.yml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                     DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+grafana                  1         1         1            1           1h
+istio-citadel            1         1         1            1           1h
+istio-egressgateway      1         1         1            1           1h
+istio-galley             1         1         1            1           1h
+istio-ingressgateway     1         1         1            1           1h
+istio-pilot              1         1         1            1           1h
+istio-policy             1         1         1            1           1h
+istio-sidecar-injector   1         1         1            1           1h
+istio-telemetry          1         1         1            1           1h
+istio-tracing            1         1         1            1           1h
+kiali                    1         1         1            1           1h
+prometheus               1         1         1            1           1h</code></pre>
 </div>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">kind: DestinationRule
-metadata:
-  name: recommendation
-spec:
-  host: recommendation
-  trafficPolicy:
-    loadBalancer:
-      simple: RANDOM</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>And you should see a different pattern of which pod is being selected</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/k8s-istio-5-randome-lb.png" alt="k8s istio 5 randome lb"></span></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 10
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-525lh': 3
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 11
-customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1153
-customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1154
-customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 1155
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 12
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-525lh': 4
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-525lh': 5
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 13
-customer =&gt; preference =&gt; recommendation v2 from '2819441432-rg45q': 14</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Clean up</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl delete -f manifests/istio/routing-advanced/load-balancer/recommendation-destination-rule-lb_policy_random.yml
-
-kubectl scale deployment recommendation-v2 --replicas=1</code></pre>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Congratulations, you finished the setup !</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
