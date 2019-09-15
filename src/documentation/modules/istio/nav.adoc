@@ -5,14 +5,14 @@
 *** xref:01_setup_istio.adoc#deploy-istio[Deploy Istio]
 
 ** xref:02_deploy-microservices.adoc[2. Deploy Microservices]
-*** xref:02_deploy-microservices.adoc#deploycustomer[Deploy Customer]
-*** xref:02_deploy-microservices.adoc#expose-customer[Expose Customer]
-*** xref:02_deploy-microservices.adoc#deploypreference[Deploy Preference]
-*** xref:02_deploy-microservices.adoc#deployrecommendation[Deploy Recommendation]
+*** xref:02_deploy-microservices.adoc#create-namespace[Create Namespace]
+*** xref:02_deploy-microservices.adoc#deploy-microservices[Deploy Microservice]
+*** xref:02_deploy-microservices.adoc#expose-customer[Expose customer]
 
-** xref:03_monitoring-tracing.adoc[3. Observability]
-*** xref:03_monitoring-tracing.adoc#monitoring[Monitoring]
-*** xref:03_monitoring-tracing.adoc#tracing[Tracing]
+** xref:03_monitoring-tracing.adoc[3. Observability Tools]
+*** xref:03_monitoring-tracing.adoc#grafana[Grafana]
+*** xref:03_monitoring-tracing.adoc#prometheus[Prometheus]
+*** xref:03_monitoring-tracing.adoc#jaeger[Jaeger]
 
 ** 4. Traffic Control
 *** xref:04_simple-routerules.adoc#deployrecommendationv2[Deploy recommendation v2]

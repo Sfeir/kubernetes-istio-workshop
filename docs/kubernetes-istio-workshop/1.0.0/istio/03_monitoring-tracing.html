@@ -125,28 +125,28 @@
     <a class="nav-link" href="02_deploy-microservices.html">2. Deploy Microservices</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="02_deploy-microservices.html#deploycustomer">Deploy Customer</a>
+    <a class="nav-link" href="02_deploy-microservices.html#create-namespace">Create Namespace</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="02_deploy-microservices.html#expose-customer">Expose Customer</a>
+    <a class="nav-link" href="02_deploy-microservices.html#deploy-microservices">Deploy Microservice</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="02_deploy-microservices.html#deploypreference">Deploy Preference</a>
-  </li>
-  <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="02_deploy-microservices.html#deployrecommendation">Deploy Recommendation</a>
+    <a class="nav-link" href="02_deploy-microservices.html#expose-customer">Expose customer</a>
   </li>
 </ul>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="03_monitoring-tracing.html">3. Observability</a>
+    <a class="nav-link" href="03_monitoring-tracing.html">3. Observability Tools</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#monitoring">Monitoring</a>
+    <a class="nav-link" href="#grafana">Grafana</a>
   </li>
   <li class="nav-item" data-depth="3">
-    <a class="nav-link" href="#tracing">Tracing</a>
+    <a class="nav-link" href="#prometheus">Prometheus</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="#jaeger">Jaeger</a>
   </li>
 </ul>
   </li>
@@ -316,7 +316,7 @@
   <ul>
     <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
     <li><strong>Part 2 : Istio</strong></li>
-    <li><a href="03_monitoring-tracing.html">3. Observability</a></li>
+    <li><a href="03_monitoring-tracing.html">3. Observability Tools</a></li>
   </ul>
 </nav>
   <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/03_monitoring-tracing.adoc">Edit this Page</a></div>
@@ -334,96 +334,68 @@
 <p><strong>Prometheus</strong>: for collecting and querying monitoring and metrics data.</p>
 </li>
 <li>
-<p><strong>Grafana</strong>: for visualizing metrics and monitoring mesh traffic.</p>
+<p><strong>Grafana</strong>: for visualizing monitoring and metrics data from Prometheus.</p>
 </li>
 <li>
-<p><strong>Kiali</strong>: for visualizing different aspects of your mesh, this includes viewing service graph and traffic flow and your Istio configuration files.</p>
+<p><strong>Jaeger</strong>: for distributed tracing to track every request through mesh allowing a deeper understanding about request latency, serialization and parallelism.</p>
 </li>
 <li>
-<p><strong>Jaeger</strong>: for distributed tracing to track every request through mesh allowing a deeper understanding about request latency, serialization and parallelism via visualization.</p>
+<p><strong>Kiali</strong>: for visualizing different aspects of your mesh, this includes viewing <strong>service graph</strong> and <strong>traffic flow</strong> and your Istio <strong>configuration files</strong>.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>Examine the Istio running services and notice the presence of the following services : <code>prometheus</code>,<code>grafana</code>, <code>jaeger-query</code> and <code>kiali</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ kubectl get services -n istio-system
+
+NAME                     TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                                                                                                                                      AGE
+grafana                  ClusterIP      10.19.245.231   &lt;none&gt;         3000/TCP                                                                                                                                     4h11m
+jaeger-query             ClusterIP      10.19.248.252   &lt;none&gt;         16686/TCP                                                                                                                                    4h11m
+kiali                    ClusterIP      10.19.250.198   &lt;none&gt;         20001/TCP                                                                                                                                    4h11m
+prometheus               ClusterIP      10.19.240.238   &lt;none&gt;         9090/TCP                                                                                                                                     4h11m
+...</code></pre>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="monitoring"><a class="anchor" href="#monitoring"></a>Monitoring</h2>
+<h2 id="_load_generation"><a class="anchor" href="#_load_generation"></a>Load generation</h2>
 <div class="sectionbody">
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="title">Before Start</div>
+<div class="paragraph">
+<p>Before looking at metrics, it is helpful to generate a load on the application. For this lab, we will generate a load for 5 minutes using the istio/fortio image.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run istio/fortio load -t 5m -qps 5 $customer</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="grafana"><a class="anchor" href="#grafana"></a>Vizualizing Metrics with Grafana</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The various dashboards that we will see in this lab are not accessible outside the cluster (for obvious security reasons). To display them we need to use <code>kubectl port-forward</code> to create a tunnel to those services and view them as if they were running on localhost.</p>
 </div>
 <div class="paragraph">
 <p>To display services running on localhost on Cloud Shell, it provides a feature called <strong>Web Preview</strong>. We will show you how to use it a little further in the document.</p>
 </div>
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
-<p>First examine the Istio running services, and notice the presence of the following services : <code>grafana</code>, <code>prometheus</code>, <code>jaeger-query</code> and <code>servicegraph</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl get services -n istio-system</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Output.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                                                                                                                   AGE
-grafana                    ClusterIP      10.3.255.100   &lt;none&gt;          3000/TCP                                                                                                                  13h
-...
-jaeger-query               ClusterIP      10.3.242.194   &lt;none&gt;          16686/TCP                                                                                                                 13h
-prometheus                 ClusterIP      10.3.247.5     &lt;none&gt;          9090/TCP                                                                                                                  13h
-servicegraph               ClusterIP      10.3.247.56    &lt;none&gt;          8088/TCP                                                                                                                  13h
-...</code></pre>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_grafana"><a class="anchor" href="#_grafana"></a>Grafana</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Set up a tunnel to Grafana.</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The Grafana service is running on port <code>3000</code>. In the following command we port-forward the remote port <code>3000</code> to the local port <code>3000</code>. If the local port were different, for example 8080, we would write <code>8080:3000</code>.
-</td>
-</tr>
-</table>
+<p>The <code>grafana</code> service is running on port <code>3000</code>. In the following command we port-forward the remote port <code>3000</code> to the local port <code>3000</code>. If the local port were different, say <code>8080</code>, we would write <code>8080:3000</code> (the pattern is <code>local-port:remote-port</code>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl -n istio-system port-forward service/grafana 3000:3000 &amp;</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Display the Grafana dashboard</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>To access this port from your own machine, you need to use the <strong>Web Preview</strong> feature of Cloud Shell.</p>
 </div>
 <div class="paragraph">
-<p>In Cloud Shell, click on Web Preview, then change the default port to <code>3000</code>.</p>
+<p>The defaut port for Web Preview is 8080, click on <strong>Change port</strong> and type the port you want (<code>3000</code>)</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="_images/cloud-shell-change-port1.png" alt="Run Web Preview"></span></p>
@@ -440,15 +412,15 @@ The Grafana service is running on port <code>3000</code>. In the following comma
 </div>
 </div>
 <div class="paragraph">
-<p>To display the Istio dashboard, replace the path of the URL by <code>/d/1/istio-mesh-dashboard</code>. The URL should look like:</p>
+<p>To display the Istio dashboard, replace the path of the URL by <code>/dashboard/db/istio-workload-dashboard</code>. The URL should look like:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>https://3000-dot-XXXX-dot-devshell.appspot.com/d/1/istio-mesh-dashboard
+<pre class="highlightjs highlight"><code>https://3000-dot-XXXX-dot-devshell.appspot.com/dashboard/db/istio-workload-dashboard
 
-# or if you are on your machine
+# or if you are on your local machine
 
-http://localhost:3000/d/1/istio-mesh-dashboard</code></pre>
+http://localhost:3000/dashboard/db/istio-workload-dashboard</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -458,13 +430,17 @@ http://localhost:3000/d/1/istio-mesh-dashboard</code></pre>
 <p><span class="image"><img src="_images/grafana.png" alt="alt text"></span></p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_prometheus"><a class="anchor" href="#_prometheus"></a>Prometheus</h3>
+</div>
+<div class="sect1">
+<h2 id="prometheus"><a class="anchor" href="#prometheus"></a>Querying Metrics from Prometheus</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>As you did with Grafana, use the <code>port-fowarding</code> to display the Prometheus console.</p>
 </div>
-<div class="paragraph">
-<p><strong>Hint</strong>: start by finding the <code>prometheus</code> service port.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl -n istio-system port-forward service/prometheus 9090:9090 &amp;</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>The Prometheus console should look like this.</p>
@@ -484,15 +460,7 @@ http://localhost:3000/d/1/istio-mesh-dashboard</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>select <code>Execute</code>, and run several requests through the system:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">while true; do curl $customer; sleep .5;  done</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Click on the <strong>Graph</strong> to display the graph corresponding to this query.</p>
+<p>select <code>Execute</code> and click on the <strong>Graph</strong> tab to display the graph corresponding to the load generation query.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="_images/prometheus2.png" alt="alt text"></span></p>
@@ -511,42 +479,23 @@ You may have to refresh the browser for the Prometheus graph to update.
 </div>
 </div>
 </div>
-</div>
 <div class="sect1">
-<h2 id="_servicegraph"><a class="anchor" href="#_servicegraph"></a>ServiceGraph</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Set up a tunnel to ServiceGraph.</p>
-</li>
-<li>
-<p>You should see the service topology at:</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>https://3088-dot-XXXX-dot-devshell.appspot.com/dotviz
-
-or
-
-http://localhost:8088/dotviz</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/servicegraph.png" alt="alt text"></span></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="tracing"><a class="anchor" href="#tracing"></a>Tracing</h2>
+<h2 id="jaeger"><a class="anchor" href="#jaeger"></a>Vizualizing Tracing with Jaeger</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
 <p>Set up a tunnel to the tracing dashboard.</p>
 </li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl -n istio-system port-forward service/jaeger-query  16686:16686  &amp;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
 <li>
 <p>You should see the trace statistics.</p>
 </li>

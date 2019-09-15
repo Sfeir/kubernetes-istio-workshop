@@ -4,54 +4,50 @@ include::_attributes.adoc[]
 In addition to the core components, Istio installation includes a collection of optional monitoring and tracing services, these tools are:
 
 - **Prometheus**: for collecting and querying monitoring and metrics data.
-- **Grafana**: for visualizing metrics and monitoring mesh traffic.
-- **Kiali**: for visualizing different aspects of your mesh, this includes viewing service graph and traffic flow and your Istio configuration files.
-- **Jaeger**: for distributed tracing to track every request through mesh allowing a deeper understanding about request latency, serialization and parallelism via visualization.
+- **Grafana**: for visualizing monitoring and metrics data from Prometheus.
+- **Jaeger**: for distributed tracing to track every request through mesh allowing a deeper understanding about request latency, serialization and parallelism.
+- **Kiali**: for visualizing different aspects of your mesh, this includes viewing *service graph* and *traffic flow* and your Istio *configuration files*.
 
-[#monitoring]
-== Monitoring
+Examine the Istio running services and notice the presence of the following services : ``prometheus``,``grafana``, ``jaeger-query`` and ``kiali``.
 
-[IMPORTANT]
-.Before Start
-====
+[source,bash]
+----
+$ kubectl get services -n istio-system
+
+NAME                     TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                                                                                                                                      AGE
+grafana                  ClusterIP      10.19.245.231   <none>         3000/TCP                                                                                                                                     4h11m
+jaeger-query             ClusterIP      10.19.248.252   <none>         16686/TCP                                                                                                                                    4h11m
+kiali                    ClusterIP      10.19.250.198   <none>         20001/TCP                                                                                                                                    4h11m
+prometheus               ClusterIP      10.19.240.238   <none>         9090/TCP                                                                                                                                     4h11m
+...
+----
+
+== Load generation
+
+Before looking at metrics, it is helpful to generate a load on the application. For this lab, we will generate a load for 5 minutes using the istio/fortio image.
+
+[source,bash]
+----
+docker run istio/fortio load -t 5m -qps 5 $customer
+----
+
+[#grafana]
+== Vizualizing Metrics with Grafana
+
 The various dashboards that we will see in this lab are not accessible outside the cluster (for obvious security reasons). To display them we need to use ``kubectl port-forward`` to create a tunnel to those services and view them as if they were running on localhost.
 
 To display services running on localhost on Cloud Shell, it provides a feature called *Web Preview*. We will show you how to use it a little further in the document.
-====
 
-First examine the Istio running services, and notice the presence of the following services : ``grafana``, ``prometheus``, ``jaeger-query`` and ``servicegraph``.
-
-[source,bash]
-----
-kubectl get services -n istio-system
-----
-
-Output.
-[source,bash]
-----
-NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                                                                                                                   AGE
-grafana                    ClusterIP      10.3.255.100   <none>          3000/TCP                                                                                                                  13h
-...
-jaeger-query               ClusterIP      10.3.242.194   <none>          16686/TCP                                                                                                                 13h
-prometheus                 ClusterIP      10.3.247.5     <none>          9090/TCP                                                                                                                  13h
-servicegraph               ClusterIP      10.3.247.56    <none>          8088/TCP                                                                                                                  13h
-...
-----
-
-=== Grafana
-
-- Set up a tunnel to Grafana.
-
-NOTE: The Grafana service is running on port ``3000``. In the following command we port-forward the remote port ``3000`` to the local port ``3000``. If the local port were different, for example 8080, we would write ``8080:3000``.
+The ``grafana`` service is running on port ``3000``. In the following command we port-forward the remote port ``3000`` to the local port ``3000``. If the local port were different, say ``8080``, we would write ``8080:3000`` (the pattern is ``local-port:remote-port``).
 
 [source,bash]
 ----
 kubectl -n istio-system port-forward service/grafana 3000:3000 &
 ----
 
-- Display the Grafana dashboard
+To access this port from your own machine, you need to use the **Web Preview** feature of Cloud Shell.
 
-In Cloud Shell, click on Web Preview, then change the default port to ``3000``.
+The defaut port for Web Preview is 8080, click on **Change port** and type the port you want (``3000``)
 
 image:cloud-shell-change-port1.png[Run Web Preview]
 
@@ -65,27 +61,30 @@ The browser will then open a new window with URL that looks like:
 https://3000-dot-XXXX-dot-devshell.appspot.com/?authuser=0&orgId=1
 ----
 
-To display the Istio dashboard, replace the path of the URL by ``/d/1/istio-mesh-dashboard``. The URL should look like:
+To display the Istio dashboard, replace the path of the URL by ``/dashboard/db/istio-workload-dashboard``. The URL should look like:
 
 [source]
 ----
-https://3000-dot-XXXX-dot-devshell.appspot.com/d/1/istio-mesh-dashboard
+https://3000-dot-XXXX-dot-devshell.appspot.com/dashboard/db/istio-workload-dashboard
 
-# or if you are on your machine
+# or if you are on your local machine
 
-http://localhost:3000/d/1/istio-mesh-dashboard
+http://localhost:3000/dashboard/db/istio-workload-dashboard
 ----
 
 Examine the dashboard, you should see some statistics for the requests you sent earlier.
 
 image:grafana.png[alt text]
 
-
-=== Prometheus
+[#prometheus]
+== Querying Metrics from Prometheus
 
 As you did with Grafana, use the ``port-fowarding`` to display the Prometheus console.
 
-*Hint*: start by finding the ``prometheus`` service port.
+[source,bash]
+----
+kubectl -n istio-system port-forward service/prometheus 9090:9090 &
+----
 
 The Prometheus console should look like this.
 
@@ -100,41 +99,22 @@ Enter:
 istio_requests_total{destination_service="recommendation.workshop.svc.cluster.local"}
 ----
 
-select `Execute`, and run several requests through the system:
-
-[source,bash]
-----
-while true; do curl $customer; sleep .5;  done
-----
-
-Click on the *Graph* to display the graph corresponding to this query.
+select `Execute` and click on the *Graph* tab to display the graph corresponding to the load generation query.
 
 image:prometheus2.png[alt text]
 
 NOTE: You may have to refresh the browser for the Prometheus graph to update.
 
-== ServiceGraph
-
-- Set up a tunnel to ServiceGraph.
-
-- You should see the service topology at:
-
-[source]
-----
-https://3088-dot-XXXX-dot-devshell.appspot.com/dotviz
-
-or
-
-http://localhost:8088/dotviz
-----
-
-
-image:servicegraph.png[alt text]
-
-[#tracing]
-== Tracing
+[#jaeger]
+== Vizualizing Tracing with Jaeger
 
 - Set up a tunnel to the tracing dashboard.
+
+[source,bash]
+----
+kubectl -n istio-system port-forward service/jaeger-query  16686:16686  &
+----
+
 - You should see the trace statistics.
 
 [source]
