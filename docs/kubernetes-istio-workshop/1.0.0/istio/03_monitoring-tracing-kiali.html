@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Observing microservice meshes with Kiali :: Kubernetes &amp; Istio Workshop</title>
+    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/istio/03_monitoring-tracing-kiali.html">
+    <meta name="generator" content="Antora 1.1.1">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+<link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
+  <body class="article">
+<header class="header" role="banner">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <a href="#">Kubernetes and Istio Workshop</a>
+        <span class="separator">//</span>
+        <a href="https://github.com/Sfeir/kubernetes-istio-workshop">Docs</a>
+      </div>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-link">Project</div>
+          <div class="navbar-dropdown">
+            <div class="navbar-item"><strong>GitHub</strong></div>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop/">Istio workshop Repository</a>
+            <a class="navbar-item" href="https://github.com/Sfeir/kubernetes-istio-workshop//issues">Istio workshop Issue Tracker</a>
+          </div>
+        </div>
+        <a class="navbar-item" href="https://twitter.com/sfeir">
+          <span class="icon">
+            <svg aria-hidden="true" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path fill="#57aaee" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="kubernetes-istio-workshop" data-version="1.0.0">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Kubernetes and Istio Workshop</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../welcome/welcome.html"><strong>Welcome</strong></a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../welcome/welcome.html#gcp">1. Google Cloud Platform</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../welcome/welcome.html#cloud-shell">2. Setup Cloud Shell</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text"><strong>Part 1 : Kubernetes</strong></span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../kubernetes/01_setup.html">1. Create cluster</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../kubernetes/02_creating-and-managing-pods.html">2. Pods</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../kubernetes/03_monitoring-and-health-checks.html">3. Monitoring apps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../kubernetes/04_managing-application-configurations-and-secrets.html">4. ConfigMaps &amp; Secrets</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../kubernetes/05_creating-and-managing-services.html">5. Services</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../kubernetes/06_creating-and-managing-deployments.html">6. Deployments</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../kubernetes/07_rolling-out-updates.html">7. Rolling-upgrade</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../kubernetes/08_cleanup.html">8. Cleanup</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text"><strong>Part 2 : Istio</strong></span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="01_setup_gke.html">1. Setup</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="01_setup_gke.html#create-cluster">Setup Kubernetes Cluster</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="01_setup_istio.html#deploy-istio">Deploy Istio</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="02_deploy-microservices.html">2. Deploy Microservices</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="02_deploy-microservices.html#create-namespace">Create Namespace</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="02_deploy-microservices.html#deploy-microservices">Deploy Microservice</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="02_deploy-microservices.html#expose-customer">Expose customer</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="03_monitoring-tracing.html">3. Observability Tools</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="03_monitoring-tracing.html#grafana">Grafana</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="03_monitoring-tracing.html#prometheus">Prometheus</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="03_monitoring-tracing.html#jaeger">Jaeger</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="3">
+    <a class="nav-link" href="03_monitoring-tracing-kiali.html">Kiali</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">4. Traffic Control</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="04_simple-routerules.html#deployrecommendationv2">Deploy recommendation v2</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="04_simple-routerules.html#istiorouting">Changing Istio Routings</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="04_simple-routerules.html#alltorecommendationv2">All Users to recommendation v2</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="04_simple-routerules.html#alltorecommendationv1">Al Users to recommendation v1</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="04_simple-routerules.html#alltorecommendationv1v2">All Users to recommendation v1 and v2</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="04_simple-routerules.html#canarydeploymentrecommendation">Canary Deployment between v1 And v2</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="06_fault-injection.html">5. Fault injection</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="06_fault-injection.html#503error">HTTP 503 Error</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="06_fault-injection.html#delay">Delay</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="07_circuit-breaker.html">6. Service Resiliency</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="06_fault-injection.html#retry">Retry</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="06_fault-injection.html#timeout">Timeout</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="07_circuit-breaker.html#failfast">Fail Fast</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="07_circuit-breaker.html#nocircuitbreaker">No Circuit Breaker</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="07_circuit-breaker.html#circuitbreaker">Circuit Breaker</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="07_circuit-breaker.html#poolejection">Pool Ejection</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="07_circuit-breaker.html#nofailinginstances">No Failing Instance</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="07_circuit-breaker.html#failinginstancesnopoolejection">Failing Instance No Pool Ejection</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="07_circuit-breaker.html#failinginstancespoolejection">Failing Instance Pool Ejection</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="07_circuit-breaker.html#circuitbreakerandpoolejection">Circuit Breaker + Pool Ejection</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">7. Security</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="10_mTLS.html">Mutual TLS</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="end-user-authentication.html">End-user Authentication </a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="rbac.html">RBAC</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Bonus</span>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="b1_rate-limiting.html#ratelimiting">Rate Limiting</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="05_advanced-routerules.html">Advanced Routing</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="05_advanced-routerules.html#traffic-steering">Traffic Steering</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="05_advanced-routerules.html#loadbalancer">Load Balancer</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="11_access-control.html#accesscontrol">Access Control</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="11_access-control.html#whitelist">White List</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="11_access-control.html#blacklist">Black List</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="08_egress.html">Egress</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Kubernetes and Istio Workshop</span>
+    <span class="version">1.0.0</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <span class="title">Kubernetes and Istio Workshop</span>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1.0.0</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main role="main">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
+    <li><strong>Part 2 : Istio</strong></li>
+    <li><a href="03_monitoring-tracing.html">3. Observability Tools</a></li>
+    <li><a href="03_monitoring-tracing-kiali.html">Kiali</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/istio/pages/03_monitoring-tracing-kiali.adoc">Edit this Page</a></div>
+</div>
+<article class="doc">
+<h1 class="page">Observing microservice meshes with Kiali</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>At some point when you are developing your microservice architecture, you will
+need to visualize what is happening in your service mesh. You will have
+questions like “Which service is connected to which other service?” and “How
+much traffic goes to each microservice?” But because of the loosely tied nature
+of microservice architectures , these questions can be difficult to answer.</p>
+</div>
+<div class="paragraph">
+<p>Those are the kinds of question that Kiali has the ability to answer, by giving
+you a big picture of the mesh, and showing the whole flow of your requests and
+data.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howkiali"><a class="anchor" href="#howkiali"></a>How does Kiali work?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Kiali taps into the data provided by Istio to generate its
+visualizations. It fetches ingress data (such as request tracing with Jaeger),
+the listing and data of the services, health indexes, and so on.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="generatingdata"><a class="anchor" href="#generatingdata"></a>Generating Sample Data</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To show the capabilities of Kiali, you&#8217;ll need an Istio-enabled application to
+be running. For this, we can use the <code>customer-tutorial</code> application we created
+earlier.</p>
+</div>
+<div class="paragraph">
+<p>To generate data for it, we can <code>fortio</code> it with this command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">docker run istio/fortio load -t 5m -qps 5 $customer</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To open the Kiali UI, execute the following command in your Kubernetes environment:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=kiali -o jsonpath='{.items[0].metadata.name}') 20001:20001</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re on Cloud Shell open the Kiali UI in a WebView otherwithe visit <a href="http://localhost:20001/kiali/console" class="bare">http://localhost:20001/kiali/console</a>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-login.png" alt="Login Page"></span></p>
+</div>
+<div class="paragraph">
+<p>The default credentials are "admin/admin", but it&#8217;s recommended to change them
+before using it in production.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="servicegraph"><a class="anchor" href="#servicegraph"></a>Service Graph</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After you login, you should see the Service Graph. Before to go further, make sure that you selected the <code>workshop</code> namespace by clicking on <strong>Select a namespace</strong> menu.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-select-namespace.png" alt="Select Namespace"></span></p>
+</div>
+<div class="paragraph">
+<p>And there you go on the Service Graph page.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-service-graph.png" alt="Service Graph Page"></span></p>
+</div>
+<div class="paragraph">
+<p>It shows a graph with all the microservices, connected by the requests going
+through then. On this page, you can see how the services interact with each
+other.</p>
+</div>
+<div class="paragraph">
+<p>To understand the meaning of every shape and color click on lengend button the show the legend palette.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-legend.png" alt="Show Legend"></span></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="applications"><a class="anchor" href="#applications"></a>Applications</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Click the <code>Applications</code> link in the left navigation. On this page you can
+view a listing of all the services that are running in the cluster, and
+additional information about them, such as health status.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-application-list.png" alt="Application Listing Page"></span></p>
+</div>
+<div class="paragraph">
+<p>Click on the "customer" application to see its details:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-application-details.png" alt="Service Details"></span></p>
+</div>
+<div class="paragraph">
+<p>By hovering the icon on the Health section, you can see the health of a service
+(a service is considered healthy) when it&#8217;s online and responding to requests
+without errors:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-application-health.png" alt="Health Status"></span></p>
+</div>
+<div class="paragraph">
+<p>By clicking on <code>Outbound Metrics</code> or <code>Inbound Metrics</code>, you can also see the
+metrics for an application, like so:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-application-metrics.png" alt="Application Metrics"></span></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="workloads"><a class="anchor" href="#workloads"></a>Workloads</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Click the <code>Workloads</code> link in the left navigation. On this page you can view
+a listing of all the workloads are present on your applications.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-workload-list.png" alt="Workload Listing"></span></p>
+</div>
+<div class="paragraph">
+<p>Click on the <code>customer</code> workload. Here you can see details for the workload,
+such as the pods and services that are included in it:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-workload-details.png" alt="Workload Details"></span></p>
+</div>
+<div class="paragraph">
+<p>By clicking <code>Outbound Metrics</code> and <code>Inbound Metrics</code>, you can check the
+metrics for the workload. The metrics are the same as the <code>Application</code> ones.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="services"><a class="anchor" href="#services"></a>Services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Click on the <code>Services</code> link in the left navigation. Here, you can see the
+listing of all services.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-service-list.png" alt="Service Listing"></span></p>
+</div>
+<div class="paragraph">
+<p>Click on the <code>customer</code> service. You can, on this page, see the details of
+the service, such as metrics, traces, workloads, virtual services,
+destination rules and so on:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/kiali-service-details.png" alt="Service Details"></span></p>
+</div>
+</div>
+</div>
+</article>
+</main>
+</div>
+<footer class="footer">
+  <p>This content is brought to you by <a href="http://sfeir.com">Sfeir</a></p>
+</footer>
+<script src="../../../_/js/site.js"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

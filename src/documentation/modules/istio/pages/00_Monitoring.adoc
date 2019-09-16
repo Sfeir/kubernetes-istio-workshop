@@ -1,0 +1,39 @@
+In addition to the core components, Istio installation includes a collection of optional monitoring and tracing services, these tools are:
+
+- **Prometheus**: for collecting and querying monitoring and metrics data.
+- **Grafana**: for visualizing metrics and monitoring mesh traffic.
+- **Kiali**: for visualizing different aspects of your mesh, this includes viewing service graph and traffic flow and your Istio configuration files.
+- **Jaeger**: for distributed tracing to track every request through mesh allowing a deeper understanding about request latency, serialization and parallelism via visualization.
+
+
+== Load generation
+
+Before looking at metrics, it is helpful to generate a load on the application. For this lab, we will generate a load for 5 minutes using the istio/fortio image.
+
+docker run istio/fortio load -t 5m -qps 5 $customer
+
+== Querying Metrics from Prometheus
+The following query shows the requests to the various services (productpage, details, ratings, reviews) building up over the 5 minute duration of the load test.
+
+
+== Vizualizing Metrics with Grafana
+
+=== Mesh dashboard
+This gives the global view of the Mesh along with services and workloads in the mesh. You can get more details about services and workloads by navigating to their specific dashboards as explained below
+
+=== Service dashboard
+This gives details about metrics for the service and then client workloads (workloads that are calling this service) and service workloads (workloads that are providing this service) for that service
+
+== Using Jaeger for distributed tracing
+https://hewlettpackard.github.io/Docker-SimpliVity/blog/istio-getting-started-3.html
+
+
+
+
+
+
+Because they are private (``ClusterIP``), we will to use ``kubectl port-forward`` to access them. ``kubectl port-forward`` opens a local port and forward traffic to the remote port of the service.
+
+For Cloud Shell, you need to do an extra step, because ``kubectl port-forward`` will open a port on the Cloud Shell instance and not on your local machine.
+
+All you need to do is the following:

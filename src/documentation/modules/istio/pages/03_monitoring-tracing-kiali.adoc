@@ -1,0 +1,121 @@
+= Observing microservice meshes with Kiali
+include::_attributes.adoc[]
+
+At some point when you are developing your microservice architecture, you will
+need to visualize what is happening in your service mesh. You will have
+questions like “Which service is connected to which other service?” and “How
+much traffic goes to each microservice?” But because of the loosely tied nature
+of microservice architectures , these questions can be difficult to answer.
+
+Those are the kinds of question that Kiali has the ability to answer, by giving
+you a big picture of the mesh, and showing the whole flow of your requests and
+data.
+
+[#howkiali]
+== How does Kiali work?
+
+Kiali taps into the data provided by Istio to generate its
+visualizations. It fetches ingress data (such as request tracing with Jaeger),
+the listing and data of the services, health indexes, and so on.
+
+[#generatingdata]
+== Generating Sample Data
+
+To show the capabilities of Kiali, you'll need an Istio-enabled application to
+be running. For this, we can use the `customer-tutorial` application we created
+earlier.
+
+To generate data for it, we can `fortio` it with this command:
+
+[source, bash,subs="+macros,+attributes"]
+----
+docker run istio/fortio load -t 5m -qps 5 $customer
+----
+
+
+To open the Kiali UI, execute the following command in your Kubernetes environment:
+
+[source, bash,subs="+macros,+attributes"]
+----
+$ kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=kiali -o jsonpath='{.items[0].metadata.name}') 20001:20001
+----
+
+If you're on Cloud Shell open the Kiali UI in a WebView otherwithe visit http://localhost:20001/kiali/console.
+
+image:kiali-login.png[Login Page]
+
+The default credentials are "admin/admin", but it's recommended to change them
+before using it in production.
+
+[#servicegraph]
+== Service Graph
+
+After you login, you should see the Service Graph. Before to go further, make sure that you selected the ``workshop`` namespace by clicking on **Select a namespace** menu.
+
+image:kiali-select-namespace.png[Select Namespace]
+
+And there you go on the Service Graph page.
+
+image:kiali-service-graph.png[Service Graph Page]
+
+It shows a graph with all the microservices, connected by the requests going
+through then. On this page, you can see how the services interact with each
+other.
+
+To understand the meaning of every shape and color click on lengend button the show the legend palette.
+
+image:kiali-legend.png[Show Legend]
+
+[#applications]
+== Applications
+
+Click the `Applications` link in the left navigation. On this page you can
+view a listing of all the services that are running in the cluster, and
+additional information about them, such as health status.
+
+image:kiali-application-list.png[Application Listing Page]
+
+Click on the "customer" application to see its details:
+
+image:kiali-application-details.png[Service Details]
+
+By hovering the icon on the Health section, you can see the health of a service
+(a service is considered healthy) when it's online and responding to requests
+without errors:
+
+image:kiali-application-health.png[Health Status]
+
+By clicking on `Outbound Metrics` or `Inbound Metrics`, you can also see the
+metrics for an application, like so:
+
+image:kiali-application-metrics.png[Application Metrics]
+
+[#workloads]
+== Workloads
+
+Click the `Workloads` link in the left navigation. On this page you can view
+a listing of all the workloads are present on your applications.
+
+image:kiali-workload-list.png[Workload Listing]
+
+Click on the `customer` workload. Here you can see details for the workload,
+such as the pods and services that are included in it:
+
+image:kiali-workload-details.png[Workload Details]
+
+By clicking `Outbound Metrics` and `Inbound Metrics`, you can check the
+metrics for the workload. The metrics are the same as the `Application` ones.
+
+[#services]
+== Services
+
+Click on the `Services` link in the left navigation. Here, you can see the
+listing of all services.
+
+image:kiali-service-list.png[Service Listing]
+
+Click on the `customer` service. You can, on this page, see the details of
+the service, such as metrics, traces, workloads, virtual services,
+destination rules and so on:
+
+image:kiali-service-details.png[Service Details]

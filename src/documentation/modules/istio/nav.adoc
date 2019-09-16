@@ -13,6 +13,7 @@
 *** xref:03_monitoring-tracing.adoc#grafana[Grafana]
 *** xref:03_monitoring-tracing.adoc#prometheus[Prometheus]
 *** xref:03_monitoring-tracing.adoc#jaeger[Jaeger]
+*** xref:03_monitoring-tracing-kiali.adoc[Kiali]
 
 ** 4. Traffic Control
 *** xref:04_simple-routerules.adoc#deployrecommendationv2[Deploy recommendation v2]
