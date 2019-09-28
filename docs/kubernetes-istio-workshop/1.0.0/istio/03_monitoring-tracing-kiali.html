@@ -354,6 +354,47 @@ the listing and data of the services, health indexes, and so on.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="updatekiali"><a class="anchor" href="#updatekiali"></a>Update Kiali Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To get full featured Kiali (with embeded Jaeger and Grafana), we need to update its configuration.</p>
+</div>
+<div class="paragraph">
+<p>Update Kiali with the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GATEWAY_IP=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+echo "apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kiali
+  namespace: istio-system
+  labels:
+    app: kiali
+    chart: kiali
+    heritage: Tiller
+    release: istio
+data:
+  config.yaml: |
+    istio_namespace: istio-system
+    auth:
+      strategy: "login"
+    server:
+      port: 20001
+      web_root: /kiali
+    external_services:
+      tracing:
+        url: http://$GATEWAY_IP:15032/jaeger
+      grafana:
+        url: http://$GATEWAY_IP:15031
+      prometheus:
+        url: http://$GATEWAY_IP:15030" | kubectl apply -f -; kubectl delete pod -l app=kiali -n istio-system</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="generatingdata"><a class="anchor" href="#generatingdata"></a>Generating Sample Data</h2>
 <div class="sectionbody">
 <div class="paragraph">

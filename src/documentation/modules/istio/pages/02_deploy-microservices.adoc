@@ -153,27 +153,18 @@ spec:
 kubectl get gateway
 ----
 
-3- set the ``INGRESS_HOST`` and ``INGRESS_PORT`` variables for accessing the gateway:
+3- set the ``GATEWAY_IP`` variables for accessing the gateway:
 
 [source,bash]
 ----
-export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
-export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+export GATEWAY_IP=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ----
 
-4- Set GATEWAY_URL:
+4- Then test the customer endpoint. Because of the route defined in the ``VirtualService`` (that we will see later), the URL of the customer service is mapped to the root URL of the gateway.
 
 [source,bash]
 ----
-export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
-----
-
-5- Then test the customer endpoint. Because of the route defined in the ``VirtualService`` (that we will see later), the URL of the customer service is mapped to the root URL of the gateway.
-
-[source,bash]
-----
-export customer=$GATEWAY_URL
+export customer=$GATEWAY_IP
 
 curl $customer
 ----

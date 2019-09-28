@@ -365,6 +365,19 @@ prometheus               ClusterIP      10.19.240.238   &lt;none&gt;         909
 </div>
 </div>
 <div class="sect1">
+<h2 id="_making_dashboards_publicly_available"><a class="anchor" href="#_making_dashboards_publicly_available"></a>Making dashboards publicly available</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For the sake of simplicity we will expose publicly the four dashboards to avoid you using a complicated <code>kubectl port-forward</code> command. The dashboards are exposed in the same way as we exposed the <code>customer</code> service with the help of a <code>Gateway</code> and a <code>VirtualService</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ kubectl apply -f src/install/1.2.5/dashboards</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_load_generation"><a class="anchor" href="#_load_generation"></a>Load generation</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -381,49 +394,14 @@ prometheus               ClusterIP      10.19.240.238   &lt;none&gt;         909
 <h2 id="grafana"><a class="anchor" href="#grafana"></a>Vizualizing Metrics with Grafana</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The various dashboards that we will see in this lab are not accessible outside the cluster (for obvious security reasons). To display them we need to use <code>kubectl port-forward</code> to create a tunnel to those services and view them as if they were running on localhost.</p>
-</div>
-<div class="paragraph">
-<p>To display services running on localhost on Cloud Shell, it provides a feature called <strong>Web Preview</strong>. We will show you how to use it a little further in the document.</p>
-</div>
-<div class="paragraph">
-<p>The <code>grafana</code> service is running on port <code>3000</code>. In the following command we port-forward the remote port <code>3000</code> to the local port <code>3000</code>. If the local port were different, say <code>8080</code>, we would write <code>8080:3000</code> (the pattern is <code>local-port:remote-port</code>).</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl -n istio-system port-forward service/grafana 3000:3000 &amp;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To access this port from your own machine, you need to use the <strong>Web Preview</strong> feature of Cloud Shell.</p>
-</div>
-<div class="paragraph">
-<p>The defaut port for Web Preview is 8080, click on <strong>Change port</strong> and type the port you want (<code>3000</code>)</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/cloud-shell-change-port1.png" alt="Run Web Preview"></span></p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="_images/cloud-shell-change-port2.png" alt="Change the port"></span></p>
-</div>
-<div class="paragraph">
-<p>The browser will then open a new window with URL that looks like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>https://3000-dot-XXXX-dot-devshell.appspot.com/?authuser=0&amp;orgId=1</code></pre>
-</div>
+<p>The Grafana&#8217;s address is: <a href="http://$GATEWAY_URL:15031/" class="bare">http://$GATEWAY_URL:15031/</a></p>
 </div>
 <div class="paragraph">
 <p>To display the Istio dashboard, replace the path of the URL by <code>/dashboard/db/istio-workload-dashboard</code>. The URL should look like:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>https://3000-dot-XXXX-dot-devshell.appspot.com/dashboard/db/istio-workload-dashboard
-
-# or if you are on your local machine
-
-http://localhost:3000/dashboard/db/istio-workload-dashboard</code></pre>
+<pre class="highlightjs highlight"><code>http://$GATEWAY_URL:15031/dashboard/db/istio-workload-dashboard</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -438,12 +416,7 @@ http://localhost:3000/dashboard/db/istio-workload-dashboard</code></pre>
 <h2 id="prometheus"><a class="anchor" href="#prometheus"></a>Querying Metrics from Prometheus</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>As you did with Grafana, use the <code>port-fowarding</code> to display the Prometheus console.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl -n istio-system port-forward service/prometheus 9090:9090 &amp;</code></pre>
-</div>
+<p>The URL for Prometheus is: <a href="http://$GATEWAY_URL:15030/" class="bare">http://$GATEWAY_URL:15030/</a></p>
 </div>
 <div class="paragraph">
 <p>The Prometheus console should look like this.</p>
@@ -485,17 +458,8 @@ You may have to refresh the browser for the Prometheus graph to update.
 <div class="sect1">
 <h2 id="jaeger"><a class="anchor" href="#jaeger"></a>Vizualizing Tracing with Jaeger</h2>
 <div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Set up a tunnel to the tracing dashboard.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl -n istio-system port-forward service/jaeger-query  16686:16686  &amp;</code></pre>
-</div>
+<div class="paragraph">
+<p>Jaeger&#8217;s URL is: <a href="http://$GATEWAY_URL:15032" class="bare">http://$GATEWAY_URL:15032</a></p>
 </div>
 <div class="ulist">
 <ul>
@@ -503,15 +467,6 @@ You may have to refresh the browser for the Prometheus graph to update.
 <p>You should see the trace statistics.</p>
 </li>
 </ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>https://16686-dot-XXXX-dot-devshell.appspot.com/
-
-or
-
-http://localhost:16686/</code></pre>
-</div>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="_images/jaeger1.png" alt="Trace as seen in Jaeger"></span></p>

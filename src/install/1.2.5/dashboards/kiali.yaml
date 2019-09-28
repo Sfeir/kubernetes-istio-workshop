@@ -1,0 +1,36 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: istio-kiali
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 15029
+      name: http-kiali
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: istio-kiali
+  namespace: istio-system
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - istio-kiali
+  http:
+  - match:
+    - port: 15029
+    route:
+    - destination:
+        host: kiali
+        port:
+          number: 20001
+---

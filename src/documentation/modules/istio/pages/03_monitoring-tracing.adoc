@@ -22,6 +22,16 @@ prometheus               ClusterIP      10.19.240.238   <none>         9090/TCP 
 ...
 ----
 
+== Making dashboards publicly available
+
+For the sake of simplicity we will expose publicly the four dashboards to avoid you using a complicated ``kubectl port-forward`` command. The dashboards are exposed in the same way as we exposed the ``customer`` service with the help of a ``Gateway`` and a ``VirtualService``.
+
+
+[source,bash]
+----
+$ kubectl apply -f src/install/1.2.5/dashboards
+----
+
 == Load generation
 
 Before looking at metrics, it is helpful to generate a load on the application. For this lab, we will generate a load for 5 minutes using the istio/fortio image.
@@ -34,42 +44,13 @@ docker run istio/fortio load -t 5m -qps 5 $customer
 [#grafana]
 == Vizualizing Metrics with Grafana
 
-The various dashboards that we will see in this lab are not accessible outside the cluster (for obvious security reasons). To display them we need to use ``kubectl port-forward`` to create a tunnel to those services and view them as if they were running on localhost.
-
-To display services running on localhost on Cloud Shell, it provides a feature called *Web Preview*. We will show you how to use it a little further in the document.
-
-The ``grafana`` service is running on port ``3000``. In the following command we port-forward the remote port ``3000`` to the local port ``3000``. If the local port were different, say ``8080``, we would write ``8080:3000`` (the pattern is ``local-port:remote-port``).
-
-[source,bash]
-----
-kubectl -n istio-system port-forward service/grafana 3000:3000 &
-----
-
-To access this port from your own machine, you need to use the **Web Preview** feature of Cloud Shell.
-
-The defaut port for Web Preview is 8080, click on **Change port** and type the port you want (``3000``)
-
-image:cloud-shell-change-port1.png[Run Web Preview]
-
-
-image:cloud-shell-change-port2.png[Change the port]
-
-The browser will then open a new window with URL that looks like:
-
-[source]
-----
-https://3000-dot-XXXX-dot-devshell.appspot.com/?authuser=0&orgId=1
-----
+The Grafana's address is: http://$GATEWAY_URL:15031/
 
 To display the Istio dashboard, replace the path of the URL by ``/dashboard/db/istio-workload-dashboard``. The URL should look like:
 
 [source]
 ----
-https://3000-dot-XXXX-dot-devshell.appspot.com/dashboard/db/istio-workload-dashboard
-
-# or if you are on your local machine
-
-http://localhost:3000/dashboard/db/istio-workload-dashboard
+http://$GATEWAY_URL:15031/dashboard/db/istio-workload-dashboard
 ----
 
 Examine the dashboard, you should see some statistics for the requests you sent earlier.
@@ -79,12 +60,7 @@ image:grafana.png[alt text]
 [#prometheus]
 == Querying Metrics from Prometheus
 
-As you did with Grafana, use the ``port-fowarding`` to display the Prometheus console.
-
-[source,bash]
-----
-kubectl -n istio-system port-forward service/prometheus 9090:9090 &
-----
+The URL for Prometheus is: http://$GATEWAY_URL:15030/
 
 The Prometheus console should look like this.
 
@@ -108,23 +84,9 @@ NOTE: You may have to refresh the browser for the Prometheus graph to update.
 [#jaeger]
 == Vizualizing Tracing with Jaeger
 
-- Set up a tunnel to the tracing dashboard.
-
-[source,bash]
-----
-kubectl -n istio-system port-forward service/jaeger-query  16686:16686  &
-----
+Jaeger's URL is: http://$GATEWAY_URL:15032
 
 - You should see the trace statistics.
-
-[source]
-----
-https://16686-dot-XXXX-dot-devshell.appspot.com/
-
-or
-
-http://localhost:16686/
-----
 
 image:jaeger1.png[Trace as seen in Jaeger]
 

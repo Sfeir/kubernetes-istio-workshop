@@ -18,6 +18,43 @@ Kiali taps into the data provided by Istio to generate its
 visualizations. It fetches ingress data (such as request tracing with Jaeger),
 the listing and data of the services, health indexes, and so on.
 
+[#updatekiali]
+== Update Kiali Configuration
+
+To get full featured Kiali (with embeded Jaeger and Grafana), we need to update its configuration.
+
+Update Kiali with the following commands:
+
+[source, bash]
+----
+export GATEWAY_IP=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+echo "apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kiali
+  namespace: istio-system
+  labels:
+    app: kiali
+    chart: kiali
+    heritage: Tiller
+    release: istio
+data:
+  config.yaml: |
+    istio_namespace: istio-system
+    auth:
+      strategy: "login"
+    server:
+      port: 20001
+      web_root: /kiali
+    external_services:
+      tracing:
+        url: http://$GATEWAY_IP:15032/jaeger
+      grafana:
+        url: http://$GATEWAY_IP:15031
+      prometheus:
+        url: http://$GATEWAY_IP:15030" | kubectl apply -f -; kubectl delete pod -l app=kiali -n istio-system
+----
+
 [#generatingdata]
 == Generating Sample Data
 

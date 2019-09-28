@@ -504,29 +504,19 @@ spec:
 </div>
 </div>
 <div class="paragraph">
-<p>3- set the <code>INGRESS_HOST</code> and <code>INGRESS_PORT</code> variables for accessing the gateway:</p>
+<p>3- set the <code>GATEWAY_IP</code> variables for accessing the gateway:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
-export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GATEWAY_IP=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>4- Set GATEWAY_URL:</p>
+<p>4- Then test the customer endpoint. Because of the route defined in the <code>VirtualService</code> (that we will see later), the URL of the customer service is mapped to the root URL of the gateway.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>5- Then test the customer endpoint. Because of the route defined in the <code>VirtualService</code> (that we will see later), the URL of the customer service is mapped to the root URL of the gateway.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export customer=$GATEWAY_URL
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export customer=$GATEWAY_IP
 
 curl $customer</code></pre>
 </div>
