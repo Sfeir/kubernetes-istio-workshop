@@ -57,7 +57,7 @@ kubectl rollout history deployment hello
 
 Now modify the hello deployment image to update `hello` docker image`s version:
 ```shell
-sed -i .bak 's/hello:1.0.0/hello:2.0.0/' manifests/app/deployments/hello.yaml
+sed -i.bak 's/hello:1.0.0/hello:2.0.0/' manifests/app/deployments/hello.yaml
 ```
 Now, run following commands all together:
 ```shell
