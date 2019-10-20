@@ -19,7 +19,7 @@ cat manifests/app/services/monolith.yaml
 Create the monolith service using kubectl:
 
 ```
-kubectl create -f manifests/app/services/monolith.yaml
+kubectl apply -f manifests/app/services/monolith.yaml
 ```
 
 Use the `gcloud compute firewall-rules` command to allow traffic to the `monolith` service:

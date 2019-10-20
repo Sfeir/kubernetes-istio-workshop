@@ -19,29 +19,29 @@ You will also define internal services for the `auth` and `hello` deployments an
 
 Create and explore the Deployment for service `auth`:
 ```shell
-kubectl create -f manifests/app/deployments/auth.yaml
+kubectl apply -f manifests/app/deployments/auth.yaml
 kubectl describe deployments auth
 ```
 
 Now create the corresponding service:
 ```shell
-kubectl create -f manifests/app/services/auth.yaml
+kubectl apply -f manifests/app/services/auth.yaml
 ```
 
 === Create and Expose the Hello Deployment
 Do the same for the `hello` deployment and services:
 ```shell
-kubectl create -f manifests/app/deployments/hello.yaml
+kubectl apply -f manifests/app/deployments/hello.yaml
 kubectl describe deployments hello
-kubectl create -f manifests/app/services/hello.yaml
+kubectl apply -f manifests/app/services/hello.yaml
 ```
 
 === Create and Expose the Frontend Deployment
 And at least for the frontend:
 ```shell
 kubectl create configmap nginx-frontend-conf --from-file=manifests/app/nginx/frontend.conf
-kubectl create -f manifests/app/deployments/frontend.yaml
-kubectl create -f manifests/app/services/frontend.yaml
+kubectl apply -f manifests/app/deployments/frontend.yaml
+kubectl apply -f manifests/app/services/frontend.yaml
 ```
 
 == Tutorial: Scaling Deployments
