@@ -8,8 +8,9 @@ In this workshop we will be using https://cloud.google.com/[Google Cloud Platfor
 GCP provides both a managed Kubernetes cluster: https://cloud.google.com/kubernetes-engine/[Google Kubernetes Engine],
 and a hosted command line environment: https://cloud.google.com/shell/[Google Cloud Shell].
 
-Cloud Shell is a Debian-based virtual machine is provisionned with all the
+Cloud Shell is a Debian-based virtual machine provisionned with all the
 development tools you'll need (Kubernetes, Docker, Terraform, Python, Java, Node, etc.).
+
 It offers a persistent 5GB home directory.
 
 __This means that all you will need for this workshop is a browser.__
@@ -27,7 +28,7 @@ On the project dashboard, note your project ID. You'll use it later
 
 image:gcp-dashboard-project-info.png[GCP project info with project ID]
 
-Clic on "Activate Cloud Shell" (on the upper-left corner)
+Clic on "Activate Cloud Shell" (on the upper-right corner)
 
 image:open-cloud-shell.png[Cloud Shell icon]
 

@@ -17,7 +17,7 @@ https://github.com/kelseyhightower/app[App] is hosted on GitHub and provides an 
 
 You'll create a Kubernetes cluster using Google Kubernetes Engine web UI.
 
-Click the 3 bar menu - aka. the __Burger__ - on the upper-right corner of the GCP Console.
+Click the 3 bar menu - aka. the __Burger__ - on the upper-left corner of the GCP Console.
 
 When you mouse over the menu item __Kubernetes Engine__, a pin appear on the right. Click it to pin __Kubernetes Engine__ on top of the menu. You can do the same with __Compute Engine__ and __Container Registry__.
 
