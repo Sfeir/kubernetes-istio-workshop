@@ -1,14 +1,22 @@
-= kubernetes and Istio Workshop
+= Kubernetes, Istio and Monitoring Workshop
 
 - A HTML version of this file is published at https://sfeir.github.io/kubernetes-istio-workshop/
 
 - The source code is available at https://github.com/sfeir/kubernetes-istio-workshop
 
-There are three different and super simple microservices in this system and they are chained together in the following sequence:
+This workshop is split in two parts : one focused on Kubernetes basics, the other on Istio and tools to monitor your cluster.
+
+== Kubernetes basics
+
+This first part begins with the deploiement of a simple microservice. You'll improve it step-by-step using various Kubernetes features : health-check, externalized configuration, load-balancing, rolling-upgrade, etc.
+
+== Istio and Monitoring
+
+In this second part, there are three different and super simple microservices and they are chained together in the following sequence:
 
 image:k8s-istio-Initial.png[Super simple microservices]
 
-For now, they have a simple exception handling solution for dealing with a missing dependent service: it just returns the error message to the end-user.
+At the beginning, they have a simple exception handling solution for dealing with a missing dependent service: it just returns the error message to the end-user. You'll see how to improve this situation.
 
 xref:welcome:welcome.adoc[Next >]
 

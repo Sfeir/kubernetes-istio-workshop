@@ -1,5 +1,5 @@
 name: kubernetes-istio-workshop
-title: Kubernetes and Istio Workshop
+title: Kubernetes, Istio and Monitoring Workshop
 version: '1.0.0'
 nav:
 - modules/welcome/nav.adoc
