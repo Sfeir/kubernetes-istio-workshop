@@ -198,3 +198,5 @@ On the other hand, Istio supports the ``PERMISSIVE`` mode so the services can ac
 
 As best practice, use a separate port for health check and enable mutual TLS only on the regular service port.
 ====
+
+xref:istio:end-user-authentication.adoc[Next >]

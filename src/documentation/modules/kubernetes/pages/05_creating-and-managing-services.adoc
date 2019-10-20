@@ -136,3 +136,5 @@ kubectl describe services monolith
 == Summary
 
 In this chapter you learned how to expose Pods using services and labels.
+
+xref:kubernetes:06_creating-and-managing-deployments.adoc[Next >]

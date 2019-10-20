@@ -99,3 +99,6 @@ List all process running inside this pod:
 ```shell
 ps aux
 ```
+
+
+xref:kubernetes:03_monitoring-and-health-checks.adoc[Next >]

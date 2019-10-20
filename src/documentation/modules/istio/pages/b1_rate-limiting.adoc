@@ -77,3 +77,5 @@ kubectl delete -f manifests/istio/policy/rate-limiting/rate_limit_rule.yml
 
 kubectl delete -f manifests/istio/policy/rate-limiting/recommendation_rate_limit_handler.yml
 ----
+
+xref:istio:05_advanced-routerules.adoc[Next >]

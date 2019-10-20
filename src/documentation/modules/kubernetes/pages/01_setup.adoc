@@ -72,3 +72,5 @@ or
 ```shell
 kubectl get p<Tab><Tab>
 ```
+
+xref:kubernetes:02_creating-and-managing-pods.adoc[Next >]

@@ -311,3 +311,5 @@ Delete the timeout rule.
 ----
 kubectl delete -f manifests/istio/fault-injection/timeout/recommendation-virtual-service-timeout.yml
 ----
+
+xref:istio:06_circuit-breaker.adoc[Next >]

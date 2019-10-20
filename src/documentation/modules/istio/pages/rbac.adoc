@@ -102,3 +102,5 @@ Follow xref:end-user-authentication#cleanup[End-user authentication with JWT Cle
 kubectl delete -f manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml
 kubectl create -f manifests/istio/security/rbac/authorization-enable-rbac.yml
 ----
+
+xref:istio:b1_rate-limiting#ratelimiting[Next module: Bonus >]

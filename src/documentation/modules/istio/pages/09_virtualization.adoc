@@ -162,3 +162,5 @@ Read the output of the curl command and the log of preference:v2, what do you ob
 
 Now all requests that are from preference v2 are redirected to virtualized recommendation service.
 In this way when you deploy a new service, you can mirror the traffic without worrying about side-effects on other services, since the requests are redirected to a virtualized instance instead of a production one.
+
+xref:istio:10_mTLS.adoc[Next >]

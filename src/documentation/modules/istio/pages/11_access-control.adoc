@@ -51,3 +51,6 @@ customer => 403 PERMISSION_DENIED:denycustomerhandler.denier.workshop:Not allowe
 ----
 kubectl delete -f manifests/istio/routing-advanced/access-control/acl-blacklist.yml
 ----
+
+
+xref:istio:08_egress.adoc[Next >]

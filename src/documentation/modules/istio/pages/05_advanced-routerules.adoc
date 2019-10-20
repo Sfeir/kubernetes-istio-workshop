@@ -181,3 +181,6 @@ kubectl delete -f manifests/istio/routing-advanced/load-balancer/recommendation-
 
 kubectl scale deployment recommendation-v2 --replicas=1
 ----
+
+
+xref:istio:11_access-control.adoc[Next >]

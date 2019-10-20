@@ -88,3 +88,5 @@ prometheus-5679cb4dcd-jcdhc               1/1     Running     0          92s
 ----
 
 - Congratulations, you finished the setup !
+
+xref:istio:02_deploy-microservices.adoc[Next >]

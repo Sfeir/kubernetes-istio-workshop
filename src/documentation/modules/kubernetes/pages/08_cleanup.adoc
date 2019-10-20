@@ -7,3 +7,5 @@ Let's delete the cluster :
 * Click on __Kubernetes Engine__ from the __burger menu__.
 * Locate your cluster and delete it with the trash icon.
 * You're done !
+
+xref:istio:01_setup_gke.adoc[Next module: Istio >]

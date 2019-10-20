@@ -156,3 +156,5 @@ the service, such as metrics, traces, workloads, virtual services,
 destination rules and so on:
 
 image:kiali-service-details.png[Service Details]
+
+xref:istio:04_simple-routerules.adoc[Next >]

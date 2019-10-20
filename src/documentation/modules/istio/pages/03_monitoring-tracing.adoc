@@ -91,3 +91,5 @@ Jaeger's URL is: http://$GATEWAY_URL:15032
 image:jaeger1.png[Trace as seen in Jaeger]
 
 image:jaeger2.png[Trace as seen in Jaeger]
+
+xref:istio:03_monitoring-tracing-kiali.adoc[Next >]

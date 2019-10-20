@@ -177,3 +177,5 @@ customer => preference => recommendation v1 from '99634814-sf4cl': 1
 ----
 
 - Congratulations, you finished the lab !
+
+xref:istio:03_monitoring-tracing.adoc[Next >]

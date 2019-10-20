@@ -6,15 +6,15 @@ include::_attributes.adoc[]
 
 In this workshop we will be using https://cloud.google.com/[Google Cloud Platform (GCP)].
 GCP provides both a managed Kubernetes cluster: https://cloud.google.com/kubernetes-engine/[Google Kubernetes Engine],
-and a hosted command line environment: https://cloud.google.com/shell/docs/[Google Cloud Shell].
+and a hosted command line environment: https://cloud.google.com/shell/[Google Cloud Shell].
 
 Cloud Shell is a Debian-based virtual machine is provisionned with all the
-development tools you'll need (Kubernetes, Docker, Python, Java, Node, etc.).
+development tools you'll need (Kubernetes, Docker, Terraform, Python, Java, Node, etc.).
 It offers a persistent 5GB home directory.
 
 __This means that all you will need for this workshop is a browser.__
 
-Let's start by connecting to https://console.cloud.google.com/projectselector/home/dashboard?organizationId=670174100971[GCP Console]. Log in and select the project named "Workshop Istio XXX".
+Let's start by connecting to https://console.cloud.google.com/projectselector/home/dashboard?organizationId=670174100971[GCP Console]. Log in and select the project named "Workshop Istio".
 
 image:gcp-dashboard-select-project.png[GCP organisation dashboard]
 image:gcp-dashboard-project-selector.png[GCP project selector]
@@ -60,3 +60,5 @@ cd kubernetes-istio-workshop
 ```
 
 Congratulations, you're ready to start this workshop !!
+
+xref:kubernetes:01_setup.adoc[Next >]

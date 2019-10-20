@@ -80,3 +80,5 @@ Use the `kubectl rollout undo` command to rollback to a previous deployment of t
 == Summary
 
 In this chapter you learned how to rollout updates to your applications by modifying deployment objects to trigger rolling updates. You also learned how to pause and resume an active rolling update and rollback it back using the `kubectl rollout` command.
+
+xref:kubernetes:08_cleanup.adoc[Next >]

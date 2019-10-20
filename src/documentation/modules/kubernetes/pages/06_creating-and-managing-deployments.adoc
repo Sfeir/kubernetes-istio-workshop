@@ -90,3 +90,5 @@ curl -k https://<EXTERNAL-IP>
 == Summary
 
 Deployments are the preferred way to manage application deployments. You learned how to create, expose and scale deployments.
+
+xref:kubernetes:07_rolling-out-updates.adoc[Next >]

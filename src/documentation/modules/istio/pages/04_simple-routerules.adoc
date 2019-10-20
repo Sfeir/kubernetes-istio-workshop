@@ -258,3 +258,6 @@ kubectl delete virtualservice recommendation
 
 kubectl delete destinationrule recommendation
 ----
+
+
+xref:istio:06_fault-injection.adoc[Next >]

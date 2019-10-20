@@ -71,3 +71,5 @@ Obviously, you should also keep enabled mTLS to avoid any attacker could take th
 kubectl delete -f link:{github-repo}/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml[manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml]
 ----
 
+
+*** xref:istio:rbac.adoc[RBAC]

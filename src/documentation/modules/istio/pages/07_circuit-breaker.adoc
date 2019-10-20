@@ -431,3 +431,6 @@ kubectl delete pod -l app=recommendation,version=v2
 kubectl delete virtualservice recommendation
 kubectl delete destinationrule recommendation
 ----
+
+
+xref:istio:10_mTLS.adoc[Next >]

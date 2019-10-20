@@ -70,3 +70,6 @@ kubectl delete ServiceEntry worldclockapi-egress-rule
 kubectl delete DestinationRule recommendation
 kubectl delete VirtualService recommendation
 ----
+
+
+xref:istio:09_virtualization.adoc[Next >]
