@@ -15,7 +15,7 @@ https://github.com/kelseyhightower/app[App] is hosted on GitHub and provides an 
 [#start-gke]
 == Create Kubernetes cluster on GKE
 
-You'll create a Kubernetes cluster using Google Kubernetes Engine web UI.
+You'll create a Kubernetes cluster using Google Kubernetes Engine (GKE) web UI.
 
 Click the 3 bar menu - aka. the __Burger__ - on the upper-left corner of the GCP Console.
 
@@ -25,46 +25,82 @@ image:gke-on-burger-menu.png[Burger menu opened on Kubernetes Engine]
 
 Then click on __Kubernetes Engine__ to open the list of GKE clusters.
 
-You don't have any cluster now. Click the __Create cluster__ button to open the cluster creation wizard. Choose a "Standard cluster".
+You don't have any cluster now. Click the __Create cluster__ button to open the cluster creation wizard.
+
+On the left column, choose the cluster template named "Standard cluster".
 
 On the right part of the wizard:
 
 * Give your cluster the name *kube-cluster*
-* Choose `europe-west1-b` as Zone for this cluster (to have it closer to the user)
-* In the default-pool, choose `2 CPU` for the machine type. Keep 3 nodes.
+* Let `Zonal` for the Location type
+* Choose `europe-west1-b` as Zone for this cluster (to have it close to the user)
+* Let the default value for the master version
+* In the default-pool, keep 3 nodes but choose `n1-standard-2` as machine type
 * Click the __Create__ button to create the cluster
 
 ⏳ Wait until the cluster is fully started. It should takes 2-3 minutes.
 
-== Configure Kubernetes command-line client
-
-List Kubernetes clusters from Cloud Shell
+You can also follow cluster creation from the Cloud Shell
 ```shell
 gcloud container clusters list
 ```
 
-`kubectl` is the command-line client for Kubernetes. It's a user interface to Kubernetes REST API's.
-Next command will generate a kube configuration for you (in `~/.kube/config`) to securely connect to your cluster with kubectl
+You should see your cluster with some details
+```shell
+NAME          LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION   NUM_NODES  STATUS
+kube-cluster  europe-west1-b  1.13.10-gke.0   34.65.193.222  n1-standard-2  1.13.10-gke.0  3          PROVISIONING
+```
+
+Run Look at *STATUS* column which should evolve from `PROVISIONING` to `RUNNING`
+```shell
+NAME          LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION   NUM_NODES  STATUS
+kube-cluster  europe-west1-b  1.13.10-gke.0   34.65.193.222  n1-standard-2  1.13.10-gke.0  3          RUNNING
+```
+
+
+== Configure Kubernetes command-line client
+
+`kubectl` is the command-line client for Kubernetes. It's a user interface calling the Kubernetes REST API's on the Master IP address.
+
+You can verify the API with `curl`, replace `[MASTER_IP]` by the MASTER_IP of your cluster above
+```shell
+curl -k https://[MASTER_IP]/
+```
+On Google Kubernetes Engine (GKE), the master API is authenticated and reject anonymous connections with HTTP code 403:
+```json
+{
+    "kind": "Status",
+    "apiVersion": "v1",
+    "metadata": { },
+    "status": "Failure",
+    "message": "forbidden: User \"system:anonymous\" cannot get path \"/\"",
+    "reason": "Forbidden",
+    "details": {},
+    "code": 403
+}
+```
+
+To call the master API, you'll create a configuration for `kubectl` on your Cloud Shell.
 ```shell
 gcloud container clusters get-credentials kube-cluster --zone=europe-west1-b
 ```
 
-You can now list the nodes composing your cluster what is running inside it
+You can now list the nodes composing your cluster and see what is running inside it
 ```shell
 kubectl get nodes
 kubectl get all
 ```
 
 You have 3 nodes and a single service running in Kubernetes.
-This `service/kubernetes` resource is a service exposing the REST API of your Kubernetes cluster to the Pods, allowing them to execute `kubectl` commands if they want to (very few applications do that).
+This `service/kubernetes` resource is a service exposing the REST API of your Kubernetes cluster to the Pods, allowing them to execute `kubectl` commands if they want to (very few applications do that) or call API programmatically (it's more common).
 
-You can also load kubeclt auto-competion for current bash
+You can also load kubectl auto-competion for current bash shell
 ```shell
 source <(kubectl completion bash)
 ```
 You have to do it on each new shell or add it on your bash profile.
 
-That way, you'll be able to list kubectl commands with :
+That way, you'll be able to list kubectl commands and arguments with :
 ```shell
 kubectl <Tab><Tab>
 ```

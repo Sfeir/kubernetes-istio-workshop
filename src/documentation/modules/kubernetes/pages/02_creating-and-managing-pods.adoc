@@ -1,31 +1,45 @@
 = Creating and managing pods
 include::_attributes.adoc[]
 
-At the core of Kubernetes is the Pod. Pods represent a logical application and hold a collection of one or more containers and volumes. In this chapter you will learn how to:
+At the core of Kubernetes is the Pod. Pods represent a logical application and hold a collection of one or more containers and volumes running on the same node. In this chapter you will learn how to:
 
 * Write a Pod configuration file
-* Create and inspect Pods 
+* Create and inspect Pods
 * Interact with Pods remotely using kubectl
 
 In this chapter you will create a Pod named `monolith` and interact with it using the kubectl command line tool.
 
 == Tutorial: Creating Pods
 
-Explore the `monolith` pod configuration file:
+Let's look at configuration file used to create Kubernetes resources.
+To see files on your free instance, Cloud Shell provides a code editor.
+Open it using the pencil button
 
+image:cloud-shell-editor.png[Pencil button on Cloud Shell bar opens an editor]
+
+Now explore the `monolith` pod configuration file in `kubernetes-istio-workshop/manifests/app/pods/monolith.yaml`
+
+image:cloud-shell-yaml-editor.png[Editor colorize code and display file outline on the right]
+
+Notice some important parts of this Pod definition:
+
+* you can have more than one container per pod
+* each container have its own image and arguments, and can declare which ports its listen to
+* you should define requests and limits for your container
+** requests specifies minimal resources required by you application
+** limits will protect your cluster for uncontrolled resource consumption by containers
+
+To deploy the `monolith` pod, use kubectl to _apply_ your pod definition on the cluster :
 ```shell
-cat manifests/app/pods/monolith.yaml
-```
-
-Create the `monolith` pod using kubectl:
-
-```shell
-kubectl create -f manifests/app/pods/monolith.yaml
+kubectl apply -f manifests/app/pods/monolith.yaml
 ```
 
 == Exercise: View Pod details
 
-Use the `kubectl get` and `kubect describe` commands to view details for the `monolith` Pod:
+Use the `kubectl get` and `kubect describe` commands to view details for the `monolith` Pod.
+
+You can also navigate on the _Workloads_ menu in GCP console
+image:console-gke-workloads.png[Workloads menu show running pods and deployments]
 
 === Hints
 
@@ -59,23 +73,10 @@ kubectl port-forward monolith 10080:80
 
 ```shell
 curl http://127.0.0.1:10080
-```
-
-```shell
 curl http://127.0.0.1:10080/secure
+TOKEN=$( curl -s -u user:password http://127.0.0.1:10080/login | jq -r .token )
+curl -H "Authorization: Bearer ${TOKEN}" http://127.0.0.1:10080/secure
 ```
-
-```shell
-curl -u user http://127.0.0.1:10080/login
-```
-
-> Type "password" at the prompt.
-
-```shell
-curl -H "Authorization: Bearer <token>" http://127.0.0.1:10080/secure
-```
-
-> Use the JWT token from the previous login.
 
 == Exercise: View the logs of a Pod
 
@@ -86,6 +87,21 @@ kubectl logs monolith
 ```
 
 > Use the -f flag and observe what happens.
+
+=== Bonus: download and use `stern` for logs
+
+Stern (https://github.com/wercker/stern) is a small go binary which allow to follow logs from multiple pods by pod-name patterns.
+
+Download it from github and make it executable
+```shell
+curl -L -o stern https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64
+chmod +x stern
+```
+
+Then you can get logs from pods by pattern:
+```shell
+./stern monoli*
+```
 
 == Exercise: Run an interactive shell inside a Pod
 

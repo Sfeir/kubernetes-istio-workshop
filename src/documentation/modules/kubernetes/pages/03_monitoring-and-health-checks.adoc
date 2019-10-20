@@ -12,16 +12,14 @@ In this chapter you will learn how to:
 
 == Tutorial: Creating Pods with Liveness and Readiness Probes
 
-Explore the `healthy-monolith` pod configuration file:
+Explore the `manifests/app/pods/healthy-monolith.yaml` pod configuration file in the Cloud Shell editor
 
-```
-cat manifests/app/pods/healthy-monolith.yaml
-```
+Notice `livenessProbe` and `readinessProbe` container's configuration.
 
-Create the `healthy-monolith` pod using kubectl:
 
+Now create the `healthy-monolith` pod using kubectl:
 ```
-kubectl create -f manifests/app/pods/healthy-monolith.yaml
+kubectl apply -f manifests/app/pods/healthy-monolith.yaml
 ```
 
 == Exercise: View Pod details
@@ -41,14 +39,13 @@ kubectl describe pods <pod-name>
 * How often is the readiness probe checked?
 * How often is the liveness probe checked?
 
-> The `healthy-monolith` Pod logs each health check. Use the `kubectl logs` command to view them.
+> The `healthy-monolith` Pod logs each health check. Use `./stern heal*` command to view them.
 
 == Tutorial: Experiment with Readiness Probes
 
 In this tutorial you will observe how Kubernetes responds to failed readiness probes. The `monolith` container supports the ability to force failures of it's readiness and liveness probes. This will enable us to simulate failures for the `healthy-monolith` Pod. 
 
-Use the `kubectl port-forward` command to forward a local port to the health port of the `healthy-monolith` Pod.
-
+Use the `kubectl port-forward` command to forward a local port to the health port of the `healthy-monolith` Pod
 ```
 kubectl port-forward healthy-monolith 10081:81
 ```
@@ -58,19 +55,18 @@ kubectl port-forward healthy-monolith 10081:81
 === Experiment with Readiness Probes
 
 Force the `monolith` container readiness probe to fail. Use the `curl` command to toggle the readiness probe status:
-
 ```
 curl http://127.0.0.1:10081/readiness/status
 ```
 
 Wait about 45 seconds and get the status of the `healthy-monolith` Pod using the `kubectl get pods` command:
-
 ```
 kubectl get pods healthy-monolith
 ```
 
-Use the `kubectl describe` command to get more details about the failing readiness probe:
+You may also monitor pods status in the Workloads view of GKE console (click on the *REFRESH* button on the top of the Workloads list).
 
+Use the `kubectl describe` command to get more details about the failing readiness probe:
 ```
 kubectl describe pods healthy-monolith
 ```
@@ -114,4 +110,4 @@ In this chapter you learned that Kubernetes supports application monitoring usin
 liveness and readiness probes. You also learned how to add readiness and liveness probes to Pods and what happens when probes fail. 
 
 
-xref:kubernetes:04_managing-application-configuration-and-secrets.adoc[Next >]
+xref:kubernetes:04_managing-application-configurations-and-secrets.adoc[Next >]
