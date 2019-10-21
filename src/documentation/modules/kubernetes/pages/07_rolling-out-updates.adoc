@@ -14,10 +14,7 @@ First look at the current history of the __Deployment__ resource for the `auth` 
 kubectl rollout history deployment auth
 ```
 
-Then modify the auth deployment to replace the pod's container image version. Edit the yaml file.
-```shell
-vim manifests/app/deployments/auth.yaml
-```
+Then modify the auth deployment to replace the pod's container image version. Edit `manifests/app/deployments/auth.yaml` in the Cloud Shell editor and save.
 
 Look for following line and upgrade version 1.0.0 to 2.0.0:
 ```
@@ -29,6 +26,19 @@ With `kubectl apply`, you can live-update a deployment. `--record` option let yo
 kubectl apply -f manifests/app/deployments/auth.yaml --record
 kubectl describe deployments auth
 ```
+
+Notice the events at the end of deployment desciption. To upgrade an application, the deployment-controller creates a new replica set with the new pod template to replace the old one.
+
+Output
+```shell
+Events:
+  Type    Reason             Age    From                   Message
+  ----    ------             ----   ----                   -------
+  Normal  ScalingReplicaSet  44m    deployment-controller  Scaled up replica set auth-65c65db967 to 1
+  Normal  ScalingReplicaSet  7m55s  deployment-controller  Scaled up replica set auth-69f6f69db6 to 1
+  Normal  ScalingReplicaSet  7m55s  deployment-controller  Scaled down replica set auth-65c65db967 to 0
+```
+
 
 If you list __ReplicaSets__, you'll see one for the original version and the other for the new version.
 ```shell
@@ -43,35 +53,44 @@ In fact, __Deployment__ history is backed by the __ReplicaSet__
 
 == Tutorial: Pause and Resume an Active Rollout
 
-Let's try to see a deployment in progress.
+It's easy to deploy a new version using Kubernetes, but you'll see that you can do that without any service interruption. So let's try to see a deployment in progress.
 
-First scale the hello Deployment to 6 pods:
+First, you'll scale the hello Deployment to 6 pods:
 ```shell
 kubectl scale deployments hello --replicas=6
 ```
 
-Look at your __Deployment__ history.
+Look at your __Deployment__ history, there is currently a single revision of your deployment
 ```shell
 kubectl rollout history deployment hello
 ```
 
 Now modify the hello deployment image to update `hello` docker image`s version:
 ```shell
-sed -i.bak 's/hello:1.0.0/hello:2.0.0/' manifests/app/deployments/hello.yaml
+sed -i.bak -e 's/hello:1.0.0/hello:2.0.0/' -e 's/replicas: 1/replicas: 6/' manifests/app/deployments/hello.yaml
 ```
+
 Now, run following commands all together:
 ```shell
 kubectl apply -f manifests/app/deployments/hello.yaml --record
 kubectl describe deployments hello
 kubectl rollout pause deployment hello
+kubectl get replicaset
 ```
 
-You'll see the __Deployment__ rolling-upgrade stopped in the middle.
+You'll see the __Deployment__ rolling-upgrade stopped in the middle. The last command show you two `hello-xxxxxxx` replicasets, with part of the 6 (or more) pods in each (like 5 and 2).
 
-Resume the rollout to terminates the rolling-upgrade.
+The deployment-controller is replacing old pods (in the old replicaset) one at a time with new pods (from the new replicaset), so that you'll never have less than the 6 replicas asked, whatever the version.
+
+Finally resume the rollout to terminates the rolling-upgrade.
 ```
 kubectl rollout resume deployment hello
+kubectl describe deployments hello
 ```
+
+Notice in the event the progressive scale-up of the new replicaset and the scale-down of the old one.
+
+*Warning: to do rolling updates, your application must support running two version in parallel !*
 
 == Exercise: Rollback the Hello service
 

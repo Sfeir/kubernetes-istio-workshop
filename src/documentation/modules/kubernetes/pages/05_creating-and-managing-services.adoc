@@ -10,18 +10,24 @@ In this chapter you will create the `monolith` service and "expose" the `secure-
 
 == Tutorial: Create a Service
 
-Explore the monolith service configuration file:
+Explore the monolith service configuration file in `manifests/app/services/monolith.yaml`
 
-```
-cat manifests/app/services/monolith.yaml 
-```
+Notice:
 
-Create the monolith service using kubectl:
+* The service type (`None`, `ClusterIP`, `NodePort` or `LoadBalancer`)
+* Pod selector to identify all pods targeted by the service
+* ports configuration:
+** `targetPort` to define which container port(s) your service targets
+** `port` to define on which port your service is exposed inside the cluster
+** `nodePort` (optional), to explicitely specify on which port to expose your service outside of the cluster.
+
+Then create the monolith service using kubectl:
 
 ```
 kubectl apply -f manifests/app/services/monolith.yaml
 ```
 
+Specifically on Google Cloud Platform, you need to allow incoming traffic to your cluster node's port.
 Use the `gcloud compute firewall-rules` command to allow traffic to the `monolith` service:
 
 ```
@@ -32,17 +38,21 @@ gcloud compute firewall-rules create allow-monolith-nodeport --allow=tcp:31000
 
 === Hints
 
-List the GCP VMs which compose the GKE cluster
+On GCP, Kubernetes cluster nodes are standard Google Compute Engine VM instances managed by GKE.
+
+With service of type NodePort, you should be able to connect to your monolith throught the service node port, which is defined to `31000` in our yaml.
+
+List the GCP VMs which compose the GKE cluster to get their public IP addresses
 ```
 gcloud compute instances list
 ```
 
-Output
+Output:
 ```
-NAME                                           ZONE            MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP     STATUS
-gke-istio-workshop-default-pool-e37360ba-369z  europe-west1-b  n1-standard-1               10.132.0.3   35.205.92.225   RUNNING
-gke-istio-workshop-default-pool-e37360ba-3hz4  europe-west1-b  n1-standard-1               10.132.0.2   35.240.127.238  RUNNING
-gke-istio-workshop-default-pool-e37360ba-8345  europe-west1-b  n1-standard-1               10.132.0.4   35.233.127.229  RUNNING
+NAME                                           ZONE            MACHINE_TYPE   INTERNAL_IP  EXTERNAL_IP     STATUS
+gke-istio-workshop-default-pool-e37360ba-369z  europe-west1-b  n1-standard-1  10.132.0.3   35.205.92.225   RUNNING
+gke-istio-workshop-default-pool-e37360ba-3hz4  europe-west1-b  n1-standard-1  10.132.0.2   35.240.127.238  RUNNING
+gke-istio-workshop-default-pool-e37360ba-8345  europe-west1-b  n1-standard-1  10.132.0.4   35.233.127.229  RUNNING
 ```
 
 Then use any of the `External IP` to connect to the NodePort
@@ -66,6 +76,8 @@ kubectl get services monolith
 kubectl describe services monolith
 ```
 
+You can also use GCP console to look for services (and later for ingress) in the _Services & Ingress_ menu.
+
 === Quiz
 
 * How many endpoints does the `monolith` service have?
@@ -83,7 +95,7 @@ kubectl get pods -l "app=monolith"
 kubectl get pods -l "app=monolith,secure=enabled"
 ```
 
-> Notice this label query does not print any results
+Notice this last query does not print any results
 
 Use the `kubectl label` command to add the missing `secure=enabled` label to the `secure-monolith` Pod.
 

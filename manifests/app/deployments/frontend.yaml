@@ -17,6 +17,10 @@ spec:
             preStop:
               exec:
                 command: ["/usr/sbin/nginx","-s","quit"]
+          resources:
+            limits:
+              cpu: "1"
+              memory: "200Mio"
           volumeMounts:
             - name: "nginx-frontend-conf"
               mountPath: "/etc/nginx/conf.d"

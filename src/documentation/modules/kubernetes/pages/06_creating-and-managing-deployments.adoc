@@ -17,16 +17,23 @@ You will also define internal services for the `auth` and `hello` deployments an
 
 === Create and Expose the Auth Deployment
 
-Create and explore the Deployment for service `auth`:
+Explore and create  the Deployment for service `auth`:
 ```shell
 kubectl apply -f manifests/app/deployments/auth.yaml
 kubectl describe deployments auth
 ```
 
+Notice in the Deployment definition:
+
+* `replicas` is the number of pod we ask Kubernetes to run on the cluster. It's used by the ReplicaSet.
+* In `template` you'll recognize the definition of Pods seen previously. This template is used by the ReplicaSet to provision Pods.
+
 Now create the corresponding service:
 ```shell
 kubectl apply -f manifests/app/services/auth.yaml
 ```
+
+Notice the match between pods' labels and service's selectors.
 
 === Create and Expose the Hello Deployment
 Do the same for the `hello` deployment and services:
@@ -37,7 +44,7 @@ kubectl apply -f manifests/app/services/hello.yaml
 ```
 
 === Create and Expose the Frontend Deployment
-And at least for the frontend:
+And at least for the `frontend`:
 ```shell
 kubectl create configmap nginx-frontend-conf --from-file=manifests/app/nginx/frontend.conf
 kubectl apply -f manifests/app/deployments/frontend.yaml
@@ -54,12 +61,19 @@ kubectl get replicasets
 
 ReplicaSets are scaled through the Deployment for each service and can be scaled independently. Use the `kubectl scale` command to scale the hello deployment:
 
-```
+```shell
 kubectl scale deployments hello --replicas=3
 kubectl describe deployments hello
+```
+
+Notice the `Replicas` values in the describe command and the scaling events at the end.
+
+```shell
 kubectl get pods
 kubectl get replicasets
 ```
+
+There is now 3 replicas of your `hello` microservice.
 
 == Exercise: Scaling Deployments
 
@@ -67,15 +81,19 @@ In this exercise you will scale the `frontend` deployment using an existing depl
 
 === Hints
 
-```
-vim manifests/app/deployments/frontend.yaml
-```
+You can change this value in the `manifests/app/deployments/frontend.yaml` file with the Cloud Shell editor. Type `Ctrl+S` to save the file
 
 ```
 kubectl apply -f manifests/app/deployments/frontend.yaml
 ```
 
+You can watch configuration change applying by refreshing the `Workloads` list in GCP console. You'll soon have `3/3` pods for the `frontend` Deployment.
+
 == Exercise: Interact with the Frontend Service
+
+Your `frontend` service is of type `LoadBalancer`. This means that on cloud providers (AWS, Azure, GCP, ...), your service will be accessible through an infrastructure load balancing service managed by the provider.
+
+The external IP of the service is the IP of this load balancing service, on which you can join the service.
 
 === Hints
 
