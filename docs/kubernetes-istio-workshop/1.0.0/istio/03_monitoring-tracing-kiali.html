@@ -382,8 +382,11 @@ the listing and data of the services, health indexes, and so on.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GATEWAY_IP=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-echo "apiVersion: v1
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GATEWAY_IP=$(kubectl -n istio-system get service istio-ingressgateway \
+  -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+kubectl apply -f - &lt;&lt; EOF
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: kiali
@@ -407,7 +410,10 @@ data:
       grafana:
         url: http://$GATEWAY_IP:15031
       prometheus:
-        url: http://$GATEWAY_IP:15030" | kubectl apply -f -; kubectl delete pod -l app=kiali -n istio-system</code></pre>
+        url: http://$GATEWAY_IP:15030
+EOF
+
+kubectl delete pod -l app=kiali -n istio-system</code></pre>
 </div>
 </div>
 </div>
@@ -429,15 +435,7 @@ earlier.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>To open the Kiali UI, execute the following command in your Kubernetes environment:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=kiali -o jsonpath='{.items[0].metadata.name}') 20001:20001</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If you&#8217;re on Cloud Shell open the Kiali UI in a WebView otherwithe visit <a href="http://localhost:20001/kiali/console" class="bare">http://localhost:20001/kiali/console</a>.</p>
+<p>Kiali&#8217;s URL is: <a href="http://$GATEWAY_IP:15029" class="bare">http://$GATEWAY_IP:15029</a></p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="_images/kiali-login.png" alt="Login Page"></span></p>

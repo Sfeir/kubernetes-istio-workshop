@@ -353,7 +353,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="enablingauthentication"><a class="anchor" href="#enablingauthentication"></a>Enabling User-End Authentication</h2>
+<h2 id="enablingauthentication"><a class="anchor" href="#enablingauthentication"></a>Enabling End-User Authentication</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Now it is time to enable end-user authentication.</p>
@@ -373,7 +373,7 @@ customer =&gt; preference =&gt; recommendation v1 from 'b4d67bcb7-7rp88': 4</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create -f <a href="https://github.com/Sfeir/kubernetes-istio-workshop/blob/master/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml">manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml</a></code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f <a href="https://github.com/Sfeir/kubernetes-istio-workshop/blob/master/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml">manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml</a></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -383,7 +383,7 @@ customer =&gt; preference =&gt; recommendation v1 from 'b4d67bcb7-7rp88': 4</cod
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl $customer
 
-Origin authentication failed.%`</code></pre>
+Origin authentication failed.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -442,7 +442,7 @@ customer =&gt; preference =&gt; recommendation v1 from 'b4d67bcb7-7rp88': 4</cod
 <div class="ulist">
 <ul>
 <li>
-<p><a href="rbac.html" class="page">RBAC</a></p>
+<p><a href="rbac.html" class="page">Next &gt;</a></p>
 </li>
 </ul>
 </div>

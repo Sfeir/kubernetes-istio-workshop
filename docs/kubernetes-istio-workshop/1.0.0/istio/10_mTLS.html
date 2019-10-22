@@ -370,7 +370,8 @@ metadata:
   namespace: "workshop"
 spec:
   peers:
-  - mtls: {}</code></pre>
+  - mtls:
+     mode: PERMISSIVE</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -399,7 +400,7 @@ spec:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://${GATEWAY_URL}/
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://${GATEWAY_IP}/
 customer =&gt; preference =&gt; recommendation v1 from 'b87789c58-mfrhr': 2</code></pre>
 </div>
 </div>
@@ -414,7 +415,7 @@ customer =&gt; preference =&gt; recommendation v1 from 'b87789c58-mfrhr': 2</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec $(kubectl get pod -l app=recommendation -o jsonpath={.items..metadata.name}) -c istio-proxy -- ls /etc/certs</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl exec $(kubectl get pod -l app=recommendation,version=v2 -o jsonpath={.items..metadata.name}) -c istio-proxy -- ls /etc/certs</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -471,7 +472,7 @@ sudo tcpdump -vvvv -A -i eth0 '((dst port 8080) and (net 10.0.3.3))' <i class="c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://${GATEWAY_URL}/
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://${GATEWAY_IP}/
 customer =&gt; preference =&gt; recommendation v1 from 'b87789c58-mfrhr': 2</code></pre>
 </div>
 </div>
@@ -510,7 +511,7 @@ kubectl delete -f manifests/istio/mutual-tls/destination-rule-tls.yml</code></pr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://${GATEWAY_URL}/
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://${GATEWAY_IP}/
 customer =&gt; preference =&gt; recommendation v1 from 'b87789c58-mfrhr': 2</code></pre>
 </div>
 </div>

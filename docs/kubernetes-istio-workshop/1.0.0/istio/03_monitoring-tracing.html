@@ -412,14 +412,14 @@ prometheus               ClusterIP      10.19.240.238   &lt;none&gt;         909
 <h2 id="grafana"><a class="anchor" href="#grafana"></a>Vizualizing Metrics with Grafana</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Grafana&#8217;s address is: <a href="http://$GATEWAY_URL:15031/" class="bare">http://$GATEWAY_URL:15031/</a></p>
+<p>The Grafana&#8217;s address is: <a href="http://$GATEWAY_IP:15031/" class="bare">http://$GATEWAY_IP:15031/</a></p>
 </div>
 <div class="paragraph">
 <p>To display the Istio dashboard, replace the path of the URL by <code>/dashboard/db/istio-workload-dashboard</code>. The URL should look like:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>http://$GATEWAY_URL:15031/dashboard/db/istio-workload-dashboard</code></pre>
+<pre class="highlightjs highlight"><code>http://$GATEWAY_IP:15031/dashboard/db/istio-workload-dashboard</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -434,7 +434,7 @@ prometheus               ClusterIP      10.19.240.238   &lt;none&gt;         909
 <h2 id="prometheus"><a class="anchor" href="#prometheus"></a>Querying Metrics from Prometheus</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The URL for Prometheus is: <a href="http://$GATEWAY_URL:15030/" class="bare">http://$GATEWAY_URL:15030/</a></p>
+<p>The URL for Prometheus is: <a href="http://$GATEWAY_IP:15030/" class="bare">http://$GATEWAY_IP:15030/</a></p>
 </div>
 <div class="paragraph">
 <p>The Prometheus console should look like this.</p>
@@ -477,7 +477,7 @@ You may have to refresh the browser for the Prometheus graph to update.
 <h2 id="jaeger"><a class="anchor" href="#jaeger"></a>Vizualizing Tracing with Jaeger</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Jaeger&#8217;s URL is: <a href="http://$GATEWAY_URL:15032" class="bare">http://$GATEWAY_URL:15032</a></p>
+<p>Jaeger&#8217;s URL is: <a href="http://$GATEWAY_IP:15032" class="bare">http://$GATEWAY_IP:15032</a></p>
 </div>
 <div class="ulist">
 <ul>
