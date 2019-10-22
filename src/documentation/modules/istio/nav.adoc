@@ -10,10 +10,15 @@
 *** xref:02_deploy-microservices.adoc#expose-customer[Expose customer]
 
 ** xref:03_monitoring-tracing.adoc[3. Observability Tools]
+*** xref:03_monitoring-tracing.adoc#monitoring[Monitoring and Tracing]
 *** xref:03_monitoring-tracing.adoc#grafana[Grafana]
 *** xref:03_monitoring-tracing.adoc#prometheus[Prometheus]
 *** xref:03_monitoring-tracing.adoc#jaeger[Jaeger]
 *** xref:03_monitoring-tracing-kiali.adoc[Kiali]
+**** xref:03_monitoring-tracing-kiali.adoc#generatingdata[Generating sample data]
+**** xref:03_monitoring-tracing-kiali.adoc#servicegraph[Service graph]
+**** xref:03_monitoring-tracing-kiali.adoc#applications[Applications]
+**** xref:03_monitoring-tracing-kiali.adoc#workloads[Workloads]
 
 ** xref:04_simple-routerules.adoc[4. Traffic Control]
 *** xref:04_simple-routerules.adoc#deployrecommendationv2[Deploy recommendation v2]

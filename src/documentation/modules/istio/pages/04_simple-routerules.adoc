@@ -4,7 +4,7 @@ include::_attributes.adoc[]
 This section demonstrates how to use various traffic management capabilities of Istio.
 
 We will show you how to route requests dynamically to multiple versions of a microservice.
-
+[#deployrecommendationv2]
 == Deploy recommendation:v2
 
 [source,bash]

@@ -1,3 +1,4 @@
+[#monitoring]
 = Monitoring and Tracing
 include::_attributes.adoc[]
 
