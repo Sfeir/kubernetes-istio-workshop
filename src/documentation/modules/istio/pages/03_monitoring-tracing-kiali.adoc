@@ -27,8 +27,11 @@ Update Kiali with the following commands:
 
 [source, bash]
 ----
-export GATEWAY_IP=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-echo "apiVersion: v1
+export GATEWAY_IP=$(kubectl -n istio-system get service istio-ingressgateway \
+  -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+kubectl apply -f - << EOF
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: kiali
@@ -52,7 +55,10 @@ data:
       grafana:
         url: http://$GATEWAY_IP:15031
       prometheus:
-        url: http://$GATEWAY_IP:15030" | kubectl apply -f -; kubectl delete pod -l app=kiali -n istio-system
+        url: http://$GATEWAY_IP:15030
+EOF
+
+kubectl delete pod -l app=kiali -n istio-system
 ----
 
 [#generatingdata]
@@ -69,15 +75,8 @@ To generate data for it, we can `fortio` it with this command:
 docker run istio/fortio load -t 5m -qps 5 $customer
 ----
 
+Kiali's URL is: http://$GATEWAY_IP:15029
 
-To open the Kiali UI, execute the following command in your Kubernetes environment:
-
-[source, bash,subs="+macros,+attributes"]
-----
-$ kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=kiali -o jsonpath='{.items[0].metadata.name}') 20001:20001
-----
-
-If you're on Cloud Shell open the Kiali UI in a WebView otherwithe visit http://localhost:20001/kiali/console.
 
 image:kiali-login.png[Login Page]
 

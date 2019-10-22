@@ -5,10 +5,12 @@ metadata:
 spec:
   targets:
     - name: customer
-    - name: preference
-    - name: recommendation
   origins:
     - jwt:
         issuer: "testing@secure.istio.io"
         jwksUri: "https://raw.githubusercontent.com/Sfeir/kubernetes-istio-workshop/master/manifests/istio/security/end-user_authentication/jwks.json"
+        trigger_rules:
+          - excluded_paths:
+            - exact: /health
+            - exact: /actuator/health
   principalBinding: USE_ORIGIN

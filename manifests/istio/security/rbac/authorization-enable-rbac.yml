@@ -5,4 +5,4 @@ metadata:
 spec:
   mode: 'ON_WITH_INCLUSION'
   inclusion:
-    namespaces: ["tutorial"]
+    namespaces: ["workshop"]

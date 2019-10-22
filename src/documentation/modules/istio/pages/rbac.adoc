@@ -10,7 +10,7 @@ The first thing to do is enable Istio Authorization by using `ClusterRbacConfig`
 
 [source, bash,subs="+macros,+attributes"]
 ----
-kubectl create -f link:{github-repo}/manifests/istio/security/rbac/authorization-enable-rbac.yml[manifests/istio/security/rbac/authorization-enable-rbac.yml] 
+kubectl apply -f link:{github-repo}/manifests/istio/security/rbac/authorization-enable-rbac.yml[manifests/istio/security/rbac/authorization-enable-rbac.yml] 
 ----
 
 Now RBAC is enabled on your mesh.
@@ -38,7 +38,7 @@ Now apply next Istio resource which makes that only tokens that contain a field 
 
 [source, bash,subs="+macros,+attributes"]
 ----
-kubectl create -f link:{github-repo}/manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml[manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml]
+kubectl apply -f link:{github-repo}/manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml[manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml]
 ----
 
 and then you can do a new call with the new token containing the `role` claim with value `customer``:
@@ -100,7 +100,7 @@ Follow xref:end-user-authentication#cleanup[End-user authentication with JWT Cle
 [source, bash]
 ----
 kubectl delete -f manifests/istio/security/rbac/namespace-rbac-policy-jwt.yml
-kubectl create -f manifests/istio/security/rbac/authorization-enable-rbac.yml
+kubectl apply -f manifests/istio/security/rbac/authorization-enable-rbac.yml
 ----
 
 xref:istio:b1_rate-limiting#ratelimiting[Next module: Bonus >]

@@ -5,7 +5,7 @@ include::_attributes.adoc[]
 In this chapter, we are going to see how to enable authenticating end user with Istio.
 
 [#enablingauthentication]
-== Enabling User-End Authentication
+== Enabling End-User Authentication
 
 Now it is time to enable end-user authentication.
 
@@ -22,7 +22,7 @@ Then run:
 
 [source, bash,subs="+macros,+attributes"]
 ----
-kubectl create -f link:{github-repo}/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml[manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml]
+kubectl apply -f link:{github-repo}/manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml[manifests/istio/security/end-user_authentication/enduser-authentication-jwt.yml]
 ----
 
 Then let's run the curl again:
@@ -31,7 +31,7 @@ Then let's run the curl again:
 ----
 curl $customer
 
-Origin authentication failed.%`
+Origin authentication failed.
 ----
 
 And now the communication is not possible because the user has not been identified (provides a valid JWT token).
@@ -72,4 +72,4 @@ kubectl delete -f link:{github-repo}/manifests/istio/security/end-user_authentic
 ----
 
 
-*** xref:istio:rbac.adoc[RBAC]
+*** xref:istio:rbac.adoc[Next >]

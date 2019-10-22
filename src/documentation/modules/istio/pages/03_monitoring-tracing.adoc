@@ -45,13 +45,13 @@ docker run istio/fortio load -t 5m -qps 5 $customer
 [#grafana]
 == Vizualizing Metrics with Grafana
 
-The Grafana's address is: http://$GATEWAY_URL:15031/
+The Grafana's address is: http://$GATEWAY_IP:15031/
 
 To display the Istio dashboard, replace the path of the URL by ``/dashboard/db/istio-workload-dashboard``. The URL should look like:
 
 [source]
 ----
-http://$GATEWAY_URL:15031/dashboard/db/istio-workload-dashboard
+http://$GATEWAY_IP:15031/dashboard/db/istio-workload-dashboard
 ----
 
 Examine the dashboard, you should see some statistics for the requests you sent earlier.
@@ -61,7 +61,7 @@ image:grafana.png[alt text]
 [#prometheus]
 == Querying Metrics from Prometheus
 
-The URL for Prometheus is: http://$GATEWAY_URL:15030/
+The URL for Prometheus is: http://$GATEWAY_IP:15030/
 
 The Prometheus console should look like this.
 
@@ -85,7 +85,7 @@ NOTE: You may have to refresh the browser for the Prometheus graph to update.
 [#jaeger]
 == Vizualizing Tracing with Jaeger
 
-Jaeger's URL is: http://$GATEWAY_URL:15032
+Jaeger's URL is: http://$GATEWAY_IP:15032
 
 - You should see the trace statistics.
 

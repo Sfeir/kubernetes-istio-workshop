@@ -24,7 +24,8 @@ metadata:
   namespace: "workshop"
 spec:
   peers:
-  - mtls: {}
+  - mtls:
+     mode: PERMISSIVE
 ----
 
 2 - At this point, only the receiving side is configured to use mutual TLS. To configure the client side, you need to set destination rules to use mutual TLS. It’s possible to use multiple destination rules, one for each applicable service (or namespace). However, it’s more convenient to use a rule with the * wildcard to match all services in the namesapce.
@@ -51,7 +52,7 @@ Then you can run:
 
 [source, bash]
 ----
-curl http://${GATEWAY_URL}/
+curl http://${GATEWAY_IP}/
 customer => preference => recommendation v1 from 'b87789c58-mfrhr': 2
 ----
 
@@ -63,7 +64,7 @@ Istio automatically installs necessary keys and certificates for mutual TLS auth
 
 [source, bash]
 ----
-kubectl exec $(kubectl get pod -l app=recommendation -o jsonpath={.items..metadata.name}) -c istio-proxy -- ls /etc/certs
+kubectl exec $(kubectl get pod -l app=recommendation,version=v2 -o jsonpath={.items..metadata.name}) -c istio-proxy -- ls /etc/certs
 ----
 
 .Output.
@@ -101,7 +102,7 @@ So now go to a terminal and execute:
 
 [source, bash]
 ----
-curl http://${GATEWAY_URL}/
+curl http://${GATEWAY_IP}/
 customer => preference => recommendation v1 from 'b87789c58-mfrhr': 2
 ----
 
@@ -136,7 +137,7 @@ And execute again:
 
 [source, bash]
 ----
-curl http://${GATEWAY_URL}/
+curl http://${GATEWAY_IP}/
 customer => preference => recommendation v1 from 'b87789c58-mfrhr': 2
 ----
 
