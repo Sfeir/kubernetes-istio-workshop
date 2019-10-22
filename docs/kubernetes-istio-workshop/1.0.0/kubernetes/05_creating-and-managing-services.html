@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Creating and Managing Services :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/05_creating-and-managing-services.html">
+    <title>Creating and Managing Services :: Kubernetes, Istio and Monitoring Workshop</title>
+    <link rel="canonical" href="https://sfeir.github.com/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/05_creating-and-managing-services.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -13,9 +13,9 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <a href="#">Kubernetes and Istio Workshop</a>
+        <a href="#">Kubernetes, Istio and Monitoring Workshop</a>
         <span class="separator">//</span>
-        <a href="https://github.com/Sfeir/kubernetes-istio-workshop">Docs</a>
+        <a href="https://sfeir.github.com/kubernetes-istio-workshop">Docs</a>
       </div>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
@@ -50,7 +50,7 @@
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="../index.html">Kubernetes and Istio Workshop</a></h3>
+    <h3 class="title"><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -140,6 +140,9 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html">3. Observability Tools</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/03_monitoring-tracing.html#monitoring">Monitoring and Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#grafana">Grafana</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -149,13 +152,28 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#jaeger">Jaeger</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html">Kiali</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#generatingdata">Generating sample data</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#servicegraph">Service graph</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#applications">Applications</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#workloads">Workloads</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">4. Traffic Control</span>
+    <a class="nav-link" href="../istio/04_simple-routerules.html">4. Traffic Control</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/04_simple-routerules.html#deployrecommendationv2">Deploy recommendation v2</a>
@@ -294,12 +312,12 @@
 </div>
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Kubernetes and Istio Workshop</span>
+    <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
     <span class="version">1.0.0</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <span class="title">Kubernetes and Istio Workshop</span>
+      <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
       <ul class="versions">
         <li class="version is-current is-latest">
           <a href="../index.html">1.0.0</a>
@@ -311,13 +329,13 @@
     </div>
   </aside>
 </div>
-<main role="main">
+<main>
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
   <a href="../index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
+    <li><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></li>
     <li><strong>Part 1 : Kubernetes</strong></li>
     <li><a href="05_creating-and-managing-services.html">5. Services</a></li>
   </ul>
@@ -350,23 +368,48 @@
 <h2 id="_tutorial_create_a_service"><a class="anchor" href="#_tutorial_create_a_service"></a>Tutorial: Create a Service</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Explore the monolith service configuration file:</p>
+<p>Explore the monolith service configuration file in <code>manifests/app/services/monolith.yaml</code></p>
+</div>
+<div class="paragraph">
+<p>Notice:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The service type (<code>None</code>, <code>ClusterIP</code>, <code>NodePort</code> or <code>LoadBalancer</code>)</p>
+</li>
+<li>
+<p>Pod selector to identify all pods targeted by the service</p>
+</li>
+<li>
+<p>ports configuration:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>targetPort</code> to define which container port(s) your service targets</p>
+</li>
+<li>
+<p><code>port</code> to define on which port your service is exposed inside the cluster</p>
+</li>
+<li>
+<p><code>nodePort</code> (optional), to explicitely specify on which port to expose your service outside of the cluster.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Then create the monolith service using kubectl:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>cat manifests/app/services/monolith.yaml</code></pre>
+<pre class="highlightjs highlight"><code>kubectl apply -f manifests/app/services/monolith.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Create the monolith service using kubectl:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>kubectl create -f manifests/app/services/monolith.yaml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Use the <code>gcloud compute firewall-rules</code> command to allow traffic to the <code>monolith</code> service:</p>
+<p>Specifically on Google Cloud Platform, you need to allow incoming traffic to your cluster node&#8217;s port.
+Use the <code>gcloud compute firewall-rules</code> command to allow traffic to the <code>monolith</code> service:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -381,7 +424,13 @@
 <div class="sect2">
 <h3 id="_hints"><a class="anchor" href="#_hints"></a>Hints</h3>
 <div class="paragraph">
-<p>List the GCP VMs which compose the GKE cluster</p>
+<p>On GCP, Kubernetes cluster nodes are standard Google Compute Engine VM instances managed by GKE.</p>
+</div>
+<div class="paragraph">
+<p>With service of type NodePort, you should be able to connect to your monolith throught the service node port, which is defined to <code>31000</code> in our yaml.</p>
+</div>
+<div class="paragraph">
+<p>List the GCP VMs which compose the GKE cluster to get their public IP addresses</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -389,14 +438,14 @@
 </div>
 </div>
 <div class="paragraph">
-<p>Output</p>
+<p>Output:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>NAME                                           ZONE            MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP     STATUS
-gke-istio-workshop-default-pool-e37360ba-369z  europe-west1-b  n1-standard-1               10.132.0.3   35.205.92.225   RUNNING
-gke-istio-workshop-default-pool-e37360ba-3hz4  europe-west1-b  n1-standard-1               10.132.0.2   35.240.127.238  RUNNING
-gke-istio-workshop-default-pool-e37360ba-8345  europe-west1-b  n1-standard-1               10.132.0.4   35.233.127.229  RUNNING</code></pre>
+<pre class="highlightjs highlight"><code>NAME                                           ZONE            MACHINE_TYPE   INTERNAL_IP  EXTERNAL_IP     STATUS
+gke-istio-workshop-default-pool-e37360ba-369z  europe-west1-b  n1-standard-1  10.132.0.3   35.205.92.225   RUNNING
+gke-istio-workshop-default-pool-e37360ba-3hz4  europe-west1-b  n1-standard-1  10.132.0.2   35.240.127.238  RUNNING
+gke-istio-workshop-default-pool-e37360ba-8345  europe-west1-b  n1-standard-1  10.132.0.4   35.233.127.229  RUNNING</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -435,6 +484,9 @@ gke-istio-workshop-default-pool-e37360ba-8345  europe-west1-b  n1-standard-1    
 <pre class="highlightjs highlight"><code>kubectl describe services monolith</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>You can also use GCP console to look for services (and later for ingress) in the <em>Services &amp; Ingress</em> menu.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_quiz_2"><a class="anchor" href="#_quiz_2"></a>Quiz</h3>
@@ -467,12 +519,8 @@ gke-istio-workshop-default-pool-e37360ba-8345  europe-west1-b  n1-standard-1    
 <pre class="highlightjs highlight"><code>kubectl get pods -l "app=monolith,secure=enabled"</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
 <div class="paragraph">
-<p>Notice this label query does not print any results</p>
-</div>
-</blockquote>
+<p>Notice this last query does not print any results</p>
 </div>
 <div class="paragraph">
 <p>Use the <code>kubectl label</code> command to add the missing <code>secure=enabled</code> label to the <code>secure-monolith</code> Pod.</p>
@@ -559,6 +607,9 @@ gke-istio-workshop-default-pool-e37360ba-8345  europe-west1-b  n1-standard-1    
 <div class="sectionbody">
 <div class="paragraph">
 <p>In this chapter you learned how to expose Pods using services and labels.</p>
+</div>
+<div class="paragraph">
+<p><a href="06_creating-and-managing-deployments.html" class="page">Next &gt;</a></p>
 </div>
 </div>
 </div>

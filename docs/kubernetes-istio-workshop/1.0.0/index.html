@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>kubernetes and Istio Workshop :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/index.html">
+    <title>Kubernetes, Istio and Monitoring Workshop :: Kubernetes, Istio and Monitoring Workshop</title>
+    <link rel="canonical" href="https://sfeir.github.com/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/index.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="icon" href="../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -13,9 +13,9 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <a href="#">Kubernetes and Istio Workshop</a>
+        <a href="#">Kubernetes, Istio and Monitoring Workshop</a>
         <span class="separator">//</span>
-        <a href="https://github.com/Sfeir/kubernetes-istio-workshop">Docs</a>
+        <a href="https://sfeir.github.com/kubernetes-istio-workshop">Docs</a>
       </div>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
@@ -50,7 +50,7 @@
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="index.html">Kubernetes and Istio Workshop</a></h3>
+    <h3 class="title"><a href="index.html">Kubernetes, Istio and Monitoring Workshop</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -140,6 +140,9 @@
     <a class="nav-link" href="istio/03_monitoring-tracing.html">3. Observability Tools</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="istio/03_monitoring-tracing.html#monitoring">Monitoring and Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="istio/03_monitoring-tracing.html#grafana">Grafana</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -149,13 +152,28 @@
     <a class="nav-link" href="istio/03_monitoring-tracing.html#jaeger">Jaeger</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="istio/03_monitoring-tracing-kiali.html">Kiali</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="istio/03_monitoring-tracing-kiali.html#generatingdata">Generating sample data</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="istio/03_monitoring-tracing-kiali.html#servicegraph">Service graph</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="istio/03_monitoring-tracing-kiali.html#applications">Applications</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="istio/03_monitoring-tracing-kiali.html#workloads">Workloads</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">4. Traffic Control</span>
+    <a class="nav-link" href="istio/04_simple-routerules.html">4. Traffic Control</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="istio/04_simple-routerules.html#deployrecommendationv2">Deploy recommendation v2</a>
@@ -294,12 +312,12 @@
 </div>
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Kubernetes and Istio Workshop</span>
+    <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
     <span class="version">1.0.0</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <span class="title">Kubernetes and Istio Workshop</span>
+      <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
       <ul class="versions">
         <li class="version is-current is-latest">
           <a href="index.html">1.0.0</a>
@@ -311,20 +329,19 @@
     </div>
   </aside>
 </div>
-<main role="main">
+<main>
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
   <a href="index.html" class="home-link is-current"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="index.html">Kubernetes and Istio Workshop</a></li>
-    <li><a href="index.html">kubernetes and Istio Workshop</a></li>
+    <li><a href="index.html">Kubernetes, Istio and Monitoring Workshop</a></li>
   </ul>
 </nav>
   <div class="edit-this-page"><a href="file:///repo/src/documentation/modules/ROOT/pages/index.adoc">Edit this Page</a></div>
 </div>
 <article class="doc">
-<h1 class="page">kubernetes and Istio Workshop</h1>
+<h1 class="page">Kubernetes, Istio and Monitoring Workshop</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="ulist">
@@ -338,13 +355,32 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>There are three different and super simple microservices in this system and they are chained together in the following sequence:</p>
+<p>This workshop is split in two parts : one focused on Kubernetes basics, the other on Istio and tools to monitor your cluster.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_kubernetes_basics"><a class="anchor" href="#_kubernetes_basics"></a>Kubernetes basics</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This first part begins with the deploiement of a simple microservice. You&#8217;ll improve it step-by-step using various Kubernetes features : health-check, externalized configuration, load-balancing, rolling-upgrade, etc.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_istio_and_monitoring"><a class="anchor" href="#_istio_and_monitoring"></a>Istio and Monitoring</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this second part, there are three different and super simple microservices and they are chained together in the following sequence:</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="_images/k8s-istio-Initial.png" alt="Super simple microservices"></span></p>
 </div>
 <div class="paragraph">
-<p>For now, they have a simple exception handling solution for dealing with a missing dependent service: it just returns the error message to the end-user.</p>
+<p>At the beginning, they have a simple exception handling solution for dealing with a missing dependent service: it just returns the error message to the end-user. You&#8217;ll see how to improve this situation.</p>
+</div>
+<div class="paragraph">
+<p><a href="welcome/welcome.html" class="page">Next &gt;</a></p>
 </div>
 </div>
 </div>

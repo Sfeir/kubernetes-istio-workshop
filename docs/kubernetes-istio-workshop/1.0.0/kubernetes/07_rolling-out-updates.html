@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Rolling out Updates :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/07_rolling-out-updates.html">
+    <title>Rolling out Updates :: Kubernetes, Istio and Monitoring Workshop</title>
+    <link rel="canonical" href="https://sfeir.github.com/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/07_rolling-out-updates.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -13,9 +13,9 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <a href="#">Kubernetes and Istio Workshop</a>
+        <a href="#">Kubernetes, Istio and Monitoring Workshop</a>
         <span class="separator">//</span>
-        <a href="https://github.com/Sfeir/kubernetes-istio-workshop">Docs</a>
+        <a href="https://sfeir.github.com/kubernetes-istio-workshop">Docs</a>
       </div>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
@@ -50,7 +50,7 @@
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="../index.html">Kubernetes and Istio Workshop</a></h3>
+    <h3 class="title"><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -140,6 +140,9 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html">3. Observability Tools</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/03_monitoring-tracing.html#monitoring">Monitoring and Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#grafana">Grafana</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -149,13 +152,28 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#jaeger">Jaeger</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html">Kiali</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#generatingdata">Generating sample data</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#servicegraph">Service graph</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#applications">Applications</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#workloads">Workloads</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">4. Traffic Control</span>
+    <a class="nav-link" href="../istio/04_simple-routerules.html">4. Traffic Control</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/04_simple-routerules.html#deployrecommendationv2">Deploy recommendation v2</a>
@@ -294,12 +312,12 @@
 </div>
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Kubernetes and Istio Workshop</span>
+    <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
     <span class="version">1.0.0</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <span class="title">Kubernetes and Istio Workshop</span>
+      <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
       <ul class="versions">
         <li class="version is-current is-latest">
           <a href="../index.html">1.0.0</a>
@@ -311,13 +329,13 @@
     </div>
   </aside>
 </div>
-<main role="main">
+<main>
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
   <a href="../index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
+    <li><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></li>
     <li><strong>Part 1 : Kubernetes</strong></li>
     <li><a href="07_rolling-out-updates.html">7. Rolling-upgrade</a></li>
   </ul>
@@ -358,12 +376,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>Then modify the auth deployment to replace the pod&#8217;s container image version. Edit the yaml file.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">vim manifests/app/deployments/auth.yaml</code></pre>
-</div>
+<p>Then modify the auth deployment to replace the pod&#8217;s container image version. Edit <code>manifests/app/deployments/auth.yaml</code> in the Cloud Shell editor and save.</p>
 </div>
 <div class="paragraph">
 <p>Look for following line and upgrade version 1.0.0 to 2.0.0:</p>
@@ -380,6 +393,22 @@
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f manifests/app/deployments/auth.yaml --record
 kubectl describe deployments auth</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice the events at the end of deployment desciption. To upgrade an application, the deployment-controller creates a new replica set with the new pod template to replace the old one.</p>
+</div>
+<div class="paragraph">
+<p>Output</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">Events:
+  Type    Reason             Age    From                   Message
+  ----    ------             ----   ----                   -------
+  Normal  ScalingReplicaSet  44m    deployment-controller  Scaled up replica set auth-65c65db967 to 1
+  Normal  ScalingReplicaSet  7m55s  deployment-controller  Scaled up replica set auth-69f6f69db6 to 1
+  Normal  ScalingReplicaSet  7m55s  deployment-controller  Scaled down replica set auth-65c65db967 to 0</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -407,10 +436,10 @@ kubectl describe deployments auth</code></pre>
 <h2 id="_tutorial_pause_and_resume_an_active_rollout"><a class="anchor" href="#_tutorial_pause_and_resume_an_active_rollout"></a>Tutorial: Pause and Resume an Active Rollout</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Let&#8217;s try to see a deployment in progress.</p>
+<p>It&#8217;s easy to deploy a new version using Kubernetes, but you&#8217;ll see that you can do that without any service interruption. So let&#8217;s try to see a deployment in progress.</p>
 </div>
 <div class="paragraph">
-<p>First scale the hello Deployment to 6 pods:</p>
+<p>First, you&#8217;ll scale the hello Deployment to 6 pods:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -418,7 +447,7 @@ kubectl describe deployments auth</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Look at your <em>Deployment</em> history.</p>
+<p>Look at your <em>Deployment</em> history, there is currently a single revision of your deployment</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -430,7 +459,7 @@ kubectl describe deployments auth</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">sed -i .bak 's/hello:1.0.0/hello:2.0.0/' manifests/app/deployments/hello.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">sed -i.bak -e 's/hello:1.0.0/hello:2.0.0/' -e 's/replicas: 1/replicas: 6/' manifests/app/deployments/hello.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -440,19 +469,30 @@ kubectl describe deployments auth</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f manifests/app/deployments/hello.yaml --record
 kubectl describe deployments hello
-kubectl rollout pause deployment hello</code></pre>
+kubectl rollout pause deployment hello
+kubectl get replicaset</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You&#8217;ll see the <em>Deployment</em> rolling-upgrade stopped in the middle.</p>
+<p>You&#8217;ll see the <em>Deployment</em> rolling-upgrade stopped in the middle. The last command show you two <code>hello-xxxxxxx</code> replicasets, with part of the 6 (or more) pods in each (like 5 and 2).</p>
 </div>
 <div class="paragraph">
-<p>Resume the rollout to terminates the rolling-upgrade.</p>
+<p>The deployment-controller is replacing old pods (in the old replicaset) one at a time with new pods (from the new replicaset), so that you&#8217;ll never have less than the 6 replicas asked, whatever the version.</p>
+</div>
+<div class="paragraph">
+<p>Finally resume the rollout to terminates the rolling-upgrade.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl rollout resume deployment hello</code></pre>
+<pre class="highlightjs highlight"><code>kubectl rollout resume deployment hello
+kubectl describe deployments hello</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Notice in the event the progressive scale-up of the new replicaset and the scale-down of the old one.</p>
+</div>
+<div class="paragraph">
+<p><strong>Warning: to do rolling updates, your application must support running two version in parallel !</strong></p>
 </div>
 </div>
 </div>
@@ -469,6 +509,9 @@ kubectl rollout pause deployment hello</code></pre>
 <div class="sectionbody">
 <div class="paragraph">
 <p>In this chapter you learned how to rollout updates to your applications by modifying deployment objects to trigger rolling updates. You also learned how to pause and resume an active rolling update and rollback it back using the <code>kubectl rollout</code> command.</p>
+</div>
+<div class="paragraph">
+<p><a href="08_cleanup.html" class="page">Next &gt;</a></p>
 </div>
 </div>
 </div>

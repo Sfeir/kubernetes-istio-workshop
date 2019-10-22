@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Creating and managing pods :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/02_creating-and-managing-pods.html">
+    <title>Creating and managing pods :: Kubernetes, Istio and Monitoring Workshop</title>
+    <link rel="canonical" href="https://sfeir.github.com/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/02_creating-and-managing-pods.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -13,9 +13,9 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <a href="#">Kubernetes and Istio Workshop</a>
+        <a href="#">Kubernetes, Istio and Monitoring Workshop</a>
         <span class="separator">//</span>
-        <a href="https://github.com/Sfeir/kubernetes-istio-workshop">Docs</a>
+        <a href="https://sfeir.github.com/kubernetes-istio-workshop">Docs</a>
       </div>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
@@ -50,7 +50,7 @@
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="../index.html">Kubernetes and Istio Workshop</a></h3>
+    <h3 class="title"><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -140,6 +140,9 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html">3. Observability Tools</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/03_monitoring-tracing.html#monitoring">Monitoring and Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#grafana">Grafana</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -149,13 +152,28 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#jaeger">Jaeger</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html">Kiali</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#generatingdata">Generating sample data</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#servicegraph">Service graph</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#applications">Applications</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#workloads">Workloads</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">4. Traffic Control</span>
+    <a class="nav-link" href="../istio/04_simple-routerules.html">4. Traffic Control</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/04_simple-routerules.html#deployrecommendationv2">Deploy recommendation v2</a>
@@ -294,12 +312,12 @@
 </div>
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Kubernetes and Istio Workshop</span>
+    <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
     <span class="version">1.0.0</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <span class="title">Kubernetes and Istio Workshop</span>
+      <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
       <ul class="versions">
         <li class="version is-current is-latest">
           <a href="../index.html">1.0.0</a>
@@ -311,13 +329,13 @@
     </div>
   </aside>
 </div>
-<main role="main">
+<main>
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
   <a href="../index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
+    <li><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></li>
     <li><strong>Part 1 : Kubernetes</strong></li>
     <li><a href="02_creating-and-managing-pods.html">2. Pods</a></li>
   </ul>
@@ -329,7 +347,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>At the core of Kubernetes is the Pod. Pods represent a logical application and hold a collection of one or more containers and volumes. In this chapter you will learn how to:</p>
+<p>At the core of Kubernetes is the Pod. Pods represent a logical application and hold a collection of one or more containers and volumes running on the same node. In this chapter you will learn how to:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -353,19 +371,51 @@
 <h2 id="_tutorial_creating_pods"><a class="anchor" href="#_tutorial_creating_pods"></a>Tutorial: Creating Pods</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Explore the <code>monolith</code> pod configuration file:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">cat manifests/app/pods/monolith.yaml</code></pre>
-</div>
+<p>Let&#8217;s look at configuration file used to create Kubernetes resources.
+To see files on your free instance, Cloud Shell provides a code editor.
+Open it using the pencil button</p>
 </div>
 <div class="paragraph">
-<p>Create the <code>monolith</code> pod using kubectl:</p>
+<p><span class="image"><img src="_images/cloud-shell-editor.png" alt="Pencil button on Cloud Shell bar opens an editor"></span></p>
+</div>
+<div class="paragraph">
+<p>Now explore the <code>monolith</code> pod configuration file in <code>kubernetes-istio-workshop/manifests/app/pods/monolith.yaml</code></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/cloud-shell-yaml-editor.png" alt="Editor colorize code and display file outline on the right"></span></p>
+</div>
+<div class="paragraph">
+<p>Notice some important parts of this Pod definition:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>you can have more than one container per pod</p>
+</li>
+<li>
+<p>each container have its own image and arguments, and can declare which ports its listen to</p>
+</li>
+<li>
+<p>you should define requests and limits for your container</p>
+<div class="ulist">
+<ul>
+<li>
+<p>requests specifies minimal resources required by you application</p>
+</li>
+<li>
+<p>limits will protect your cluster for uncontrolled resource consumption by containers</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To deploy the <code>monolith</code> pod, use kubectl to <em>apply</em> your pod definition on the cluster :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl create -f manifests/app/pods/monolith.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f manifests/app/pods/monolith.yaml</code></pre>
 </div>
 </div>
 </div>
@@ -374,7 +424,11 @@
 <h2 id="_exercise_view_pod_details"><a class="anchor" href="#_exercise_view_pod_details"></a>Exercise: View Pod details</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Use the <code>kubectl get</code> and <code>kubect describe</code> commands to view details for the <code>monolith</code> Pod:</p>
+<p>Use the <code>kubectl get</code> and <code>kubect describe</code> commands to view details for the <code>monolith</code> Pod.</p>
+</div>
+<div class="paragraph">
+<p>You can also navigate on the <em>Workloads</em> menu in GCP console
+<span class="image"><img src="_images/console-gke-workloads.png" alt="Workloads menu show running pods and deployments"></span></p>
 </div>
 <div class="sect2">
 <h3 id="_hints"><a class="anchor" href="#_hints"></a>Hints</h3>
@@ -431,37 +485,11 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">curl http://127.0.0.1:10080</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">curl http://127.0.0.1:10080
+curl http://127.0.0.1:10080/secure
+TOKEN=$( curl -s -u user:password http://127.0.0.1:10080/login | jq -r .token )
+curl -H "Authorization: Bearer ${TOKEN}" http://127.0.0.1:10080/secure</code></pre>
 </div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">curl http://127.0.0.1:10080/secure</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">curl -u user http://127.0.0.1:10080/login</code></pre>
-</div>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>Type "password" at the prompt.</p>
-</div>
-</blockquote>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">curl -H "Authorization: Bearer &lt;token&gt;" http://127.0.0.1:10080/secure</code></pre>
-</div>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>Use the JWT token from the previous login.</p>
-</div>
-</blockquote>
 </div>
 </div>
 </div>
@@ -484,6 +512,29 @@
 </div>
 </blockquote>
 </div>
+<div class="sect2">
+<h3 id="_bonus_download_and_use_code_stern_code_for_logs"><a class="anchor" href="#_bonus_download_and_use_code_stern_code_for_logs"></a>Bonus: download and use <code>stern</code> for logs</h3>
+<div class="paragraph">
+<p>Stern (<a href="https://github.com/wercker/stern" class="bare">https://github.com/wercker/stern</a>) is a small go binary which allow to follow logs from multiple pods by pod-name patterns.</p>
+</div>
+<div class="paragraph">
+<p>Download it from github and make it executable</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">curl -L -o stern https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64
+chmod +x stern</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can get logs from pods by pattern:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">./stern monoli*</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -504,6 +555,9 @@
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">ps aux</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p><a href="03_monitoring-and-health-checks.html" class="page">Next &gt;</a></p>
 </div>
 </div>
 </div>

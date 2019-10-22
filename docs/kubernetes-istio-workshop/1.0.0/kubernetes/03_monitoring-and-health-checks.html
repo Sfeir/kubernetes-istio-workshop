@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Monitoring and Health Checks :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/03_monitoring-and-health-checks.html">
+    <title>Monitoring and Health Checks :: Kubernetes, Istio and Monitoring Workshop</title>
+    <link rel="canonical" href="https://sfeir.github.com/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/03_monitoring-and-health-checks.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -13,9 +13,9 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <a href="#">Kubernetes and Istio Workshop</a>
+        <a href="#">Kubernetes, Istio and Monitoring Workshop</a>
         <span class="separator">//</span>
-        <a href="https://github.com/Sfeir/kubernetes-istio-workshop">Docs</a>
+        <a href="https://sfeir.github.com/kubernetes-istio-workshop">Docs</a>
       </div>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
@@ -50,7 +50,7 @@
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="../index.html">Kubernetes and Istio Workshop</a></h3>
+    <h3 class="title"><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -140,6 +140,9 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html">3. Observability Tools</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/03_monitoring-tracing.html#monitoring">Monitoring and Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#grafana">Grafana</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -149,13 +152,28 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#jaeger">Jaeger</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html">Kiali</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#generatingdata">Generating sample data</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#servicegraph">Service graph</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#applications">Applications</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#workloads">Workloads</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">4. Traffic Control</span>
+    <a class="nav-link" href="../istio/04_simple-routerules.html">4. Traffic Control</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/04_simple-routerules.html#deployrecommendationv2">Deploy recommendation v2</a>
@@ -294,12 +312,12 @@
 </div>
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Kubernetes and Istio Workshop</span>
+    <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
     <span class="version">1.0.0</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <span class="title">Kubernetes and Istio Workshop</span>
+      <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
       <ul class="versions">
         <li class="version is-current is-latest">
           <a href="../index.html">1.0.0</a>
@@ -311,13 +329,13 @@
     </div>
   </aside>
 </div>
-<main role="main">
+<main>
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
   <a href="../index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
+    <li><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></li>
     <li><strong>Part 1 : Kubernetes</strong></li>
     <li><a href="03_monitoring-and-health-checks.html">3. Monitoring apps</a></li>
   </ul>
@@ -353,19 +371,17 @@
 <h2 id="_tutorial_creating_pods_with_liveness_and_readiness_probes"><a class="anchor" href="#_tutorial_creating_pods_with_liveness_and_readiness_probes"></a>Tutorial: Creating Pods with Liveness and Readiness Probes</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Explore the <code>healthy-monolith</code> pod configuration file:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>cat manifests/app/pods/healthy-monolith.yaml</code></pre>
-</div>
+<p>Explore the <code>manifests/app/pods/healthy-monolith.yaml</code> pod configuration file in the Cloud Shell editor</p>
 </div>
 <div class="paragraph">
-<p>Create the <code>healthy-monolith</code> pod using kubectl:</p>
+<p>Notice <code>livenessProbe</code> and <code>readinessProbe</code> container&#8217;s configuration.</p>
+</div>
+<div class="paragraph">
+<p>Now create the <code>healthy-monolith</code> pod using kubectl:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl create -f manifests/app/pods/healthy-monolith.yaml</code></pre>
+<pre class="highlightjs highlight"><code>kubectl apply -f manifests/app/pods/healthy-monolith.yaml</code></pre>
 </div>
 </div>
 </div>
@@ -405,7 +421,7 @@
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>The <code>healthy-monolith</code> Pod logs each health check. Use the <code>kubectl logs</code> command to view them.</p>
+<p>The <code>healthy-monolith</code> Pod logs each health check. Use <code>./stern heal*</code> command to view them.</p>
 </div>
 </blockquote>
 </div>
@@ -419,7 +435,7 @@
 <p>In this tutorial you will observe how Kubernetes responds to failed readiness probes. The <code>monolith</code> container supports the ability to force failures of it&#8217;s readiness and liveness probes. This will enable us to simulate failures for the <code>healthy-monolith</code> Pod.</p>
 </div>
 <div class="paragraph">
-<p>Use the <code>kubectl port-forward</code> command to forward a local port to the health port of the <code>healthy-monolith</code> Pod.</p>
+<p>Use the <code>kubectl port-forward</code> command to forward a local port to the health port of the <code>healthy-monolith</code> Pod</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -452,6 +468,9 @@
 </div>
 </div>
 <div class="paragraph">
+<p>You may also monitor pods status in the Workloads view of GKE console (click on the <strong>REFRESH</strong> button on the top of the Workloads list).</p>
+</div>
+<div class="paragraph">
 <p>Use the <code>kubectl describe</code> command to get more details about the failing readiness probe:</p>
 </div>
 <div class="listingblock">
@@ -459,12 +478,8 @@
 <pre class="highlightjs highlight"><code>kubectl describe pods healthy-monolith</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
 <div class="paragraph">
 <p>Notice the events for the <code>healthy-monolith</code> Pod report details about failing readiness probe.</p>
-</div>
-</blockquote>
 </div>
 <div class="paragraph">
 <p>Force the <code>monolith</code> container readiness probe to pass. Use the <code>curl</code> command to toggle the readiness probe status:</p>
@@ -525,6 +540,9 @@
 <div class="paragraph">
 <p>In this chapter you learned that Kubernetes supports application monitoring using
 liveness and readiness probes. You also learned how to add readiness and liveness probes to Pods and what happens when probes fail.</p>
+</div>
+<div class="paragraph">
+<p><a href="04_managing-application-configurations-and-secrets.html" class="page">Next &gt;</a></p>
 </div>
 </div>
 </div>

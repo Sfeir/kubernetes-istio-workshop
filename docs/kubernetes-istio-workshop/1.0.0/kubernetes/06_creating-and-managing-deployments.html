@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Creating and Managing Deployments :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/06_creating-and-managing-deployments.html">
+    <title>Creating and Managing Deployments :: Kubernetes, Istio and Monitoring Workshop</title>
+    <link rel="canonical" href="https://sfeir.github.com/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/kubernetes/06_creating-and-managing-deployments.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -13,9 +13,9 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <a href="#">Kubernetes and Istio Workshop</a>
+        <a href="#">Kubernetes, Istio and Monitoring Workshop</a>
         <span class="separator">//</span>
-        <a href="https://github.com/Sfeir/kubernetes-istio-workshop">Docs</a>
+        <a href="https://sfeir.github.com/kubernetes-istio-workshop">Docs</a>
       </div>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
@@ -50,7 +50,7 @@
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="../index.html">Kubernetes and Istio Workshop</a></h3>
+    <h3 class="title"><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -140,6 +140,9 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html">3. Observability Tools</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/03_monitoring-tracing.html#monitoring">Monitoring and Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#grafana">Grafana</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -149,13 +152,28 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#jaeger">Jaeger</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html">Kiali</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#generatingdata">Generating sample data</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#servicegraph">Service graph</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#applications">Applications</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#workloads">Workloads</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">4. Traffic Control</span>
+    <a class="nav-link" href="../istio/04_simple-routerules.html">4. Traffic Control</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/04_simple-routerules.html#deployrecommendationv2">Deploy recommendation v2</a>
@@ -294,12 +312,12 @@
 </div>
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Kubernetes and Istio Workshop</span>
+    <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
     <span class="version">1.0.0</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <span class="title">Kubernetes and Istio Workshop</span>
+      <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
       <ul class="versions">
         <li class="version is-current is-latest">
           <a href="../index.html">1.0.0</a>
@@ -311,13 +329,13 @@
     </div>
   </aside>
 </div>
-<main role="main">
+<main>
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
   <a href="../index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
+    <li><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></li>
     <li><strong>Part 1 : Kubernetes</strong></li>
     <li><a href="06_creating-and-managing-deployments.html">6. Deployments</a></li>
   </ul>
@@ -361,21 +379,37 @@
 <div class="sect2">
 <h3 id="_create_and_expose_the_auth_deployment"><a class="anchor" href="#_create_and_expose_the_auth_deployment"></a>Create and Expose the Auth Deployment</h3>
 <div class="paragraph">
-<p>Create and explore the Deployment for service <code>auth</code>:</p>
+<p>Explore and create  the Deployment for service <code>auth</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl create -f manifests/app/deployments/auth.yaml
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f manifests/app/deployments/auth.yaml
 kubectl describe deployments auth</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Notice in the Deployment definition:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>replicas</code> is the number of pod we ask Kubernetes to run on the cluster. It&#8217;s used by the ReplicaSet.</p>
+</li>
+<li>
+<p>In <code>template</code> you&#8217;ll recognize the definition of Pods seen previously. This template is used by the ReplicaSet to provision Pods.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Now create the corresponding service:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl create -f manifests/app/services/auth.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f manifests/app/services/auth.yaml</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Notice the match between pods' labels and service&#8217;s selectors.</p>
 </div>
 </div>
 <div class="sect2">
@@ -385,22 +419,22 @@ kubectl describe deployments auth</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl create -f manifests/app/deployments/hello.yaml
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl apply -f manifests/app/deployments/hello.yaml
 kubectl describe deployments hello
-kubectl create -f manifests/app/services/hello.yaml</code></pre>
+kubectl apply -f manifests/app/services/hello.yaml</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_create_and_expose_the_frontend_deployment"><a class="anchor" href="#_create_and_expose_the_frontend_deployment"></a>Create and Expose the Frontend Deployment</h3>
 <div class="paragraph">
-<p>And at least for the frontend:</p>
+<p>And at least for the <code>frontend</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl create configmap nginx-frontend-conf --from-file=manifests/app/nginx/frontend.conf
-kubectl create -f manifests/app/deployments/frontend.yaml
-kubectl create -f manifests/app/services/frontend.yaml</code></pre>
+kubectl apply -f manifests/app/deployments/frontend.yaml
+kubectl apply -f manifests/app/services/frontend.yaml</code></pre>
 </div>
 </div>
 </div>
@@ -422,11 +456,21 @@ kubectl create -f manifests/app/services/frontend.yaml</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>kubectl scale deployments hello --replicas=3
-kubectl describe deployments hello
-kubectl get pods
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl scale deployments hello --replicas=3
+kubectl describe deployments hello</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice the <code>Replicas</code> values in the describe command and the scaling events at the end.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">kubectl get pods
 kubectl get replicasets</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>There is now 3 replicas of your <code>hello</code> microservice.</p>
 </div>
 </div>
 </div>
@@ -438,15 +482,16 @@ kubectl get replicasets</code></pre>
 </div>
 <div class="sect2">
 <h3 id="_hints"><a class="anchor" href="#_hints"></a>Hints</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code>vim manifests/app/deployments/frontend.yaml</code></pre>
-</div>
+<div class="paragraph">
+<p>You can change this value in the <code>manifests/app/deployments/frontend.yaml</code> file with the Cloud Shell editor. Type <code>Ctrl+S</code> to save the file</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code>kubectl apply -f manifests/app/deployments/frontend.yaml</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You can watch configuration change applying by refreshing the <code>Workloads</code> list in GCP console. You&#8217;ll soon have <code>3/3</code> pods for the <code>frontend</code> Deployment.</p>
 </div>
 </div>
 </div>
@@ -454,6 +499,12 @@ kubectl get replicasets</code></pre>
 <div class="sect1">
 <h2 id="_exercise_interact_with_the_frontend_service"><a class="anchor" href="#_exercise_interact_with_the_frontend_service"></a>Exercise: Interact with the Frontend Service</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Your <code>frontend</code> service is of type <code>LoadBalancer</code>. This means that on cloud providers (AWS, Azure, GCP, &#8230;&#8203;), your service will be accessible through an infrastructure load balancing service managed by the provider.</p>
+</div>
+<div class="paragraph">
+<p>The external IP of the service is the IP of this load balancing service, on which you can join the service.</p>
+</div>
 <div class="sect2">
 <h3 id="_hints_2"><a class="anchor" href="#_hints_2"></a>Hints</h3>
 <div class="listingblock">
@@ -474,6 +525,9 @@ kubectl get replicasets</code></pre>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Deployments are the preferred way to manage application deployments. You learned how to create, expose and scale deployments.</p>
+</div>
+<div class="paragraph">
+<p><a href="07_rolling-out-updates.html" class="page">Next &gt;</a></p>
 </div>
 </div>
 </div>

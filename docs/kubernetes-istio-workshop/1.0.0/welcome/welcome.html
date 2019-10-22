@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Welcome :: Kubernetes &amp; Istio Workshop</title>
-    <link rel="canonical" href="https://github.com/Sfeir/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/welcome/welcome.html">
+    <title>Welcome :: Kubernetes, Istio and Monitoring Workshop</title>
+    <link rel="canonical" href="https://sfeir.github.com/kubernetes-istio-workshop/kubernetes-istio-workshop/1.0.0/welcome/welcome.html">
     <meta name="generator" content="Antora 1.1.1">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="icon" href="../../../_/img/favicon.ico" type="image/x-icon">  </head>
@@ -13,9 +13,9 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <a href="#">Kubernetes and Istio Workshop</a>
+        <a href="#">Kubernetes, Istio and Monitoring Workshop</a>
         <span class="separator">//</span>
-        <a href="https://github.com/Sfeir/kubernetes-istio-workshop">Docs</a>
+        <a href="https://sfeir.github.com/kubernetes-istio-workshop">Docs</a>
       </div>
       <button class="navbar-burger" data-target="topbar-nav">
         <span></span>
@@ -50,7 +50,7 @@
     <div class="panels">
 <div class="nav-panel-menu is-active" data-panel="menu">
   <nav class="nav-menu">
-    <h3 class="title"><a href="../index.html">Kubernetes and Istio Workshop</a></h3>
+    <h3 class="title"><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></h3>
 <ul class="nav-list">
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
@@ -140,6 +140,9 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html">3. Observability Tools</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../istio/03_monitoring-tracing.html#monitoring">Monitoring and Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#grafana">Grafana</a>
   </li>
   <li class="nav-item" data-depth="3">
@@ -149,13 +152,28 @@
     <a class="nav-link" href="../istio/03_monitoring-tracing.html#jaeger">Jaeger</a>
   </li>
   <li class="nav-item" data-depth="3">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html">Kiali</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#generatingdata">Generating sample data</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#servicegraph">Service graph</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#applications">Applications</a>
+  </li>
+  <li class="nav-item" data-depth="4">
+    <a class="nav-link" href="../istio/03_monitoring-tracing-kiali.html#workloads">Workloads</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <span class="nav-text">4. Traffic Control</span>
+    <a class="nav-link" href="../istio/04_simple-routerules.html">4. Traffic Control</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../istio/04_simple-routerules.html#deployrecommendationv2">Deploy recommendation v2</a>
@@ -294,12 +312,12 @@
 </div>
 <div class="nav-panel-explore" data-panel="explore">
   <div class="context">
-    <span class="title">Kubernetes and Istio Workshop</span>
+    <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
     <span class="version">1.0.0</span>
   </div>
   <ul class="components">
     <li class="component is-current">
-      <span class="title">Kubernetes and Istio Workshop</span>
+      <span class="title">Kubernetes, Istio and Monitoring Workshop</span>
       <ul class="versions">
         <li class="version is-current is-latest">
           <a href="../index.html">1.0.0</a>
@@ -311,13 +329,13 @@
     </div>
   </aside>
 </div>
-<main role="main">
+<main>
 <div class="toolbar" role="navigation">
 <button class="nav-toggle"></button>
   <a href="../index.html" class="home-link"></a>
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
-    <li><a href="../index.html">Kubernetes and Istio Workshop</a></li>
+    <li><a href="../index.html">Kubernetes, Istio and Monitoring Workshop</a></li>
     <li><a href="welcome.html"><strong>Welcome</strong></a></li>
   </ul>
 </nav>
@@ -331,18 +349,20 @@
 <div class="paragraph">
 <p>In this workshop we will be using <a href="https://cloud.google.com/">Google Cloud Platform (GCP)</a>.
 GCP provides both a managed Kubernetes cluster: <a href="https://cloud.google.com/kubernetes-engine/">Google Kubernetes Engine</a>,
-and a hosted command line environment: <a href="https://cloud.google.com/shell/docs/">Google Cloud Shell</a>.</p>
+and a hosted command line environment: <a href="https://cloud.google.com/shell/">Google Cloud Shell</a>.</p>
 </div>
 <div class="paragraph">
-<p>Cloud Shell is a Debian-based virtual machine is provisionned with all the
-development tools you&#8217;ll need (Kubernetes, Docker, Python, Java, Node, etc.).
-It offers a persistent 5GB home directory.</p>
+<p>Cloud Shell is a Debian-based virtual machine provisionned with all the
+development tools you&#8217;ll need (Kubernetes, Docker, Terraform, Python, Java, Node, etc.).</p>
+</div>
+<div class="paragraph">
+<p>It offers a persistent 5GB home directory.</p>
 </div>
 <div class="paragraph">
 <p><em>This means that all you will need for this workshop is a browser.</em></p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s start by connecting to <a href="https://console.cloud.google.com/projectselector/home/dashboard?organizationId=925474410831">GCP Console</a>. Log in and select the project named "Workshop Istio XXX".</p>
+<p>Let&#8217;s start by connecting to <a href="https://console.cloud.google.com/projectselector/home/dashboard?organizationId=670174100971">GCP Console</a>. Log in and select the project named "Workshop Istio".</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="_images/gcp-dashboard-select-project.png" alt="GCP organisation dashboard"></span>
@@ -360,7 +380,7 @@ It offers a persistent 5GB home directory.</p>
 <p><span class="image"><img src="_images/gcp-dashboard-project-info.png" alt="GCP project info with project ID"></span></p>
 </div>
 <div class="paragraph">
-<p>Clic on "Activate Cloud Shell" (on the upper-left corner)</p>
+<p>Clic on "Activate Cloud Shell" (on the upper-right corner)</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="_images/open-cloud-shell.png" alt="Cloud Shell icon"></span></p>
@@ -408,6 +428,9 @@ cd kubernetes-istio-workshop</code></pre>
 </div>
 <div class="paragraph">
 <p>Congratulations, you&#8217;re ready to start this workshop !!</p>
+</div>
+<div class="paragraph">
+<p><a href="../kubernetes/01_setup.html" class="page">Next &gt;</a></p>
 </div>
 </div>
 </div>
