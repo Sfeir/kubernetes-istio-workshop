@@ -15,7 +15,7 @@
 *** xref:03_monitoring-tracing.adoc#jaeger[Jaeger]
 *** xref:03_monitoring-tracing-kiali.adoc[Kiali]
 
-** 4. Traffic Control
+** xref:04_simple-routerules.adoc[4. Traffic Control]
 *** xref:04_simple-routerules.adoc#deployrecommendationv2[Deploy recommendation v2]
 *** xref:04_simple-routerules.adoc#istiorouting[Changing Istio Routings]
 **** xref:04_simple-routerules.adoc#alltorecommendationv2[All Users to recommendation v2]

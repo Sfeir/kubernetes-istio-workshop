@@ -83,4 +83,4 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 Now you are ready to install Istio!
 
-xref:istio:02_setup_istio.adoc[Next >]
+xref:istio:01_setup_istio.adoc[Next >]
