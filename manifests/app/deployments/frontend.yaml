@@ -20,7 +20,7 @@ spec:
           resources:
             limits:
               cpu: "1"
-              memory: "200Mio"
+              memory: "200Mi"
           volumeMounts:
             - name: "nginx-frontend-conf"
               mountPath: "/etc/nginx/conf.d"
