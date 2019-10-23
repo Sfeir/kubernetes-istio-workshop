@@ -18,7 +18,7 @@ spec:
               exec:
                 command: ["/usr/sbin/nginx","-s","quit"]
           resources:
-            request:
+            requests:
                 cpu: "0.2"
                 memory: "100Mi"
             limits:
